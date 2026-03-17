@@ -36,7 +36,7 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
           {/* Logo */}
-          <a href="#" className="font-display text-2xl text-gold">
+          <a href="/" className="font-display text-2xl text-gold">
             The SocialHood Company
           </a>
 
