@@ -366,19 +366,19 @@ export default function Hero() {
         {/* Eyebrow - Electric Green */}
         <p className="hero-eyebrow text-xs tracking-[0.3em] uppercase mb-6 font-body animate-fade-in"
            style={{ color: '#00ff41' }}>
-          India's Most Culturally Wired Agency
+          Technology × Growth × Results
         </p>
 
         {/* Main Headline - White/Light */}
         <h1 className="font-display text-[clamp(3rem,9vw,8rem)] font-light leading-[0.9] mb-6 tracking-tight">
-          <span className="hero-heading block text-white">We Don't Just Post.</span>
-          <span className="hero-heading block text-white">We Make People</span>
-          <span className="hero-heading block" style={{ color: '#00ff41' }}>Feel.</span>
+          <span className="hero-heading block text-white">We Get Rich By</span>
+          <span className="hero-heading block text-white">Making Our Clients</span>
+          <span className="hero-heading block" style={{ color: '#00ff41' }}>Richer.</span>
         </h1>
 
         {/* Subline - Muted */}
         <p className="hero-subline text-sm text-white/40 tracking-[0.2em] mb-10 font-body uppercase">
-          Social Media · Content · Growth
+          Websites · Automation · PPC · Growth Strategy
         </p>
 
         {/* CTA Button - Electric Green */}
@@ -398,7 +398,7 @@ export default function Hero() {
             e.currentTarget.style.color = '#00ff41';
           }}
         >
-          Start Growing →
+          Start Your Growth Journey →
         </button>
       </div>
 

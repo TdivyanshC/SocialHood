@@ -19,10 +19,10 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Services", href: "#services" },
-    { name: "About", href: "#about" },
-    { name: "Pricing", href: "#pricing" },
-    { name: "Contact", href: "#contact" },
+    { name: "Services", href: "/services" },
+    { name: "About", href: "/about" },
+    { name: "Work", href: "/work" },
+    { name: "Contact", href: "/contact" },
   ];
 
   return (
@@ -37,7 +37,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
           {/* Logo */}
           <a href="#" className="font-display text-2xl text-gold">
-            TSH
+            The SocialHood Company
           </a>
 
           {/* Desktop Navigation */}

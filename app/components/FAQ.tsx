@@ -7,29 +7,29 @@ gsap.registerPlugin(ScrollTrigger);
 
 const faqs = [
   {
-    question: "How long does it take to see results?",
+    question: "How quickly can I see results?",
     answer:
-      "Most clients see initial traction within 30 days. Significant growth typically happens within 90 days as our strategies take hold and content compounds.",
+      "Most clients see initial results within 30 days. Significant lead increases typically happen within 60-90 days as our strategies and automation take full effect.",
   },
   {
-    question: "Do you work with all types of brands?",
+    question: "Do you work with small businesses or only large companies?",
     answer:
-      "We work with brands across categories—from startups to established enterprises. Our specialty is brands that want to build genuine communities, not just vanity metrics.",
+      "We work with businesses of all sizes—from startups to enterprises. Our solutions are scalable and tailored to your specific needs and budget.",
   },
   {
-    question: "What's included in social media management?",
+    question: "What makes your web development different from others?",
     answer:
-      "Our management package includes content creation, scheduling, community engagement, analytics reporting, and strategy calls. We handle everything except your product/service delivery.",
+      "We don't use basic WordPress templates. We build custom websites using enterprise-grade tech stacks (React, Next.js, Node.js) that the biggest companies use. This ensures speed, security, and scalability.",
   },
   {
-    question: "Can you help with paid advertising?",
+    question: "How does business automation help my company?",
     answer:
-      "Absolutely! Our Growth and Pro plans include paid ad management. We handle Meta, Google, and LinkedIn ads with a focus on maximizing your ROAS.",
+      "Automation eliminates repetitive tasks, reduces the need for additional employees, and increases efficiency. Our clients typically see 40-80% reduction in operational costs.",
   },
   {
-    question: "How do you measure success?",
+    question: "What is your guarantee on lead generation?",
     answer:
-      "We track engagement rates, follower growth, reach, conversions, and most importantly—your specific business KPIs. You'll receive detailed monthly reports with actionable insights.",
+      "We guarantee a minimum increase in your daily queries based on your industry and current setup. This is backed by our performance contract—your growth is our priority.",
   },
 ];
 
@@ -56,7 +56,7 @@ export default function FAQ() {
 
       gsap.fromTo(
         ".faq-item",
-        { y: 20, opacity: 0 },
+        { y: 30, opacity: 0 },
         {
           y: 0,
           opacity: 1,
@@ -81,50 +81,90 @@ export default function FAQ() {
   return (
     <section
       ref={sectionRef}
-      className="py-32 px-6 max-w-3xl mx-auto"
+      className="py-32 px-6 bg-black relative overflow-hidden"
     >
-      <div className="faq-header text-center mb-16">
-        <p className="text-xs tracking-[0.2em] text-gold uppercase mb-4 font-body">
-          FAQ
-        </p>
-        <h2 className="font-display text-4xl md:text-5xl font-light leading-tight">
-          Questions We Get All The Time
-        </h2>
-      </div>
+      {/* Background accents */}
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00ff41]/5 to-transparent pointer-events-none -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-[#00ff41]/3 to-transparent pointer-events-none" />
 
-      <div className="faq-list">
-        {faqs.map((faq, index) => (
-          <div
-            key={index}
-            className="faq-item border-b border-white/5"
-          >
-            <button
-              className="w-full py-6 flex justify-between items-center cursor-pointer"
-              onClick={() => toggleFAQ(index)}
-            >
-              <span className="font-body text-sm text-left hover:text-gold transition-colors">
-                {faq.question}
-              </span>
-              <span
-                className={`text-gold text-xl transition-transform duration-300 ${
-                  openIndex === index ? "rotate-180" : ""
-                }`}
-              >
-                ↓
-              </span>
-            </button>
+      <div className="max-w-3xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="faq-header text-center mb-16">
+          <p className="text-xs tracking-[0.3em] text-[#00ff41] uppercase mb-6 font-body">
+            FAQ
+          </p>
+          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-4">
+            Common Questions{' '}
+            <span className="text-[#00ff41]">Answered</span>
+          </h2>
+          <p className="text-white/50 text-sm font-body">
+            Everything you need to know about working with us.
+          </p>
+        </div>
 
+        {/* FAQ List */}
+        <div className="faq-list space-y-4">
+          {faqs.map((faq, index) => (
             <div
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                openIndex === index ? "max-h-48 opacity-100" : "max-h-0 opacity-0"
+              key={index}
+              className={`faq-item group rounded-2xl border transition-all duration-300 ${
+                openIndex === index
+                  ? "bg-white/[0.03] border-[#00ff41]/30"
+                  : "bg-white/[0.02] border-white/5 hover:border-white/10"
               }`}
             >
-              <p className="text-sm text-white/50 leading-relaxed pb-4">
-                {faq.answer}
-              </p>
+              <button
+                className="w-full p-6 flex justify-between items-center cursor-pointer"
+                onClick={() => toggleFAQ(index)}
+              >
+                <span className={`font-body text-sm text-left pr-4 transition-colors ${
+                  openIndex === index ? "text-[#00ff41]" : "text-white"
+                }`}>
+                  {faq.question}
+                </span>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  openIndex === index
+                    ? "bg-[#00ff41] text-black"
+                    : "bg-white/5 text-white/40 group-hover:bg-[#00ff41]/10 group-hover:text-[#00ff41]"
+                }`}>
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-300 ${
+                      openIndex === index ? "rotate-180" : ""
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </button>
+
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                  openIndex === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <div className="px-6 pb-6">
+                  <div className="h-px bg-gradient-to-r from-[#00ff41]/20 via-[#00ff41]/10 to-transparent mb-4" />
+                  <p className="text-sm text-white/60 leading-relaxed font-body">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="text-center mt-12">
+          <p className="text-white/40 text-sm font-body">
+            Still have questions?{' '}
+            <a href="/contact" className="text-[#00ff41] hover:underline">
+              Get in touch
+            </a>
+          </p>
+        </div>
       </div>
     </section>
   );

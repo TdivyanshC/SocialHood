@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 import Marquee from "./components/Marquee";
 import About from "./components/About";
 import Services from "./components/Services";
+import Studio from "./components/Studio";
 import Process from "./components/Process";
 import Results from "./components/Results";
 import Pricing from "./components/Pricing";
@@ -20,6 +21,7 @@ export default function Home() {
       <Marquee />
       <About />
       <Services />
+      <Studio />
       <Process />
       <Results />
       <Pricing />
