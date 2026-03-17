@@ -8,6 +8,11 @@ interface CardItemProps {
   children: ReactNode;
   className?: string;
   translateZ?: number | string;
+  translateX?: number | string;
+  translateY?: number | string;
+  rotateX?: number | string;
+  rotateY?: number | string;
+  rotateZ?: number | string;
   [key: string]: any;
 }
 
@@ -16,13 +21,18 @@ export function CardItem({
   children,
   className = "",
   translateZ = 0,
+  translateX = 0,
+  translateY = 0,
+  rotateX = 0,
+  rotateY = 0,
+  rotateZ = 0,
   ...props
 }: CardItemProps) {
   return (
     <Component
       className={cn("relative w-full", className)}
       style={{
-        transform: `translateZ(${translateZ}px)`,
+        transform: `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`,
         transformStyle: "preserve-3d",
       }}
       {...props}
@@ -47,7 +57,7 @@ export function CardContainer({
     <div 
       className={cn("relative", containerClassName)}
       style={{
-        perspective: "1000px",
+        perspective: "2000px",
       }}
     >
       <div 
@@ -82,8 +92,9 @@ export function CardBody({ children, className = "" }: CardBodyProps) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    const rotateX = ((y - centerY) / centerY) * -10;
-    const rotateY = ((x - centerX) / centerX) * 10;
+    // More pronounced rotation
+    const rotateX = ((y - centerY) / centerY) * -20;
+    const rotateY = ((x - centerX) / centerX) * 20;
     
     setRotation({ x: rotateX, y: rotateY });
   };
@@ -104,14 +115,15 @@ export function CardBody({ children, className = "" }: CardBodyProps) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={cn(
-        "bg-gray-50 relative group/card dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto h-auto rounded-xl border p-0 overflow-hidden",
-        "transition-all duration-200 ease-out",
+        "bg-gray-50 relative group/card dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-auto h-auto rounded-2xl border p-0 overflow-hidden",
+        "transition-all duration-300 ease-out",
         isHovered ? "[transform-style:preserve-3d]" : "",
         className
       )}
       style={{
         transform: `rotateX(${rotation.x}deg) rotateY(${rotation.y}deg)`,
         transformStyle: "preserve-3d",
+        perspective: "2000px",
       }}
     >
       {children}

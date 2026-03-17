@@ -6,13 +6,13 @@ import Marquee from "./components/Marquee";
 import About from "./components/About";
 import Services from "./components/Services";
 import Studio from "./components/Studio";
+import OurWork from "./components/OurWork";
 import Process from "./components/Process";
 import Results from "./components/Results";
 import Pricing from "./components/Pricing";
 import FAQ from "./components/FAQ";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
-import OurWork from "./components/OurWork";
 
 export default function Home() {
   return (
@@ -20,10 +20,10 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Marquee />
-      <OurWork />
       <About />
       <Services />
       <Studio />
+      <OurWork />
       <Process />
       <Results />
       <Pricing />
