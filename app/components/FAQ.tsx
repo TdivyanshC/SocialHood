@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -159,10 +160,10 @@ export default function FAQ() {
         {/* Bottom CTA */}
         <div className="text-center mt-12">
           <p className="text-white/40 text-sm font-body">
-            Still have questions?{' '}
-            <a href="/contact" className="text-[#00ff41] hover:underline">
+            Still have questions?{" "}
+            <Link href="/contact" className="text-[#00ff41] hover:underline">
               Get in touch
-            </a>
+            </Link>
           </p>
         </div>
       </div>

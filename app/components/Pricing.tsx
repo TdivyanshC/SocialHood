@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -209,10 +210,10 @@ export default function Pricing() {
         {/* Bottom note */}
         <div className="text-center mt-16">
           <p className="text-white/30 text-sm font-body">
-            All prices are exclusive of GST. Need a custom solution?{' '}
-            <a href="/contact" className="text-[#00ff41] hover:underline">
+            All prices are exclusive of GST. Need a custom solution?{" "}
+            <Link href="/contact" className="text-[#00ff41] hover:underline">
               Contact us
-            </a>
+            </Link>
           </p>
         </div>
       </div>

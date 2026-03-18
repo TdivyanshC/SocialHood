@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 
 const clients = [
@@ -108,12 +109,12 @@ export default function OurWork() {
               Featured <span style={{ color: "#00ff41" }}>Projects</span>
             </h2>
           </div>
-          <a
+          <Link
             href="/work"
             className="text-sm text-white/60 hover:text-[#00ff41] transition-colors flex items-center gap-2"
           >
             View All Work →
-          </a>
+          </Link>
         </div>
 
         {/* Carousel Navigation */}
@@ -196,6 +197,8 @@ export default function OurWork() {
                           src={client.image}
                           alt={client.name}
                           fill
+                          loading="lazy"
+                          sizes="(max-width: 768px) 100vw, 420px"
                           className="object-cover transition-all duration-300 group-hover/card:scale-105"
                         />
                       </div>

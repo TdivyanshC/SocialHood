@@ -1,35 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 
-// 3D APPROACH: Option A - Vanilla Three.js loaded via CDN
-// This provides full control over particle systems and custom shaders
-// Particle constellation field - visually connected, social-media-themed
-
+// Type declaration for THREE.js loaded from CDN
 declare global {
   interface Window {
     THREE: typeof import("three");
   }
 }
-
-interface Particle {
-  x: number;
-  y: number;
-  z: number;
-  vx: number;
-  vy: number;
-  vz: number;
-  baseX: number;
-  baseY: number;
-  baseZ: number;
-}
-
-export default function Hero() {
+function ParticleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const [is3DReady, setIs3DReady] = useState(false);
 
   useEffect(() => {
     let animationId: number;
@@ -46,8 +28,20 @@ export default function Hero() {
     let targetMouseY = 0;
     let three: typeof import("three");
 
+    interface Particle {
+      x: number;
+      y: number;
+      z: number;
+      vx: number;
+      vy: number;
+      vz: number;
+      baseX: number;
+      baseY: number;
+      baseZ: number;
+    }
+
     const initScene = async () => {
-      // Load Three.js from CDN
+      // Load Three.js from CDN with dynamic import
       if (!window.THREE) {
         const script = document.createElement("script");
         script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
@@ -60,7 +54,6 @@ export default function Hero() {
       }
 
       three = window.THREE;
-      setIs3DReady(true);
 
       // Scene setup
       scene = new three.Scene();
@@ -83,7 +76,6 @@ export default function Hero() {
 
       // Electric green color
       const electricGreen = 0x00ff41;
-      const particleColor = new three.Color(electricGreen);
 
       // Create particles - 400 particles for optimal 60fps
       const particleCount = 400;
@@ -227,8 +219,6 @@ export default function Hero() {
             const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
             if (dist < connectionDistance) {
-              const opacity = (1 - dist / connectionDistance) * 0.3;
-
               linePositions[lineIndex++] = p.x;
               linePositions[lineIndex++] = p.y;
               linePositions[lineIndex++] = p.z;
@@ -257,7 +247,6 @@ export default function Hero() {
 
       // Mouse event handler
       const handleMouseMove = (event: MouseEvent) => {
-        // Normalize mouse to -1 to +1 range (NDC space)
         mouseX = (event.clientX / window.innerWidth) * 2 - 1;
         mouseY = (event.clientY / window.innerHeight) * 2 - 1;
       };
@@ -285,14 +274,32 @@ export default function Hero() {
       };
     };
 
-    initScene();
+    // Delay 3D initialization to not block initial render
+    const timer = setTimeout(() => {
+      initScene();
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full z-0"
+    />
+  );
+}
+
+export default function Hero() {
+  const containerRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [is3DReady, setIs3DReady] = useState(false);
 
   // GSAP text animations
   useEffect(() => {
-    if (!contentRef.current || !is3DReady) return;
+    if (!contentRef.current) return;
 
-    // Small delay to let 3D initialize first
+    // Small delay to let page load
     const tl = gsap.timeline({ delay: 0.3 });
 
     // Eyebrow fades in
@@ -333,22 +340,20 @@ export default function Hero() {
       { y: 0, opacity: 1, duration: 0.8, ease: "power3.out" },
       "-=0.3"
     );
-  }, [is3DReady]);
+
+    // Mark 3D as ready after a delay
+    setTimeout(() => setIs3DReady(true), 500);
+  }, []);
 
   return (
     <section
       ref={containerRef}
       className="relative h-screen w-full overflow-hidden bg-black"
     >
-      {/* 3D Canvas - Background Layer */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full z-0"
-        style={{ 
-          opacity: is3DReady ? 1 : 0,
-          transition: 'opacity 1.5s ease-in-out'
-        }}
-      />
+      {/* 3D Canvas - Background Layer - Lazy loaded */}
+      <div className={`absolute inset-0 z-0 transition-opacity duration-1000 ${is3DReady ? 'opacity-100' : 'opacity-0'}`}>
+        <ParticleCanvas />
+      </div>
 
       {/* Dark Gradient Overlay - for text readability */}
       <div 
@@ -382,24 +387,17 @@ export default function Hero() {
         </p>
 
         {/* CTA Button - Electric Green */}
-        <button 
+        <Link 
+          href="/contact"
           className="hero-cta px-10 py-4 rounded-full text-sm tracking-[0.15em] transition-all duration-500 font-body uppercase"
           style={{ 
             border: '1px solid #00ff41',
             background: 'transparent',
             color: '#00ff41'
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#00ff41';
-            e.currentTarget.style.color = '#000000';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.color = '#00ff41';
-          }}
         >
           Start Your Growth Journey →
-        </button>
+        </Link>
       </div>
 
       {/* Scroll Indicator */}

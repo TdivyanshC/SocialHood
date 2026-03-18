@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -78,90 +80,119 @@ export default function Footer() {
       <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-[#00ff41]/3 to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-          {/* Brand Column */}
-          <div className="md:col-span-2">
-            <h3 className="font-display text-2xl text-gold mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand */}
+          <div className="lg:col-span-1">
+            <Link href="/" className="font-display text-2xl text-gold block mb-6">
               The SocialHood Company
-            </h3>
-            <p className="text-white/50 text-sm font-body leading-relaxed max-w-sm mb-6">
-              We help businesses grow through premium web development, automation, 
-              and result-driven digital marketing strategies.
+            </Link>
+            <p className="text-white/40 text-sm leading-relaxed mb-6">
+              India's most culturally wired social media agency. We combine
+              creativity, technology, and strategy to grow your brand.
             </p>
             <div className="flex gap-4">
-              {socialLinks.map((social) => (
+              {socialLinks.map((link) => (
                 <a
-                  key={social.name}
-                  href={social.href}
+                  key={link.name}
+                  href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="border border-white/10 p-3 rounded-full hover:border-[#00ff41] hover:bg-[#00ff41]/10 transition-all duration-300"
-                  aria-label={social.name}
+                  className="text-white/40 hover:text-[#00ff41] transition-colors"
+                  aria-label={link.name}
                 >
-                  {social.icon}
+                  {link.icon}
                 </a>
               ))}
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Navigation */}
           <div>
-            <h4 className="font-display text-sm text-white mb-6 tracking-wider">
-              Quick Links
+            <h4 className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-6 font-body">
+              Navigation
             </h4>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {navLinks.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
-                    className="text-sm text-white/40 hover:text-[#00ff41] transition-colors font-body"
+                    className="text-white/60 hover:text-white transition-colors text-sm"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Company */}
           <div>
-            <h4 className="font-display text-sm text-white mb-6 tracking-wider">
-              Get in Touch
+            <h4 className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-6 font-body">
+              Company
             </h4>
             <ul className="space-y-4">
+              {companyLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-white/60 hover:text-white transition-colors text-sm"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h4 className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-6 font-body">
+              Get in Touch
+            </h4>
+            <ul className="space-y-4 text-sm text-white/60">
               <li>
                 <a
-                  href="mailto:hello@thesocialhood.in"
-                  className="text-sm text-white/40 hover:text-[#00ff41] transition-colors font-body"
+                  href="mailto:hello@thesocialhood.com"
+                  className="hover:text-white transition-colors"
                 >
-                  hello@thesocialhood.in
+                  hello@thesocialhood.com
                 </a>
               </li>
               <li>
                 <a
-                  href="https://wa.me/919999999999"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm text-white/40 hover:text-[#00ff41] transition-colors font-body"
+                  href="tel:+919999999999"
+                  className="hover:text-white transition-colors"
                 >
-                  WhatsApp Us
+                  +91 99999 99999
                 </a>
+              </li>
+              <li className="pt-2">
+                <p className="text-white/40">
+                  Mumbai, India
+                </p>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-16 pt-8 border-t border-white/5">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-white/30 font-body">
-              © {currentYear} The SocialHood Company. All rights reserved.
-            </p>
-            <div className="flex items-center gap-6">
-              <span className="text-xs text-white/30 font-body">
-                Technology × Growth × Results
-              </span>
-            </div>
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-white/30 text-xs">
+            © {currentYear} The SocialHood Company. All rights reserved.
+          </p>
+          <div className="flex gap-6">
+            <a
+              href="#"
+              className="text-white/30 hover:text-white/60 text-xs transition-colors"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="#"
+              className="text-white/30 hover:text-white/60 text-xs transition-colors"
+            >
+              Terms of Service
+            </a>
           </div>
         </div>
       </div>

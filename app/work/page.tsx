@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Image from "next/image";
@@ -176,12 +177,12 @@ export default function WorkPage() {
           <p className="text-white/50 mb-8 font-body">
             Let's discuss how we can transform your business just like we've done for hundreds of others.
           </p>
-          <a
+          <Link
             href="/contact"
             className="inline-block bg-[#00ff41] text-black font-medium px-8 py-4 rounded-full text-sm tracking-widest hover:bg-[#00ff41]/80 transition-all duration-300"
           >
             Start Your Project →
-          </a>
+          </Link>
         </div>
       </section>
 

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -36,20 +37,20 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
           {/* Logo */}
-          <a href="/" className="font-display text-2xl text-gold">
+          <Link href="/" className="font-display text-2xl text-gold">
             The SocialHood Company
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className="text-xs tracking-widest text-white/60 hover:text-white transition-colors duration-300"
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
@@ -86,7 +87,7 @@ export default function Navbar() {
       >
         <div className="flex flex-col items-center justify-center h-full gap-8">
           {navLinks.map((link, index) => (
-            <a
+            <Link
               key={link.name}
               href={link.href}
               className="text-2xl font-display text-white/80 hover:text-gold transition-colors"
@@ -94,7 +95,7 @@ export default function Navbar() {
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               {link.name}
-            </a>
+            </Link>
           ))}
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Navbar from "../components/Navbar";
@@ -253,12 +254,12 @@ export default function ServicesPage() {
             <p className="text-white/50 mb-8 font-body max-w-lg mx-auto">
               Let's discuss how we can help you achieve your business goals with our proven growth strategies.
             </p>
-            <a
+            <Link
               href="/contact"
               className="inline-block bg-[#00ff41] text-black font-medium px-10 py-4 rounded-full text-sm tracking-wide hover:bg-[#00ff41]/80 hover:shadow-lg hover:shadow-[#00ff41]/30 transition-all duration-300"
             >
               Book a Free Consultation →
-            </a>
+            </Link>
           </div>
         </div>
       </section>
