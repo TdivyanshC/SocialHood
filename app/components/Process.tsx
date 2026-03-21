@@ -110,18 +110,18 @@ export default function Process() {
       className="py-32 px-6 bg-black relative overflow-hidden"
     >
       {/* Background accents */}
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00ff41]/5 to-transparent pointer-events-none -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-[#00ff41]/3 to-transparent pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-white/5 to-transparent pointer-events-none -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-white/3 to-transparent pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <div className="process-header text-center mb-24">
-          <p className="text-xs tracking-[0.3em] text-[#00ff41] uppercase mb-6 font-body">
+          <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
             How We Work
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-6">
-            From <span className="text-[#00ff41]">Analysis</span> to{' '}
-            <span className="text-[#00ff41]">Growth</span>
+            From <span className="text-white">Analysis</span> to{' '}
+            <span className="text-white">Growth</span>
             <br />
             in 4 Steps
           </h2>
@@ -131,7 +131,7 @@ export default function Process() {
         <div className="process-timeline relative">
           {/* Animated connecting line */}
           <div className="hidden md:block absolute top-8 left-0 right-0 h-0.5">
-            <div className="process-line absolute top-0 left-0 right-0 h-full bg-gradient-to-r from-[#00ff41] via-[#00ff41] to-[#00ff41] origin-left" />
+            <div className="process-line absolute top-0 left-0 right-0 h-full bg-gradient-to-r from-[#00B98E] via-[#00B98E] to-[#00B98E] origin-left" />
           </div>
 
           {/* Steps */}
@@ -144,19 +144,19 @@ export default function Process() {
                 {/* Step card */}
                 <div className="group w-full">
                   {/* Number badge */}
-                  <div className="relative z-10 w-16 h-16 mx-auto mb-6 rounded-2xl bg-black border border-white/10 flex items-center justify-center group-hover:border-[#00ff41]/50 group-hover:bg-[#00ff41]/10 transition-all duration-300">
-                    <div className="text-[#00ff41]">
+                  <div className="relative z-10 w-16 h-16 mx-auto mb-6 rounded-2xl bg-black border border-white/10 flex items-center justify-center group-hover:border-[#00B98E]/50 group-hover:bg-[#00B98E]/10 transition-all duration-300">
+                    <div className="text-[#00B98E]">
                       {step.icon}
                     </div>
                     {/* Step number overlay */}
-                    <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#00ff41] text-black text-xs font-bold flex items-center justify-center">
+                    <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-[#00B98E] text-black text-xs font-bold flex items-center justify-center">
                       {index + 1}
                     </span>
                   </div>
 
                   {/* Card content */}
-                  <div className="bg-white/[0.02] border border-white/5 rounded-xl p-6 text-center group-hover:border-[#00ff41]/20 group-hover:bg-[#00ff41]/5 transition-all duration-300">
-                    <h3 className="font-display text-lg mb-3 text-white group-hover:text-[#00ff41] transition-colors">
+                  <div className="bg-white/[0.02] border border-white/5 rounded-xl p-6 text-center group-hover:border-[#00B98E]/20 group-hover:bg-[#00B98E]/5 transition-all duration-300">
+                    <h3 className="font-display text-lg mb-3 text-white group-hover:text-[#00B98E] transition-colors">
                       {step.title}
                     </h3>
                     <p className="font-body text-sm text-white/50 leading-relaxed">
@@ -181,10 +181,11 @@ export default function Process() {
         {/* Bottom tagline */}
         <div className="text-center mt-20">
           <p className="font-display text-2xl text-white/30">
-            Your growth journey starts <span className="text-[#00ff41]">here</span>.
+            Your growth journey starts <span className="text-white">here</span>.
           </p>
         </div>
       </div>
     </section>
   );
 }
+

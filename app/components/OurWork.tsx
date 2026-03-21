@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 
 const clients = [
   {
@@ -102,18 +101,25 @@ export default function OurWork() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
           <div>
-            <p className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-4 font-body">
+            <p className="text-xs tracking-[0.2em] text-[#00B98E] uppercase mb-4 font-body">
               Our Work
             </p>
             <h2 className="font-display text-4xl md:text-5xl font-light">
-              Featured <span style={{ color: "#00ff41" }}>Projects</span>
+              Featured <span className="text-white">Projects</span>
             </h2>
           </div>
-          <Link
-            href="/work"
-            className="text-sm text-white/60 hover:text-[#00ff41] transition-colors flex items-center gap-2"
+          <Link 
+            href="/contact"
+            className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium overflow-hidden transition-all duration-300"
+            style={{ background: 'transparent', border: '1px solid #00B98E' }}
           >
-            View All Work →
+            <span className="absolute inset-0 w-full h-full bg-[#00B98E] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+            <span className="relative z-10 text-[#00B98E] group-hover:text-black transition-colors duration-300">View Our Work</span>
+            <span className="relative z-10 flex items-center text-[#00B98E] group-hover:text-black transition-colors duration-300">
+              <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
           </Link>
         </div>
 
@@ -123,10 +129,10 @@ export default function OurWork() {
           <button
             onClick={() => scroll("left")}
             disabled={!canScrollLeft}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 border ${
               canScrollLeft
-                ? "bg-zinc-800 hover:bg-zinc-700 text-white"
-                : "bg-zinc-900/50 text-zinc-600 cursor-not-allowed"
+                ? "border-[#00B98E] text-[#00B98E] hover:bg-[#00B98E] hover:text-black"
+                : "border-white/10 text-white/30 cursor-not-allowed"
             }`}
             aria-label="Scroll left"
           >
@@ -150,10 +156,10 @@ export default function OurWork() {
           <button
             onClick={() => scroll("right")}
             disabled={!canScrollRight}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 ${
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 border ${
               canScrollRight
-                ? "bg-zinc-800 hover:bg-zinc-700 text-white"
-                : "bg-zinc-900/50 text-zinc-600 cursor-not-allowed"
+                ? "border-[#00B98E] text-[#00B98E] hover:bg-[#00B98E] hover:text-black"
+                : "border-white/10 text-white/30 cursor-not-allowed"
             }`}
             aria-label="Scroll right"
           >
@@ -180,70 +186,37 @@ export default function OurWork() {
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
             {clients.map((client) => (
-              <div key={client.id} className="flex-shrink-0 w-[420px]">
-                <CardContainer
-                  containerClassName="perspective-2000"
-                  className="perspective-2000"
-                >
-                  <CardBody className="bg-gray-50 relative group/card dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-auto rounded-2xl border p-0 overflow-hidden">
-                    {/* Image with 3D parallax effect */}
-                    <CardItem
-                      translateZ={80}
-                      rotateY={-5}
-                      className="w-full mt-0"
-                    >
-                      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-t-2xl">
+              <a
+                key={client.id}
+                href={client.website}
+                target="__blank"
+                rel="noopener noreferrer"
+                className="flex-shrink-0 w-[350px] block group"
+              >
+                <div className="bg-black border border-white/10 w-full h-auto rounded-2xl overflow-hidden transition-all duration-300 group-hover:border-[#00B98E] group-hover:shadow-[0_0_30px_rgba(0,185,142,0.15)]">
+                    <div className="w-full">
+                      <div className="relative aspect-[16/10] w-full overflow-hidden">
                         <Image
                           src={client.image}
                           alt={client.name}
                           fill
                           loading="lazy"
-                          sizes="(max-width: 768px) 100vw, 420px"
-                          className="object-cover transition-all duration-300 group-hover/card:scale-105"
+                          sizes="(max-width: 768px) 100vw, 350px"
+                          className="object-cover transition-all duration-300 group-hover:scale-105"
                         />
                       </div>
-                    </CardItem>
-
-                    {/* Content with 3D parallax */}
-                    <div className="p-6">
-                      <CardItem
-                        translateZ={40}
-                        translateY={-10}
-                        className="text-xl font-bold text-neutral-600 dark:text-white"
-                      >
-                        {client.name}
-                      </CardItem>
-                      <CardItem
-                        as="p"
-                        translateZ={30}
-                        translateY={-5}
-                        className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-                      >
-                        {client.description}
-                      </CardItem>
-
-                      <div className="flex justify-between items-center mt-6">
-                        <CardItem
-                          translateZ={20}
-                          translateY={5}
-                          as="a"
-                          href={client.website}
-                          target="__blank"
-                          className="px-5 py-2.5 rounded-xl text-xs font-normal dark:text-white text-gray-600 hover:text-[#00ff41] transition-colors cursor-pointer bg-zinc-100 dark:bg-zinc-800"
-                        >
-                          Visit Site →
-                        </CardItem>
-                        <CardItem
-                          translateZ={20}
-                          className="text-xs text-gray-400 dark:text-gray-500"
-                        >
-                          {client.website.replace("https://", "")}
-                        </CardItem>
-                      </div>
                     </div>
-                  </CardBody>
-                </CardContainer>
-              </div>
+
+                    <div className="p-5">
+                      <div className="text-lg font-bold text-white group-hover:text-[#00B98E] transition-colors">
+                        {client.name}
+                      </div>
+                      <p className="text-white/60 text-sm mt-1">
+                        {client.description}
+                      </p>
+                    </div>
+                </div>
+              </a>
             ))}
           </div>
         </div>
@@ -251,3 +224,4 @@ export default function OurWork() {
     </section>
   );
 }
+

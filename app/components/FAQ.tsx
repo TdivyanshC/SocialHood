@@ -85,18 +85,18 @@ export default function FAQ() {
       className="py-32 px-6 bg-black relative overflow-hidden"
     >
       {/* Background accents */}
-      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00ff41]/5 to-transparent pointer-events-none -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-[#00ff41]/3 to-transparent pointer-events-none" />
+      <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00B98E]/5 to-transparent pointer-events-none -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-[#00B98E]/3 to-transparent pointer-events-none" />
 
       <div className="max-w-3xl mx-auto relative z-10">
         {/* Header */}
         <div className="faq-header text-center mb-16">
-          <p className="text-xs tracking-[0.3em] text-[#00ff41] uppercase mb-6 font-body">
+          <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
             FAQ
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-4">
             Common Questions{' '}
-            <span className="text-[#00ff41]">Answered</span>
+            <span className="text-white">Answered</span>
           </h2>
           <p className="text-white/50 text-sm font-body">
             Everything you need to know about working with us.
@@ -110,7 +110,7 @@ export default function FAQ() {
               key={index}
               className={`faq-item group rounded-2xl border transition-all duration-300 ${
                 openIndex === index
-                  ? "bg-white/[0.03] border-[#00ff41]/30"
+                  ? "bg-white/[0.03] border-[#00B98E]/30"
                   : "bg-white/[0.02] border-white/5 hover:border-white/10"
               }`}
             >
@@ -119,14 +119,14 @@ export default function FAQ() {
                 onClick={() => toggleFAQ(index)}
               >
                 <span className={`font-body text-sm text-left pr-4 transition-colors ${
-                  openIndex === index ? "text-[#00ff41]" : "text-white"
+                  openIndex === index ? "text-[#00B98E]" : "text-white"
                 }`}>
                   {faq.question}
                 </span>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
                   openIndex === index
-                    ? "bg-[#00ff41] text-black"
-                    : "bg-white/5 text-white/40 group-hover:bg-[#00ff41]/10 group-hover:text-[#00ff41]"
+                    ? "bg-[#00B98E] text-black"
+                    : "bg-white/5 text-white/40 group-hover:bg-[#00B98E]/10 group-hover:text-[#00B98E]"
                 }`}>
                   <svg
                     className={`w-4 h-4 transition-transform duration-300 ${
@@ -147,7 +147,7 @@ export default function FAQ() {
                 }`}
               >
                 <div className="px-6 pb-6">
-                  <div className="h-px bg-gradient-to-r from-[#00ff41]/20 via-[#00ff41]/10 to-transparent mb-4" />
+                  <div className="h-px bg-gradient-to-r from-[#00B98E]/20 via-[#00B98E]/10 to-transparent mb-4" />
                   <p className="text-sm text-white/60 leading-relaxed font-body">
                     {faq.answer}
                   </p>
@@ -161,7 +161,7 @@ export default function FAQ() {
         <div className="text-center mt-12">
           <p className="text-white/40 text-sm font-body">
             Still have questions?{" "}
-            <Link href="/contact" className="text-[#00ff41] hover:underline">
+            <Link href="/contact" className="text-[#00B98E] hover:underline">
               Get in touch
             </Link>
           </p>
@@ -170,3 +170,4 @@ export default function FAQ() {
     </section>
   );
 }
+

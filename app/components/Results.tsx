@@ -133,18 +133,18 @@ export default function Results() {
       className="py-32 px-6 bg-black relative overflow-hidden"
     >
       {/* Background accents */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-b from-[#00ff41]/5 to-transparent pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#00ff41]/3 to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-white/3 to-transparent pointer-events-none" />
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header */}
         <div className="results-header text-center mb-20">
-          <p className="text-xs tracking-[0.3em] text-[#00ff41] uppercase mb-6 font-body">
+          <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
             Results That Matter
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-4">
-            <span className="text-[#00ff41]">Real Numbers.</span> Real Growth.{' '}
-            <span className="text-[#00ff41]">Real ROI.</span>
+            <span className="text-white">Real Numbers.</span> Real Growth.{' '}
+            <span className="text-white">Real ROI.</span>
           </h2>
           <p className="text-white/50 text-sm max-w-xl mx-auto font-body">
             We don't just promise results—we deliver measurable outcomes that impact your bottom line.
@@ -156,19 +156,19 @@ export default function Results() {
           {metrics.map((metric, index) => (
             <div 
               key={metric.value} 
-              className="metric-card group relative bg-white/[0.02] border border-white/5 rounded-2xl p-6 md:p-8 hover:border-[#00ff41]/30 hover:bg-[#00ff41]/5 transition-all duration-300"
+              className="metric-card group relative bg-white/[0.02] border border-white/5 rounded-2xl p-6 md:p-8 hover:border-[#00B98E]/30 hover:bg-[#00B98E]/5 transition-all duration-300"
             >
               {/* Background glow on hover */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#00ff41]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#00B98E]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               <div className="relative z-10">
                 {/* Icon */}
-                <div className="w-12 h-12 rounded-xl bg-[#00ff41]/10 flex items-center justify-center text-[#00ff41] mb-4 group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl bg-[#00B98E]/10 flex items-center justify-center text-[#00B98E] mb-4 group-hover:bg-[#00B98E] group-hover:text-black transition-all duration-300">
                   {metric.icon}
                 </div>
 
                 {/* Value */}
-                <p className="font-display text-5xl md:text-6xl font-light text-[#00ff41] mb-2">
+                <p className="font-display text-5xl md:text-6xl font-light text-white mb-2">
                   {metric.value}
                 </p>
 
@@ -186,45 +186,8 @@ export default function Results() {
           ))}
         </div>
 
-        {/* Testimonials */}
-        <div className="mb-12">
-          <p className="text-center text-xs tracking-[0.2em] text-white/30 uppercase mb-10 font-body">
-            What Our Clients Say
-          </p>
-        </div>
-
-        <div className="testimonials-grid grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="testimonial-card group relative bg-white/[0.02] border border-white/5 rounded-2xl p-8 hover:border-[#00ff41]/20 transition-all duration-300"
-            >
-              {/* Quote icon */}
-              <div className="font-display text-7xl text-[#00ff41]/20 absolute top-4 left-6 leading-none">
-                "
-              </div>
-
-              <div className="relative z-10 pt-8">
-                <p className="font-body text-sm text-white/70 leading-relaxed italic mb-6">
-                  {testimonial.quote}
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#00ff41]/20 flex items-center justify-center text-[#00ff41] font-bold text-sm">
-                    {testimonial.author.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium text-white">{testimonial.author}</p>
-                    <p className="text-xs text-white/40">{testimonial.title}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bottom border */}
-              <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#00ff41]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
 }
+

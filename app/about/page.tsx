@@ -111,16 +111,16 @@ export default function AboutPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
         {/* Background */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-b from-[#00ff41]/10 to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#00ff41]/5 to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-b from-[#00B98E]/10 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#00B98E]/5 to-transparent pointer-events-none" />
 
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <p className="about-header text-xs tracking-[0.3em] text-[#00ff41] uppercase mb-6 font-body">
+          <p className="about-header text-xs tracking-[0.3em] text-white uppercase mb-6 font-body">
             About Us
           </p>
           <h1 className="about-header font-display text-5xl md:text-6xl font-light leading-tight mb-6">
             We Get Rich By Making Our{' '}
-            <span className="text-[#00ff41]">Clients Richer</span>
+            <span className="text-white">Clients Richer</span>
           </h1>
           <p className="about-header text-white/50 text-lg max-w-2xl mx-auto font-body">
             We are your partners in growth, committed to delivering real results through 
@@ -135,7 +135,7 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="about-content">
               <h2 className="font-display text-4xl mb-6">
-                Our <span className="text-[#00ff41]">Story</span>
+                Our <span className="text-white">Story</span>
               </h2>
               <p className="text-white/60 font-body leading-relaxed mb-6">
                 The SocialHood Company was founded with a simple belief: businesses deserve access to the 
@@ -150,20 +150,20 @@ export default function AboutPage() {
             {/* Stats */}
             <div className="about-content">
               <div className="grid grid-cols-2 gap-6">
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00ff41]/30 transition-colors">
-                  <p className="font-display text-5xl text-[#00ff41] mb-2">10x</p>
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
+                  <p className="font-display text-5xl text-white mb-2">10x</p>
                   <p className="text-xs text-white/40 uppercase tracking-wider">Average ROI</p>
                 </div>
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00ff41]/30 transition-colors">
-                  <p className="font-display text-5xl text-[#00ff41] mb-2">300%</p>
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
+                  <p className="font-display text-5xl text-white mb-2">300%</p>
                   <p className="text-xs text-white/40 uppercase tracking-wider">Lead Growth</p>
                 </div>
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00ff41]/30 transition-colors">
-                  <p className="font-display text-5xl text-[#00ff41] mb-2">80%</p>
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
+                  <p className="font-display text-5xl text-white mb-2">80%</p>
                   <p className="text-xs text-white/40 uppercase tracking-wider">Cost Reduction</p>
                 </div>
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00ff41]/30 transition-colors">
-                  <p className="font-display text-5xl text-[#00ff41] mb-2">24/7</p>
+                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
+                  <p className="font-display text-5xl text-white mb-2">24/7</p>
                   <p className="text-xs text-white/40 uppercase tracking-wider">Support</p>
                 </div>
               </div>
@@ -175,12 +175,12 @@ export default function AboutPage() {
       {/* Values Section */}
       <section className="py-20 px-6 bg-black relative">
         {/* Background accent */}
-        <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00ff41]/5 to-transparent pointer-events-none -translate-y-1/2" />
+        <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00B98E]/5 to-transparent pointer-events-none -translate-y-1/2" />
 
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16">
             <h2 className="font-display text-4xl mb-4">
-              Our <span className="text-[#00ff41]">Values</span>
+              Our <span className="text-white">Values</span>
             </h2>
             <p className="text-white/50 font-body">The principles that guide everything we do</p>
           </div>
@@ -189,9 +189,9 @@ export default function AboutPage() {
             {values.map((value, index) => (
               <div 
                 key={index} 
-                className="value-card group bg-white/[0.02] border border-white/5 rounded-2xl p-6 hover:border-[#00ff41]/30 transition-all duration-300"
+                className="value-card group bg-white/[0.02] border border-white/5 rounded-2xl p-6 hover:border-[#00B98E]/30 transition-all duration-300"
               >
-                <div className="w-14 h-14 rounded-xl bg-[#00ff41]/10 flex items-center justify-center text-[#00ff41] mb-4 group-hover:bg-[#00ff41] group-hover:text-black transition-all duration-300">
+                <div className="w-14 h-14 rounded-xl bg-[#00B98E]/10 flex items-center justify-center text-[#00B98E] mb-4 group-hover:bg-[#00B98E] group-hover:text-black transition-all duration-300">
                   {value.icon}
                 </div>
                 <h3 className="font-display text-lg mb-2">{value.title}</h3>
@@ -206,13 +206,13 @@ export default function AboutPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-display text-4xl mb-8">
-            Our <span className="text-[#00ff41]">Philosophy</span>
+            Our <span className="text-white">Philosophy</span>
           </h2>
           <blockquote className="text-2xl md:text-3xl font-display text-white/80 leading-relaxed mb-8">
             "We believe in building trust and relationships with clients first. 
             Money is a byproduct of delivering exceptional value."
           </blockquote>
-          <p className="text-[#00ff41] text-sm tracking-widest uppercase">
+          <p className="text-white text-sm tracking-widest uppercase">
             — The SocialHood Company Team
           </p>
         </div>
@@ -222,18 +222,18 @@ export default function AboutPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center relative">
           {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#00ff41]/5 via-[#00ff41]/10 to-[#00ff41]/5 rounded-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#00B98E]/5 via-[#00B98E]/10 to-[#00B98E]/5 rounded-3xl" />
           
           <div className="relative z-10 bg-black/50 backdrop-blur-sm border border-white/10 rounded-3xl p-12 md:p-16">
             <h2 className="font-display text-3xl md:text-4xl mb-4">
-              Let's Build Something <span className="text-[#00ff41]">Great</span>
+              Let's Build Something <span className="text-white">Great</span>
             </h2>
             <p className="text-white/50 mb-8 font-body">
               Ready to transform your business? We'd love to hear from you.
             </p>
             <Link
               href="/contact"
-              className="inline-block bg-[#00ff41] text-black font-medium px-10 py-4 rounded-full text-sm tracking-wide hover:bg-[#00ff41]/80 hover:shadow-lg hover:shadow-[#00ff41]/30 transition-all duration-300"
+              className="inline-block bg-[#00B98E] text-black font-medium px-10 py-4 rounded-full text-sm tracking-wide hover:bg-[#00B98E]/80 hover:shadow-lg hover:shadow-[#00B98E]/30 transition-all duration-300"
             >
               Get in Touch →
             </Link>
@@ -245,3 +245,4 @@ export default function AboutPage() {
     </main>
   );
 }
+

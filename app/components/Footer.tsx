@@ -76,17 +76,17 @@ export default function Footer() {
   return (
     <footer className="bg-black border-t border-white/5 py-20 px-6 relative overflow-hidden">
       {/* Background accent */}
-      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00ff41]/5 to-transparent pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-[#00ff41]/3 to-transparent pointer-events-none" />
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-white/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-white/3 to-transparent pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="font-display text-2xl text-gold block mb-6">
+            <Link href="/" className="font-display text-3xl text-[#00B98E] block mb-6">
               The SocialHood Company
             </Link>
-            <p className="text-white/40 text-sm leading-relaxed mb-6">
+            <p className="text-white/50 text-base leading-relaxed mb-6">
               India's most culturally wired social media agency. We combine
               creativity, technology, and strategy to grow your brand.
             </p>
@@ -97,7 +97,7 @@ export default function Footer() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-white/40 hover:text-[#00ff41] transition-colors"
+                  className="text-white/40 hover:text-[#00B98E] transition-colors"
                   aria-label={link.name}
                 >
                   {link.icon}
@@ -106,28 +106,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Navigation */}
-          <div>
-            <h4 className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-6 font-body">
-              Navigation
-            </h4>
-            <ul className="space-y-4">
-              {navLinks.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    href={link.href}
-                    className="text-white/60 hover:text-white transition-colors text-sm"
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Company */}
           <div>
-            <h4 className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-6 font-body">
+            <h4 className="text-xs tracking-[0.2em] text-[#00B98E] uppercase mb-6 font-body">
               Company
             </h4>
             <ul className="space-y-4">
@@ -135,7 +116,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-white/60 hover:text-white transition-colors text-sm"
+                    className="text-white/60 hover:text-[#00B98E] transition-colors text-base"
                   >
                     {link.name}
                   </Link>
@@ -146,29 +127,37 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-6 font-body">
+            <h4 className="text-xs tracking-[0.2em] text-[#00B98E] uppercase mb-6 font-body">
               Get in Touch
             </h4>
-            <ul className="space-y-4 text-sm text-white/60">
+            <ul className="space-y-4 text-base text-white/60">
               <li>
                 <a
-                  href="mailto:hello@thesocialhood.com"
-                  className="hover:text-white transition-colors"
+                  href="mailto:team@thesocialhood.in"
+                  className="hover:text-[#00B98E] transition-colors"
                 >
-                  hello@thesocialhood.com
+                  team@thesocialhood.in
                 </a>
               </li>
               <li>
                 <a
-                  href="tel:+919999999999"
-                  className="hover:text-white transition-colors"
+                  href="tel:+919198310770"
+                  className="hover:text-[#00B98E] transition-colors"
                 >
-                  +91 99999 99999
+                  +91 9198310770
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:+918799712556"
+                  className="hover:text-[#00B98E] transition-colors"
+                >
+                  +91 8799712556
                 </a>
               </li>
               <li className="pt-2">
                 <p className="text-white/40">
-                  Mumbai, India
+                  Delhi, India
                 </p>
               </li>
             </ul>
@@ -199,3 +188,4 @@ export default function Footer() {
     </footer>
   );
 }
+

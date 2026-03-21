@@ -74,8 +74,8 @@ function ParticleCanvas() {
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 1);
 
-      // Electric green color
-      const electricGreen = 0x00ff41;
+      // Accent color for particles (premium feel)
+      const particleColor = 0x00B98E;
 
       // Create particles - 400 particles for optimal 60fps
       const particleCount = 400;
@@ -109,7 +109,7 @@ function ParticleCanvas() {
       geometry.setAttribute("position", new three.BufferAttribute(particlePositions, 3));
 
       const material = new three.PointsMaterial({
-        color: electricGreen,
+        color: particleColor,
         size: 0.8,
         transparent: true,
         opacity: 0.8,
@@ -126,7 +126,7 @@ function ParticleCanvas() {
       lineGeometry.setAttribute("position", new three.BufferAttribute(linePositions, 3));
 
       const lineMaterial = new three.LineBasicMaterial({
-        color: electricGreen,
+        color: particleColor,
         transparent: true,
         opacity: 0.15,
       });
@@ -368,52 +368,27 @@ export default function Hero() {
         ref={contentRef}
         className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6"
       >
-        {/* Eyebrow - Electric Green */}
-        <p className="hero-eyebrow text-xs tracking-[0.3em] uppercase mb-6 font-body animate-fade-in"
-           style={{ color: '#00ff41' }}>
-          Technology × Growth × Results
-        </p>
-
-        {/* Main Headline - White/Light */}
-        <h1 className="font-display text-[clamp(3rem,9vw,8rem)] font-light leading-[0.9] mb-6 tracking-tight">
+        {/* Main Headline - White */}
+        <h1 className="font-display text-[clamp(3rem,9vw,8rem)] font-light leading-[0.9] mb-8 tracking-tight">
           <span className="hero-heading block text-white">We Get Rich By</span>
           <span className="hero-heading block text-white">Making Our Clients</span>
-          <span className="hero-heading block" style={{ color: '#00ff41' }}>Richer.</span>
+          <span className="hero-heading block text-white">Richer.</span>
         </h1>
 
-        {/* Subline - Muted */}
-        <p className="hero-subline text-sm text-white/40 tracking-[0.2em] mb-10 font-body uppercase">
-          Websites · Automation · PPC · Growth Strategy
-        </p>
-
-        {/* CTA Button - Electric Green */}
+        {/* CTA Button - White */}
         <Link 
           href="/contact"
-          className="hero-cta px-10 py-4 rounded-full text-sm tracking-[0.15em] transition-all duration-500 font-body uppercase"
-          style={{ 
-            border: '1px solid #00ff41',
-            background: 'transparent',
-            color: '#00ff41'
-          }}
+          className="group relative inline-flex items-center gap-2 px-10 py-4 rounded-full text-sm font-medium overflow-hidden transition-all duration-300"
+          style={{ background: 'transparent', border: '1px solid #00B98E' }}
         >
-          Start Your Growth Journey →
+          <span className="absolute inset-0 w-full h-full bg-[#00B98E] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+          <span className="relative z-10 text-[#00B98E] group-hover:text-black transition-colors duration-300">Start Your Growth Journey</span>
+          <span className="relative z-10 flex items-center text-[#00B98E] group-hover:text-black transition-colors duration-300">
+            <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </span>
         </Link>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center">
-        <div className="w-px h-12 bg-white/10 relative overflow-hidden">
-          <div 
-            className="absolute top-0 w-full h-1/2 animate-scroll-line"
-            style={{ background: '#00ff41' }}
-          />
-        </div>
-        <span 
-          className="text-xs mt-2 tracking-[0.3em] font-body uppercase"
-          style={{ color: '#00ff41' }}
-        >
-          Scroll
-        </span>
       </div>
 
       <style jsx>{`
@@ -432,3 +407,4 @@ export default function Hero() {
     </section>
   );
 }
+

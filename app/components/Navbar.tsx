@@ -21,9 +21,8 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Services", href: "/services" },
-    { name: "About", href: "/about" },
-    { name: "Work", href: "/work" },
-    { name: "Contact", href: "/contact" },
+    { name: "Our Work", href: "/work" },
+    { name: "About Us", href: "/about" },
   ];
 
   return (
@@ -35,23 +34,40 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="font-display text-2xl text-gold">
+        <div className="max-w-7xl mx-auto px-6 py-6 flex items-center justify-center relative">
+          {/* Logo - Left */}
+          <Link href="/" className="absolute left-0 font-display text-2xl text-white">
             The SocialHood Company
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-10">
+          {/* Desktop Navigation - Centered */}
+          <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-xs tracking-widest text-white/60 hover:text-white transition-colors duration-300"
+                className="text-lg text-white/80 hover:text-[#00B98E] transition-colors duration-300"
               >
                 {link.name}
               </Link>
             ))}
+          </div>
+
+          {/* Contact Us Button - Right */}
+          <div className="absolute right-0">
+            <Link 
+              href="/contact"
+              className="group relative inline-flex items-center gap-2 px-7 py-3 rounded-full text-base font-medium overflow-hidden transition-all duration-300"
+              style={{ background: 'transparent', border: '1px solid #00B98E' }}
+            >
+              <span className="absolute inset-0 w-full h-full bg-[#00B98E] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+              <span className="relative z-10 text-[#00B98E] group-hover:text-black transition-colors duration-300">Contact Us</span>
+              <span className="relative z-10 flex items-center text-[#00B98E] group-hover:text-black transition-colors duration-300">
+                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+            </Link>
           </div>
 
           {/* Mobile Hamburger */}
@@ -90,7 +106,7 @@ export default function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-2xl font-display text-white/80 hover:text-gold transition-colors"
+              className="text-2xl font-display text-white/80 hover:text-[#00B98E] transition-colors"
               onClick={() => setIsMobileMenuOpen(false)}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
@@ -102,3 +118,4 @@ export default function Navbar() {
     </>
   );
 }
+

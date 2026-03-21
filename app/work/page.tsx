@@ -4,7 +4,6 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Image from "next/image";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 
 const clients = [
   {
@@ -73,11 +72,11 @@ export default function WorkPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <p className="text-xs tracking-[0.2em] text-[#00ff41] uppercase mb-6 font-body">
+          <p className="text-xs tracking-[0.2em] text-white uppercase mb-6 font-body">
             Our Work
           </p>
           <h1 className="font-display text-5xl md:text-6xl font-light leading-tight mb-6">
-            Client <span style={{ color: '#00ff41' }}>Portfolio</span>
+            Client <span style={{ color: '#00B98E' }}>Portfolio</span>
           </h1>
           <p className="text-white/50 text-lg max-w-2xl mx-auto font-body">
             Real results for real businesses. Here are some of the projects we've worked on 
@@ -91,56 +90,33 @@ export default function WorkPage() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {clients.map((client) => (
-              <CardContainer key={client.id} className="inter-var">
-                <CardBody className="bg-gray-50 relative group/card dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-auto rounded-xl border p-0 overflow-hidden">
-                  {/* Image with translateZ for floating effect */}
-                  <CardItem translateZ="100" className="w-full mt-0">
-                    <div className="relative aspect-video w-full overflow-hidden rounded-t-xl">
-                      <Image
-                        src={client.image}
-                        alt={client.name}
-                        fill
-                        className="object-cover transition-all duration-300 group-hover/card:shadow-2xl"
-                      />
-                    </div>
-                  </CardItem>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <CardItem
-                      translateZ="50"
-                      className="text-xl font-bold text-neutral-600 dark:text-white"
-                    >
-                      {client.name}
-                    </CardItem>
-                    <CardItem
-                      as="p"
-                      translateZ="60"
-                      className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-                    >
-                      {client.description}
-                    </CardItem>
-                    
-                    <div className="flex justify-between items-center mt-6">
-                      <CardItem
-                        translateZ={20}
-                        as="a"
-                        href={client.website}
-                        target="__blank"
-                        className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white text-gray-600 hover:text-[#00ff41] transition-colors cursor-pointer"
-                      >
-                        Visit Site →
-                      </CardItem>
-                      <CardItem
-                        translateZ={20}
-                        className="text-xs text-gray-400 dark:text-gray-500"
-                      >
-                        {client.website.replace('https://', '')}
-                      </CardItem>
-                    </div>
+              <a
+                key={client.id}
+                href={client.website}
+                target="__blank"
+                rel="noopener noreferrer"
+                className="block group"
+              >
+                <div className="bg-black border border-white/10 w-full h-auto rounded-xl overflow-hidden transition-all duration-300 group-hover:border-[#00B98E] group-hover:shadow-[0_0_30px_rgba(0,185,142,0.15)]">
+                  <div className="relative aspect-video w-full overflow-hidden">
+                    <Image
+                      src={client.image}
+                      alt={client.name}
+                      fill
+                      className="object-cover transition-all duration-300 group-hover:scale-105"
+                    />
                   </div>
-                </CardBody>
-              </CardContainer>
+
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-white group-hover:text-[#00B98E] transition-colors">
+                      {client.name}
+                    </h3>
+                    <p className="text-white/60 text-sm mt-2">
+                      {client.description}
+                    </p>
+                  </div>
+                </div>
+              </a>
             ))}
           </div>
         </div>
@@ -151,19 +127,19 @@ export default function WorkPage() {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="text-center">
-              <p className="font-display text-5xl text-[#00ff41]">50+</p>
+              <p className="font-display text-5xl text-white">50+</p>
               <p className="text-white/50 text-sm mt-2">Projects Completed</p>
             </div>
             <div className="text-center">
-              <p className="font-display text-5xl text-[#00ff41]">10x</p>
+              <p className="font-display text-5xl text-white">10x</p>
               <p className="text-white/50 text-sm mt-2">Avg ROI</p>
             </div>
             <div className="text-center">
-              <p className="font-display text-5xl text-[#00ff41]">300%</p>
+              <p className="font-display text-5xl text-white">300%</p>
               <p className="text-white/50 text-sm mt-2">Avg Growth</p>
             </div>
             <div className="text-center">
-              <p className="font-display text-5xl text-[#00ff41]">98%</p>
+              <p className="font-display text-5xl text-white">98%</p>
               <p className="text-white/50 text-sm mt-2">Client Satisfaction</p>
             </div>
           </div>
@@ -179,7 +155,7 @@ export default function WorkPage() {
           </p>
           <Link
             href="/contact"
-            className="inline-block bg-[#00ff41] text-black font-medium px-8 py-4 rounded-full text-sm tracking-widest hover:bg-[#00ff41]/80 transition-all duration-300"
+            className="inline-block bg-[#00B98E] text-black font-medium px-8 py-4 rounded-full text-sm tracking-widest hover:bg-[#00B98E]/80 transition-all duration-300"
           >
             Start Your Project →
           </Link>
@@ -190,3 +166,4 @@ export default function WorkPage() {
     </main>
   );
 }
+

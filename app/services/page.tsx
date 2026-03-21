@@ -174,16 +174,16 @@ export default function ServicesPage() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
         {/* Background */}
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-b from-[#00ff41]/10 to-transparent pointer-events-none" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#00ff41]/5 to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-b from-[#00B98E]/10 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#00B98E]/5 to-transparent pointer-events-none" />
 
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <p className="services-header text-xs tracking-[0.3em] text-[#00ff41] uppercase mb-6 font-body">
+          <p className="services-header text-xs tracking-[0.3em] text-white uppercase mb-6 font-body">
             Our Services
           </p>
           <h1 className="services-header font-display text-5xl md:text-6xl font-light leading-tight mb-6">
             Complete Business{' '}
-            <span className="text-[#00ff41]">Growth</span> Solutions
+            <span className="text-white">Growth</span> Solutions
           </h1>
           <p className="services-header text-white/50 text-lg max-w-2xl mx-auto font-body">
             From premium web development to business automation and lead generation—we provide 
@@ -199,7 +199,7 @@ export default function ServicesPage() {
             {services.map((service) => (
               <div
                 key={service.id}
-                className="service-card group relative bg-white/[0.02] border border-white/5 rounded-2xl p-8 hover:border-[#00ff41]/30 transition-all duration-300 hover:-translate-y-2"
+                className="service-card group relative bg-white/[0.02] border border-white/5 rounded-2xl p-8 hover:border-[#00B98E]/30 transition-all duration-300 hover:-translate-y-2"
               >
                 {/* Gradient background on hover */}
                 <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
@@ -211,7 +211,7 @@ export default function ServicesPage() {
 
                 {/* Content */}
                 <div className="relative z-10">
-                  <h2 className="font-display text-xl mb-3 text-white group-hover:text-[#00ff41] transition-colors">
+                  <h2 className="font-display text-xl mb-3 text-white group-hover:text-[#00B98E] transition-colors">
                     {service.title}
                   </h2>
                   <p className="text-white/50 font-body text-sm mb-6 leading-relaxed">
@@ -222,8 +222,8 @@ export default function ServicesPage() {
                   <ul className="space-y-3">
                     {service.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-3 text-sm text-white/40">
-                        <div className="w-5 h-5 rounded-full bg-[#00ff41]/10 flex items-center justify-center shrink-0 mt-0.5">
-                          <svg className="w-3 h-3 text-[#00ff41]" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="w-5 h-5 rounded-full bg-[#00B98E]/10 flex items-center justify-center shrink-0 mt-0.5">
+                          <svg className="w-3 h-3 text-[#00B98E]" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                           </svg>
                         </div>
@@ -234,7 +234,7 @@ export default function ServicesPage() {
                 </div>
 
                 {/* Bottom border */}
-                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#00ff41]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#00B98E]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </div>
             ))}
           </div>
@@ -245,18 +245,18 @@ export default function ServicesPage() {
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center relative">
           {/* Background */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#00ff41]/5 via-[#00ff41]/10 to-[#00ff41]/5 rounded-3xl" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#00B98E]/5 via-[#00B98E]/10 to-[#00B98E]/5 rounded-3xl" />
           
           <div className="relative z-10 bg-black/50 backdrop-blur-sm border border-white/10 rounded-3xl p-12 md:p-16">
             <h2 className="font-display text-3xl md:text-4xl mb-4">
-              Ready to <span className="text-[#00ff41]">Transform</span> Your Business?
+              Ready to <span className="text-[#00B98E]">Transform</span> Your Business?
             </h2>
             <p className="text-white/50 mb-8 font-body max-w-lg mx-auto">
               Let's discuss how we can help you achieve your business goals with our proven growth strategies.
             </p>
             <Link
               href="/contact"
-              className="inline-block bg-[#00ff41] text-black font-medium px-10 py-4 rounded-full text-sm tracking-wide hover:bg-[#00ff41]/80 hover:shadow-lg hover:shadow-[#00ff41]/30 transition-all duration-300"
+              className="inline-block bg-[#00B98E] text-black font-medium px-10 py-4 rounded-full text-sm tracking-wide hover:bg-[#00B98E]/80 hover:shadow-lg hover:shadow-[#00B98E]/30 transition-all duration-300"
             >
               Book a Free Consultation →
             </Link>
@@ -268,3 +268,4 @@ export default function ServicesPage() {
     </main>
   );
 }
+

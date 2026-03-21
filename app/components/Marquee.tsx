@@ -28,9 +28,9 @@ export default function Marquee() {
           {items.map((item, index) => (
             <span
               key={`first-${index}`}
-              className="text-lg tracking-[0.15em] text-gold font-body mx-8 flex items-center gap-4"
+              className="text-lg tracking-[0.15em] text-[#00B98E] font-body mx-8 flex items-center gap-4"
             >
-              <span className="w-2 h-2 rounded-full bg-gold" />
+              <span className="w-2 h-2 rounded-full bg-[#00B98E]" />
               {item}
             </span>
           ))}
@@ -38,9 +38,9 @@ export default function Marquee() {
           {items.map((item, index) => (
             <span
               key={`first-dup-${index}`}
-              className="text-lg tracking-[0.15em] text-gold font-body mx-8 flex items-center gap-4"
+              className="text-lg tracking-[0.15em] text-[#00B98E] font-body mx-8 flex items-center gap-4"
             >
-              <span className="w-2 h-2 rounded-full bg-gold" />
+              <span className="w-2 h-2 rounded-full bg-[#00B98E]" />
               {item}
             </span>
           ))}
@@ -99,3 +99,4 @@ export default function Marquee() {
     </div>
   );
 }
+

@@ -119,7 +119,7 @@ export default function Studio() {
               New
             </span>
           </div>
-          <p className="text-xs tracking-[0.3em] text-[#00ff41] uppercase mb-4 font-body">
+          <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-4 font-body">
             Content Studio
           </p>
           <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-6">
@@ -144,7 +144,7 @@ export default function Studio() {
             >
               {/* Phone Frame */}
               <div 
-                className="relative w-[280px] md:w-[300px] aspect-[9/16] bg-black rounded-[2.5rem] border-4 border-white/10 overflow-hidden shadow-2xl group-hover:border-[#00ff41]/30 transition-all duration-500 group-hover:shadow-[#00ff41]/20 cursor-pointer"
+                className="relative w-[280px] md:w-[300px] aspect-[9/16] bg-black rounded-[2.5rem] border-4 border-white/10 overflow-hidden shadow-2xl group-hover:border-[#00B98E]/30 transition-all duration-500 group-hover:shadow-[#00B98E]/20 cursor-pointer"
                 onClick={() => handlePlay(index)}
               >
                 {/* Phone notch */}
@@ -171,7 +171,7 @@ export default function Studio() {
                 {/* Center play button - only show when not playing */}
                 {playingIndex !== index && (
                   <div className="flex-1 flex items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#00ff41]/20 transition-all duration-300">
+                    <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#00B98E]/20 transition-all duration-300">
                       <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M8 5v14l11-7z" />
                       </svg>
@@ -216,7 +216,7 @@ export default function Studio() {
 
               {/* Video title below phone */}
               <div className="text-center mt-6">
-                <h3 className="font-display text-lg mb-1 text-white group-hover:text-[#00ff41] transition-colors">
+                <h3 className="font-display text-lg mb-1 text-white group-hover:text-[#00B98E] transition-colors">
                   {video.title}
                 </h3>
                 <p className="font-body text-sm text-white/40">
@@ -229,7 +229,7 @@ export default function Studio() {
 
         {/* CTA */}
         <div className="text-center mt-16">
-          <button className="px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full text-white font-medium text-sm tracking-wide hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300">
+          <button className="px-8 py-4 rounded-full text-white font-medium text-sm tracking-wide border border-[#00B98E] bg-transparent hover:bg-[#00B98E] hover:text-black transition-all duration-300 group">
             Create Your Reel →
           </button>
           <p className="text-white/30 text-xs mt-4 font-body">
@@ -240,3 +240,4 @@ export default function Studio() {
     </section>
   );
 }
+
