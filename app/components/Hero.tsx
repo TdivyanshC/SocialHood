@@ -366,7 +366,7 @@ export default function Hero() {
       {/* Content Layer */}
       <div
         ref={contentRef}
-        className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-6"
+        className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 md:px-6"
       >
         {/* Main Headline - White */}
         <h1 className="font-display text-[clamp(3rem,9vw,8rem)] font-light leading-[0.9] mb-8 tracking-tight">
@@ -378,7 +378,7 @@ export default function Hero() {
         {/* CTA Button - White */}
         <Link 
           href="/contact"
-          className="group relative inline-flex items-center gap-2 px-10 py-4 rounded-full text-sm font-medium overflow-hidden transition-all duration-300"
+          className="group relative inline-flex items-center gap-2 px-6 md:px-10 py-3 md:py-4 rounded-full text-xs md:text-sm font-medium overflow-hidden transition-all duration-300"
           style={{ background: 'transparent', border: '1px solid #00B98E' }}
         >
           <span className="absolute inset-0 w-full h-full bg-[#00B98E] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />

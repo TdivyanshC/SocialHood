@@ -191,7 +191,7 @@ export default function OurWork() {
                 href={client.website}
                 target="__blank"
                 rel="noopener noreferrer"
-                className="flex-shrink-0 w-[350px] block group"
+                className="flex-shrink-0 w-[85vw] md:w-[350px] block group"
               >
                 <div className="bg-black border border-white/10 w-full h-auto rounded-2xl overflow-hidden transition-all duration-300 group-hover:border-[#00B98E] group-hover:shadow-[0_0_30px_rgba(0,185,142,0.15)]">
                     <div className="w-full">
