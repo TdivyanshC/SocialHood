@@ -14,8 +14,8 @@ export default function ServicesPage() {
   const services = [
     {
       id: "web-development",
-      title: "Premium Web Development",
-      description: "Custom websites built with enterprise-grade tech stacks. Not basic WordPress—platforms that Fortune 500 companies use.",
+      title: "Premium Website Development",
+      description: "Custom websites built with enterprise-grade tech stacks. Not basic WordPress—platforms that Fortune 500 companies use. Lightning fast, SEO optimized, and scalable.",
       features: [
         "Custom Next.js & React Development",
         "Enterprise-grade security",
@@ -32,9 +32,47 @@ export default function ServicesPage() {
       color: "from-blue-500 to-cyan-500",
     },
     {
+      id: "app-development",
+      title: "App Development",
+      description: "Native and cross-platform mobile applications that deliver seamless user experiences. From iOS to Android, we build apps that engage your customers.",
+      features: [
+        "iOS App Development",
+        "Android App Development",
+        "Cross-platform (React Native)",
+        "App Store Optimization",
+        "UI/UX Design",
+        "API Integration",
+      ],
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+      ),
+      color: "from-purple-500 to-pink-500",
+    },
+    {
+      id: "ai-video",
+      title: "AI Video Production",
+      description: "Cutting-edge AI-powered video content that captures attention and drives engagement. Create stunning visuals with the power of artificial intelligence.",
+      features: [
+        "AI-generated video content",
+        "Video editing & post-production",
+        "Motion graphics",
+        "Animation services",
+        "Social media video clips",
+        "Brand video storytelling",
+      ],
+      icon: (
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+        </svg>
+      ),
+      color: "from-green-500 to-emerald-500",
+    },
+    {
       id: "automation",
       title: "Business Automation",
-      description: "Reduce manual work and employee costs with intelligent automation. Streamline operations and get more done with fewer resources.",
+      description: "Reduce manual work and employee costs with intelligent automation. Streamline operations, eliminate repetitive tasks, and get more done with fewer resources.",
       features: [
         "Workflow automation",
         "Customer relationship management",
@@ -51,33 +89,14 @@ export default function ServicesPage() {
       color: "from-purple-500 to-pink-500",
     },
     {
-      id: "lead-generation",
-      title: "Guaranteed Lead Generation",
-      description: "We guarantee a minimum increase in your daily queries. Our data-driven approach ensures consistent lead flow.",
-      features: [
-        "Multi-channel lead capture",
-        "Landing page optimization",
-        "Lead scoring & qualification",
-        "Automated follow-ups",
-        "CRM integration",
-        "Real-time analytics",
-      ],
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-        </svg>
-      ),
-      color: "from-green-500 to-emerald-500",
-    },
-    {
-      id: "ppc",
-      title: "PPC & Ad Campaign Management",
-      description: "Google Ads, Meta Ads, and LinkedIn campaigns designed for maximum ROI. We optimize every campaign to convert.",
+      id: "ads",
+      title: "Google & Meta Ads Campaign",
+      description: "Google Ads and Meta Ads campaigns designed for maximum ROI. We optimize every campaign to convert clicks into customers.",
       features: [
         "Google Ads management",
         "Meta (Facebook/Instagram) ads",
-        "LinkedIn advertising",
-        "A/B testing & optimization",
+        "Campaign optimization",
+        "A/B testing",
         "Conversion tracking",
         "Detailed performance reports",
       ],
@@ -88,44 +107,6 @@ export default function ServicesPage() {
         </svg>
       ),
       color: "from-orange-500 to-red-500",
-    },
-    {
-      id: "growth-strategy",
-      title: "Growth Strategy & Roadmap",
-      description: "Proven strategies and roadmaps from successful companies. We build your customized growth plan.",
-      features: [
-        "Market analysis",
-        "Competitor research",
-        "Growth roadmap creation",
-        "KPI definition",
-        "Monthly strategy sessions",
-        "Execution guidance",
-      ],
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-        </svg>
-      ),
-      color: "from-indigo-500 to-violet-500",
-    },
-    {
-      id: "technology",
-      title: "Latest Technology Integration",
-      description: "We implement the newest technologies to give you the best competitive advantage and customer experience.",
-      features: [
-        "AI integration",
-        "Chatbot implementation",
-        "Analytics setup",
-        "API development",
-        "Third-party integrations",
-        "Technology consulting",
-      ],
-      icon: (
-        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-        </svg>
-      ),
-      color: "from-yellow-500 to-amber-500",
     },
   ];
 
@@ -178,8 +159,8 @@ export default function ServicesPage() {
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-[#00B98E]/5 to-transparent pointer-events-none" />
 
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <p className="services-header text-xs tracking-[0.3em] text-white uppercase mb-6 font-body">
-            Our Services
+          <p className="services-header text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
+            What We Offer
           </p>
           <h1 className="services-header font-display text-5xl md:text-6xl font-light leading-tight mb-6">
             Complete Business{' '}

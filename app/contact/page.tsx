@@ -195,18 +195,20 @@ export default function ContactPage() {
               </div>
 
               <div className="bg-surface border border-white/5 rounded-xl p-8">
-                <h3 className="font-display text-xl mb-4">Quick Response</h3>
+                <h3 className="font-display text-xl mb-4">Book a Meeting</h3>
                 <p className="text-white/50 font-body mb-4">
-                  We typically respond within 24 hours. For urgent inquiries, WhatsApp us.
+                  Schedule a free consultation call with us.
                 </p>
-                <a
-                  href="https://wa.me/919198310770"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-[#00B98E] hover:underline"
-                >
-                  <span>💬</span> WhatsApp Us
-                </a>
+                <div 
+                  className="calendly-inline-widget" 
+                  data-url="https://calendly.com/thesocialhood08/new-meeting"
+                  style={{ minWidth: '320px', height: '400px' }}
+                ></div>
+                <script 
+                  type="text/javascript" 
+                  src="https://assets.calendly.com/assets/external/widget.js" 
+                  async 
+                />
               </div>
             </div>
           </div>
