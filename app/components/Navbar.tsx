@@ -36,7 +36,7 @@ export default function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="font-display text-xl md:text-2xl text-white whitespace-nowrap">
+          <Link href="/" className="font-display text-xl md:text-2xl text-[#D4AF37] whitespace-nowrap">
             The SocialHood Company
           </Link>
 
@@ -70,14 +70,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Mobile Hamburger & Contact */}
+          {/* Mobile Hamburger */}
           <div className="flex items-center gap-3 lg:hidden">
-            <Link 
-              href="/contact"
-              className="text-[#00B98E] text-sm font-medium"
-            >
-              Contact
-            </Link>
             <button
               className="flex flex-col gap-1.5 p-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -121,6 +115,13 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+          <Link
+            href="/contact"
+            className="text-2xl font-display text-[#00B98E] hover:text-white transition-colors"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Contact Us
+          </Link>
         </div>
       </div>
     </>

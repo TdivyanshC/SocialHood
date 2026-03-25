@@ -22,7 +22,7 @@ export default function Footer() {
   const socialLinks = [
     {
       name: "Instagram",
-      href: "https://instagram.com",
+      href: "https://www.instagram.com/the.socialhood/?hl=en",
       icon: (
         <svg
           width="18"
@@ -40,7 +40,7 @@ export default function Footer() {
     },
     {
       name: "LinkedIn",
-      href: "https://linkedin.com",
+      href: "https://www.linkedin.com/company/the-social-hood-company/",
       icon: (
         <svg
           width="18"
@@ -83,7 +83,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="font-display text-3xl text-[#00B98E] block mb-6">
+            <Link href="/" className="font-display text-3xl text-[#D4AF37] block mb-6">
               The SocialHood Company
             </Link>
             <p className="text-white/50 text-base leading-relaxed mb-6">

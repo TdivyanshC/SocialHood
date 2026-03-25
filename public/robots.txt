@@ -1,0 +1,20 @@
+# Robots.txt for The SocialHood
+# https://thesocialhood.in
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://thesocialhood.in/sitemap.xml
+
+# Crawl-delay (optional, for polite crawling)
+Crawl-delay: 1
+
+# Block common non-content paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /*.json$
+Disallow: /404
+
+# Host directive
+Host: https://thesocialhood.in

@@ -67,6 +67,7 @@ export default function OurWork() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
 
   const checkScroll = () => {
     if (scrollRef.current) {
@@ -85,9 +86,28 @@ export default function OurWork() {
     }
   }, []);
 
+  // Auto-scroll effect
+  useEffect(() => {
+    if (isPaused) return;
+    
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        // If at the end, scroll to beginning
+        if (scrollLeft >= scrollWidth - clientWidth - 10) {
+          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          scrollRef.current.scrollBy({ left: 380, behavior: "smooth" });
+        }
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [isPaused]);
+
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const scrollAmount = 450;
+      const scrollAmount = 380;
       scrollRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
@@ -184,6 +204,8 @@ export default function OurWork() {
             ref={scrollRef}
             className="flex gap-8 overflow-x-auto scrollbar-hide pb-8 pt-4 px-4"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
           >
             {clients.map((client) => (
               <a
