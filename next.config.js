@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable static export for deployment
-  output: 'export',
-  
-  // Enable React strict mode for better development experience
+  // React strict mode for better development experience
   reactStrictMode: true,
   
   // Enable image optimization (works with static export when using unoptimized for some formats)

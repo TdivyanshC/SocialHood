@@ -53,8 +53,13 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Desktop Contact Button */}
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex items-center gap-3">
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-medium text-white transition hover:border-[#00B98E] hover:text-[#00B98E]"
+            >
+              Client Login
+            </Link>
             <Link 
               href="/contact"
               className="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium overflow-hidden transition-all duration-300"
@@ -115,6 +120,13 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+          <Link
+            href="/login"
+            className="text-2xl font-display text-[#00B98E] hover:text-white transition-colors"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Client Login
+          </Link>
           <Link
             href="/contact"
             className="text-2xl font-display text-[#00B98E] hover:text-white transition-colors"
