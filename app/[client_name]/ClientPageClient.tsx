@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { CallsDataDashboard } from "./CallsDataDashboard";
+import { LeadsSection } from "./leads/LeadsSection";
 
 interface ClientProfile {
   client_name: string;
@@ -14,7 +15,7 @@ interface ClientProfile {
 export default function ClientPageClient({ clientName }: { clientName: string }) {
   const [status, setStatus] = useState<"loading" | "authorized" | "denied" | "missing">("loading");
   const [profile, setProfile] = useState<ClientProfile | null>(null);
-  const [activeTab, setActiveTab] = useState<"calls" | "whatsapp">("calls");
+  const [activeTab, setActiveTab] = useState<"calls" | "leads" | "whatsapp">("calls");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -127,7 +128,7 @@ export default function ClientPageClient({ clientName }: { clientName: string })
           </div>
 
           {/* Tab Toggle */}
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <button
               onClick={() => setActiveTab("calls")}
               className={`px-6 py-3 rounded-full font-medium transition ${
@@ -137,6 +138,16 @@ export default function ClientPageClient({ clientName }: { clientName: string })
               }`}
             >
               📞 Calls
+            </button>
+            <button
+              onClick={() => setActiveTab("leads")}
+              className={`px-6 py-3 rounded-full font-medium transition ${
+                activeTab === "leads"
+                  ? "bg-[#00B98E] text-black"
+                  : "border border-white/10 bg-white/5 text-white hover:border-[#00B98E]"
+              }`}
+            >
+              👥 Leads
             </button>
             <button
               onClick={() => setActiveTab("whatsapp")}
@@ -153,6 +164,9 @@ export default function ClientPageClient({ clientName }: { clientName: string })
 
         {/* Calls Section */}
         {activeTab === "calls" && <CallsDataDashboard />}
+
+        {/* Leads Section */}
+        {activeTab === "leads" && <LeadsSection />}
 
         {/* WhatsApp Section */}
         {activeTab === "whatsapp" && <WhatsAppDashboard profile={profile} />}
