@@ -7,6 +7,7 @@ import { AddLeadModal } from "./AddLeadModal";
 import { CampaignBar } from "./CampaignBar";
 import { CsvUpload } from "./CsvUpload";
 import { LeadDetailPanel } from "./LeadDetailPanel";
+import { LeadsStatsBar } from "./LeadsStatsBar";
 import { LeadsTable } from "./LeadsTable";
 import { ToastProvider, useToast } from "./Toast";
 
@@ -84,6 +85,8 @@ function LeadsSectionInner() {
           onCampaignsChange={loadCampaigns}
         />
       )}
+
+      <LeadsStatsBar />
 
       <LeadsTable
         campaigns={campaigns}

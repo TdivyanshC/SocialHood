@@ -4,6 +4,7 @@ export const STATUS_LABELS: Record<LeadStatus, string> = {
   pending: "Pending",
   in_progress: "In Progress",
   answered: "Answered",
+  mid_answered: "Mid-Answered",
   scheduled: "Scheduled",
   unanswered: "Unanswered",
   dnc: "DNC",
@@ -13,6 +14,7 @@ export const STATUS_OPTIONS: LeadStatus[] = [
   "pending",
   "in_progress",
   "answered",
+  "mid_answered",
   "scheduled",
   "unanswered",
   "dnc",
@@ -26,6 +28,8 @@ export function statusBadgeClasses(status: LeadStatus | string): string {
       return "bg-blue-500/20 text-blue-300 border border-blue-500/30";
     case "answered":
       return "bg-green-500/20 text-green-300 border border-green-500/30";
+    case "mid_answered":
+      return "bg-amber-500/20 text-amber-300 border border-amber-500/30";
     case "scheduled":
       return "bg-amber-500/20 text-amber-300 border border-amber-500/30";
     case "unanswered":
@@ -35,6 +39,18 @@ export function statusBadgeClasses(status: LeadStatus | string): string {
     default:
       return "bg-white/10 text-white/70 border border-white/20";
   }
+}
+
+export function formatRetryDate(value: string | null | undefined): string {
+  if (!value) return "Retry soon";
+  const target = new Date(value).getTime();
+  if (Number.isNaN(target)) return "Retry soon";
+  const diffMs = target - Date.now();
+  if (diffMs <= 0) return "Retry soon";
+  const days = Math.floor(diffMs / 86400000);
+  if (days >= 1) return `Retry in ${days} ${days === 1 ? "day" : "days"}`;
+  const hours = Math.max(1, Math.round(diffMs / 3600000));
+  return `Retry in ${hours} ${hours === 1 ? "hour" : "hours"}`;
 }
 
 export function campaignBadgeClasses(status: string): string {

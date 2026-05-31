@@ -7,6 +7,7 @@ export type LeadStatus =
   | "pending"
   | "in_progress"
   | "answered"
+  | "mid_answered"
   | "scheduled"
   | "unanswered"
   | "dnc";

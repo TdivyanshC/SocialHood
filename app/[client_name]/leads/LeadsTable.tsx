@@ -15,6 +15,7 @@ import {
   STATUS_OPTIONS,
   formatIST,
   formatNextCall,
+  formatRetryDate,
   statusBadgeClasses,
 } from "./helpers";
 
@@ -314,7 +315,15 @@ function Row({
         </span>
       </td>
       <td className="py-3 px-4 text-white/70">{lead.retry_count}/{MAX_RETRIES}</td>
-      <td className="py-3 px-4 text-white/70 text-xs">{formatNextCall(lead.next_call_at)}</td>
+      <td className="py-3 px-4 text-xs">
+        {lead.status === "mid_answered" ? (
+          <span className="inline-block px-2 py-0.5 rounded-full font-medium bg-amber-500/20 text-amber-300 border border-amber-500/30">
+            {formatRetryDate(lead.next_call_at)}
+          </span>
+        ) : (
+          <span className="text-white/70">{formatNextCall(lead.next_call_at)}</span>
+        )}
+      </td>
       <td className="py-3 px-4 text-white/70 text-xs">{formatIST(lead.last_called_at)}</td>
       <td className="py-3 px-4 text-white/70 capitalize text-xs">{lead.source}</td>
       <td className="py-3 px-4 text-white/70 text-xs">{campaignName || "—"}</td>
