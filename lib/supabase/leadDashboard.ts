@@ -35,7 +35,6 @@ export async function fetchLeadDashboard(): Promise<LeadDashboardRow[]> {
   const { data, error } = await supabase
     .from("lead_dashboard")
     .select("*")
-    .eq("source", "whatsapp")
     .order("last_contact", { ascending: false, nullsFirst: false });
   if (error) throw error;
   return (data || []) as LeadDashboardRow[];
