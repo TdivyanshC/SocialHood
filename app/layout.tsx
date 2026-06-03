@@ -121,6 +121,11 @@ export default function RootLayout({
     <html lang="en" dir="ltr">
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){function isChunkErr(m){return /ChunkLoadError|Loading chunk [\\w\\d]+ failed|Failed to fetch dynamically imported module/i.test(m||'');}function fix(){try{if(sessionStorage.getItem('__chunkReloaded'))return;sessionStorage.setItem('__chunkReloaded','1');location.reload();}catch(e){location.reload();}}window.addEventListener('error',function(e){var m=(e.error&&e.error.message)||e.message||'';if(isChunkErr(m))fix();},true);window.addEventListener('unhandledrejection',function(e){var r=e.reason;var m=(r&&(r.message||String(r)))||'';if(isChunkErr(m))fix();});})();`,
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({

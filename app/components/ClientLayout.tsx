@@ -34,33 +34,6 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     return () => { lenis.destroy(); };
   }, []);
 
-  useEffect(() => {
-    const isChunkError = (msg: string) =>
-      /ChunkLoadError|Loading chunk [\w\d]+ failed|Failed to fetch dynamically imported module/i.test(msg);
-
-    const onError = (e: ErrorEvent) => {
-      const msg = e.error?.message || e.message || "";
-      if (isChunkError(msg) && !sessionStorage.getItem("__chunkReloaded")) {
-        sessionStorage.setItem("__chunkReloaded", "1");
-        window.location.reload();
-      }
-    };
-    const onRejection = (e: PromiseRejectionEvent) => {
-      const msg = (e.reason && (e.reason.message || String(e.reason))) || "";
-      if (isChunkError(msg) && !sessionStorage.getItem("__chunkReloaded")) {
-        sessionStorage.setItem("__chunkReloaded", "1");
-        window.location.reload();
-      }
-    };
-
-    window.addEventListener("error", onError);
-    window.addEventListener("unhandledrejection", onRejection);
-    return () => {
-      window.removeEventListener("error", onError);
-      window.removeEventListener("unhandledrejection", onRejection);
-    };
-  }, []);
-
   return <>{children}</>;
 }
 
