@@ -6,547 +6,519 @@ import { getSupabaseClient } from "@/lib/supabaseClient";
 interface CallRecord {
   id: string;
   call_uuid: string;
-  lead_id: string;
-  phone_number: string;
-  lead_name: string;
+  phone: string;
+  caller_name: string;
   lead_score: number;
   lead_tier: "hot" | "warm" | "cold";
+  campaign_type: "reactivation" | "fresh_lead" | string;
   duration_seconds: number;
   started_at: string;
-  status: string;
-  product_interest: string;
-  budget_mentioned: string;
-  urgency_mentioned: string;
-  full_transcript: string;
-  summary_text: string;
+  status: "answered" | "mid_answered" | "unanswered" | string;
+  turn_count: number;
+  final_state: string;
+  recording_url: string | null;
+  interest_signals: number;
+  rejection_signals: number;
+  wa_triggered: boolean;
+  full_transcript: [string, string][];
 }
 
-interface TranscriptModalProps {
-  isOpen: boolean;
-  callData: CallRecord | null;
-  onClose: () => void;
+type CampaignFilter = "all" | "reactivation" | "fresh_lead";
+type TierFilter = "all" | "hot" | "warm" | "cold";
+type StatusFilter = "all" | "answered" | "mid_answered" | "unanswered";
+
+const PAGE_SIZE = 50;
+
+function formatDuration(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function formatDateTime(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
 }
 
 export function CallsDataDashboard() {
   const [calls, setCalls] = useState<CallRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCallForTranscript, setSelectedCallForTranscript] = useState<CallRecord | null>(null);
-  const [sortBy, setSortBy] = useState<"score" | "recent">("score");
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
-  useEffect(() => {
-    const fetchCallsData = async () => {
-      setLoading(true);
-      const supabase = getSupabaseClient();
-      if (!supabase) {
+  const [campaignFilter, setCampaignFilter] = useState<CampaignFilter>("all");
+  const [tierFilter, setTierFilter] = useState<TierFilter>("all");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const fetchCalls = useCallback(async (pageNum: number) => {
+    setLoading(true);
+    setError(null);
+    const supabase = getSupabaseClient();
+    if (!supabase) {
+      setError("Supabase client unavailable. Check environment variables.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const from = (pageNum - 1) * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error: fetchError } = await supabase
+        .from("call_summaries")
+        .select(
+          `
+          id,
+          call_uuid,
+          phone,
+          turn_count,
+          final_state,
+          full_transcript,
+          lead_score,
+          lead_tier,
+          campaign_type,
+          recording_url,
+          interest_signals,
+          rejection_signals,
+          wa_triggered,
+          created_at,
+          duration_seconds,
+          caller_name,
+          started_at
+        `
+        )
+        .eq("tenant_id", "krishna_furniture")
+        .order("created_at", { ascending: false })
+        .range(from, to);
+
+      if (fetchError) {
+        setError(fetchError.message);
         setLoading(false);
         return;
       }
 
-      try {
-        // Fetch from call_summaries with call_logs and leads joins
-        const { data: callData, error } = await supabase
-          .from("call_summaries")
-          .select(
-            `
-            id,
-            call_uuid,
-            lead_id,
-            lead_score,
-            lead_tier,
-            product_interest,
-            budget_mentioned,
-            urgency_mentioned,
-            full_transcript,
-            summary_text,
-            tenant_id,
-            created_at,
-            call_logs(
-              call_uuid,
-              from_number,
-              to_number,
-              direction,
-              status,
-              duration_seconds,
-              started_at
-            ),
-            leads(
-              id,
-              phone,
-              name,
-              budget,
-              timeline,
-              furniture_interest
-            )
-          `
-          )
-          .eq("tenant_id", "krishna_furniture")
-          .order("created_at", { ascending: false })
-          .limit(50);
+      const rows: CallRecord[] = (data || []).map((s: any) => {
+        return {
+          id: s.id,
+          call_uuid: s.call_uuid,
+          phone: s.phone || "N/A",
+          caller_name: s.caller_name || "Unknown",
+          lead_score: s.lead_score ?? 0,
+          lead_tier: s.lead_tier || "cold",
+          campaign_type: s.campaign_type || "fresh_lead",
+          duration_seconds: s.duration_seconds ?? 0,
+          started_at: s.started_at || s.created_at,
+          status: s.wa_triggered ? "answered" : s.turn_count > 0 ? "answered" : "unanswered",
+          turn_count: s.turn_count ?? 0,
+          final_state: s.final_state || "-",
+          recording_url: s.recording_url || null,
+          interest_signals: s.interest_signals ?? 0,
+          rejection_signals: s.rejection_signals ?? 0,
+          wa_triggered: s.wa_triggered ?? false,
+          full_transcript: Array.isArray(s.full_transcript) ? s.full_transcript : [],
+        };
+      });
 
-        if (error) {
-          console.error("Error fetching calls:", error);
-          console.error("Supabase error details:", error);
-          setLoading(false);
-          return;
-        }
-
-        if (callData && Array.isArray(callData)) {
-          const formattedCalls: CallRecord[] = callData
-            .map((summary: any) => {
-              const callLog = Array.isArray(summary.call_logs)
-                ? summary.call_logs[0]
-                : summary.call_logs;
-              const lead = Array.isArray(summary.leads) ? summary.leads[0] : summary.leads;
-
-              return {
-                id: summary.id,
-                call_uuid: summary.call_uuid,
-                lead_id: summary.lead_id,
-                phone_number: lead?.phone || callLog?.to_number || "N/A",
-                lead_name: lead?.name || "Unknown Lead",
-                lead_score: summary.lead_score || 0,
-                lead_tier: summary.lead_tier || "cold",
-                duration_seconds: callLog?.duration_seconds || 0,
-                started_at: callLog?.started_at || summary.created_at,
-                status: callLog?.status || "unknown",
-                product_interest: summary.product_interest || "-",
-                budget_mentioned: summary.budget_mentioned || (lead?.budget ? `₹${lead.budget}` : "-"),
-                urgency_mentioned: summary.urgency_mentioned || lead?.timeline || "-",
-                full_transcript: summary.full_transcript || "No transcript available",
-                summary_text: summary.summary_text || "No summary available",
-              };
-            })
-            .filter((call: CallRecord) => call.lead_score > 0);
-
-          console.log("Formatted calls:", formattedCalls);
-          setCalls(formattedCalls);
-        } else {
-          console.log("No call data returned from Supabase");
-        }
-      } catch (err) {
-        console.error("Error fetching calls data:", err);
-      } finally {
-        setLoading(false);
+      setHasMore(rows.length === PAGE_SIZE);
+      if (pageNum === 1) {
+        setCalls(rows);
+      } else {
+        setCalls((prev) => [...prev, ...rows]);
       }
-    };
-
-    fetchCallsData();
+    } catch (err: any) {
+      setError(err?.message || "Failed to load calls.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  const sortedCalls = useMemo(() => {
-    const sorted = [...calls];
-    if (sortBy === "score") {
-      sorted.sort((a, b) => b.lead_score - a.lead_score);
-    } else if (sortBy === "recent") {
-      sorted.sort(
-        (a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime()
-      );
-    }
-    return sorted;
-  }, [calls, sortBy]);
+  useEffect(() => {
+    setPage(1);
+    fetchCalls(1);
+  }, [fetchCalls]);
 
-  const stats = useMemo(() => {
-    return {
-      total: calls.length,
-      hot: calls.filter((c) => c.lead_tier === "hot").length,
-      warm: calls.filter((c) => c.lead_tier === "warm").length,
-      cold: calls.filter((c) => c.lead_tier === "cold").length,
-      avgDuration: calls.length > 0
-        ? Math.round(calls.reduce((sum, c) => sum + c.duration_seconds, 0) / calls.length / 60)
-        : 0,
-    };
-  }, [calls]);
+  const loadMore = () => {
+    const next = page + 1;
+    setPage(next);
+    fetchCalls(next);
+  };
 
-  if (loading) {
-    return (
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-8 flex items-center justify-center h-64">
-        <div className="text-center">
-          <p className="text-white/70">Loading calls data...</p>
-          <div className="mt-4 flex justify-center gap-2">
+  const filtered = useMemo(() => {
+    return calls.filter((c) => {
+      if (campaignFilter !== "all" && c.campaign_type !== campaignFilter) return false;
+      if (tierFilter !== "all" && c.lead_tier !== tierFilter) return false;
+      if (statusFilter !== "all" && c.status !== statusFilter) return false;
+      return true;
+    });
+  }, [calls, campaignFilter, tierFilter, statusFilter]);
+
+  const stats = useMemo(() => ({
+    total: calls.length,
+    answered: calls.filter((c) => c.status === "answered").length,
+    hot: calls.filter((c) => c.lead_tier === "hot").length,
+    waTriggered: calls.filter((c) => c.wa_triggered).length,
+    avgDuration: calls.length > 0
+      ? Math.round(calls.reduce((s, c) => s + c.duration_seconds, 0) / calls.length)
+      : 0,
+  }), [calls]);
+
+  return (
+    <div className="space-y-6">
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <StatCard label="Total Calls" value={String(stats.total)} color="blue" />
+        <StatCard label="Answered" value={String(stats.answered)} color="green" />
+        <StatCard label="Hot Leads" value={String(stats.hot)} color="red" />
+        <StatCard label="WA Triggered" value={String(stats.waTriggered)} color="purple" />
+        <StatCard label="Avg Duration" value={formatDuration(stats.avgDuration)} color="cyan" />
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-6">
+        <FilterGroup
+          label="Campaign"
+          options={[
+            { value: "all", label: "All" },
+            { value: "reactivation", label: "Reactivation" },
+            { value: "fresh_lead", label: "Fresh Lead" },
+          ]}
+          value={campaignFilter}
+          onChange={(v) => setCampaignFilter(v as CampaignFilter)}
+        />
+        <FilterGroup
+          label="Tier"
+          options={[
+            { value: "all", label: "All" },
+            { value: "hot", label: "🔴 Hot" },
+            { value: "warm", label: "🟡 Warm" },
+            { value: "cold", label: "⚪ Cold" },
+          ]}
+          value={tierFilter}
+          onChange={(v) => setTierFilter(v as TierFilter)}
+        />
+        <FilterGroup
+          label="Status"
+          options={[
+            { value: "all", label: "All" },
+            { value: "answered", label: "Answered" },
+            { value: "mid_answered", label: "Mid-answered" },
+            { value: "unanswered", label: "Unanswered" },
+          ]}
+          value={statusFilter}
+          onChange={(v) => setStatusFilter(v as StatusFilter)}
+        />
+      </div>
+
+      {/* Table */}
+      <div className="rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+        <div className="p-6 border-b border-white/10">
+          <h2 className="text-xl font-semibold text-white">
+            Call Records{" "}
+            <span className="text-sm font-normal text-white/50">
+              ({filtered.length} shown)
+            </span>
+          </h2>
+        </div>
+
+        {error ? (
+          <div className="p-8 text-center text-red-400">{error}</div>
+        ) : loading && calls.length === 0 ? (
+          <div className="p-8 flex justify-center gap-2">
             <div className="w-2 h-2 rounded-full bg-[#00B98E] animate-pulse" />
             <div className="w-2 h-2 rounded-full bg-[#00B98E] animate-pulse delay-100" />
             <div className="w-2 h-2 rounded-full bg-[#00B98E] animate-pulse delay-200" />
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Stats Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <StatCard label="Total Calls" value={stats.total.toString()} color="blue" />
-        <StatCard label="Hot Leads" value={stats.hot.toString()} color="red" />
-        <StatCard label="Warm Leads" value={stats.warm.toString()} color="yellow" />
-        <StatCard label="Cold Leads" value={stats.cold.toString()} color="cyan" />
-        <StatCard label="Avg Duration" value={`${stats.avgDuration}m`} color="purple" />
-      </div>
-
-      {/* Sort Controls */}
-      <div className="flex gap-3">
-        <button
-          onClick={() => setSortBy("score")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-            sortBy === "score"
-              ? "bg-[#00B98E] text-black"
-              : "border border-white/10 bg-white/5 text-white hover:border-[#00B98E]"
-          }`}
-        >
-          Sort by Lead Score ⬇
-        </button>
-        <button
-          onClick={() => setSortBy("recent")}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-            sortBy === "recent"
-              ? "bg-[#00B98E] text-black"
-              : "border border-white/10 bg-white/5 text-white hover:border-[#00B98E]"
-          }`}
-        >
-          Sort by Recent
-        </button>
-      </div>
-
-      {/* Calls Table */}
-      <div className="rounded-3xl border border-white/10 bg-white/5 p-6 overflow-hidden">
-        <h2 className="text-xl font-semibold text-white mb-6">Call Records</h2>
-        {sortedCalls.length === 0 ? (
-          <div className="text-center py-8 text-white/70">
-            No call data available yet. Calls will appear here once they are logged in Supabase.
-          </div>
+        ) : filtered.length === 0 ? (
+          <div className="p-8 text-center text-white/50">No calls match the selected filters.</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/10">
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Lead Name</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Phone</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Date & Time</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Duration</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Product Interest</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Budget</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Urgency</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Lead Score</th>
-                  <th className="text-left py-3 px-4 text-white/70 font-medium">Action</th>
+                <tr className="border-b border-white/10 text-white/50 text-xs uppercase tracking-wider">
+                  <th className="text-left py-3 px-4 font-medium">Name / Phone</th>
+                  <th className="text-left py-3 px-4 font-medium">Date & Time</th>
+                  <th className="text-left py-3 px-4 font-medium">Duration</th>
+                  <th className="text-left py-3 px-4 font-medium">Status</th>
+                  <th className="text-left py-3 px-4 font-medium">Campaign</th>
+                  <th className="text-left py-3 px-4 font-medium">Tier</th>
+                  <th className="text-left py-3 px-4 font-medium">Score</th>
+                  <th className="text-left py-3 px-4 font-medium">WA</th>
+                  <th className="text-left py-3 px-4 font-medium">Turns</th>
                 </tr>
               </thead>
               <tbody>
-                {sortedCalls.map((call) => (
-                  <CallRow
-                    key={call.call_uuid}
-                    call={call}
-                    onViewTranscript={() => setSelectedCallForTranscript(call)}
-                  />
+                {filtered.map((call) => (
+                  <>
+                    <CallRow
+                      key={call.call_uuid}
+                      call={call}
+                      expanded={expandedId === call.call_uuid}
+                      onToggle={() =>
+                        setExpandedId(expandedId === call.call_uuid ? null : call.call_uuid)
+                      }
+                    />
+                    {expandedId === call.call_uuid && (
+                      <tr key={`${call.call_uuid}-expand`}>
+                        <td colSpan={9} className="bg-black/40 border-b border-white/10">
+                          <ExpandedRow call={call} />
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))}
               </tbody>
             </table>
           </div>
         )}
-      </div>
 
-      {/* Transcript Modal */}
-      <TranscriptModal
-        isOpen={!!selectedCallForTranscript}
-        callData={selectedCallForTranscript}
-        onClose={() => setSelectedCallForTranscript(null)}
-      />
+        {hasMore && (
+          <div className="p-4 flex justify-center border-t border-white/10">
+            <button
+              onClick={loadMore}
+              disabled={loading}
+              className="px-6 py-2 rounded-full text-sm font-medium bg-white/5 border border-white/10 text-white hover:border-[#00B98E] transition disabled:opacity-50"
+            >
+              {loading ? "Loading…" : "Load More"}
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
-const CallRow = ({
+function CallRow({
   call,
-  onViewTranscript,
+  expanded,
+  onToggle,
 }: {
   call: CallRecord;
-  onViewTranscript: () => void;
-}) => {
-  const tierColor: Record<string, string> = {
-    hot: "bg-red-500/20 text-red-300 border border-red-500/30",
-    warm: "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30",
-    cold: "bg-blue-500/20 text-blue-300 border border-blue-500/30",
+  expanded: boolean;
+  onToggle: () => void;
+}) {
+  const statusBadge: Record<string, string> = {
+    answered: "bg-green-500/20 text-green-300 border-green-500/30",
+    mid_answered: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+    unanswered: "bg-red-500/20 text-red-300 border-red-500/30",
+  };
+  const tierBadge: Record<string, string> = {
+    hot: "bg-red-500/20 text-red-300 border-red-500/30",
+    warm: "bg-orange-500/20 text-orange-300 border-orange-500/30",
+    cold: "bg-white/10 text-white/50 border-white/20",
+  };
+  const campaignBadge: Record<string, string> = {
+    reactivation: "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    fresh_lead: "bg-blue-500/20 text-blue-300 border-blue-500/30",
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-IN", {
-      day: "2-digit",
-      month: "short",
-      year: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatDuration = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}m ${secs}s`;
+  const statusLabel: Record<string, string> = {
+    answered: "Answered",
+    mid_answered: "Mid",
+    unanswered: "No Answer",
   };
 
   return (
-    <tr className="border-b border-white/5 hover:bg-white/5 transition cursor-pointer">
-      <td className="py-4 px-4 text-white font-medium">{call.lead_name}</td>
-      <td className="py-4 px-4 text-white/70">{call.phone_number}</td>
-      <td className="py-4 px-4 text-white/70 text-xs">{formatDate(call.started_at)}</td>
-      <td className="py-4 px-4 text-white/70">{formatDuration(call.duration_seconds)}</td>
-      <td className="py-4 px-4 text-white/70">{call.product_interest}</td>
-      <td className="py-4 px-4 text-white/70">{call.budget_mentioned}</td>
-      <td className="py-4 px-4 text-white/70">{call.urgency_mentioned}</td>
+    <tr
+      className={`border-b border-white/5 cursor-pointer transition-colors ${
+        expanded ? "bg-white/5" : "hover:bg-white/[0.03]"
+      }`}
+      onClick={onToggle}
+    >
       <td className="py-4 px-4">
-        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${tierColor[call.lead_tier]}`}>
-          {call.lead_tier.toUpperCase()} • {call.lead_score}
+        <p className="text-white font-medium leading-tight">{call.caller_name}</p>
+        <p className="text-white/40 text-xs mt-0.5">{call.phone}</p>
+      </td>
+      <td className="py-4 px-4 text-white/60 text-xs whitespace-nowrap">
+        {formatDateTime(call.started_at)}
+      </td>
+      <td className="py-4 px-4 text-white/70 font-mono">
+        {formatDuration(call.duration_seconds)}
+      </td>
+      <td className="py-4 px-4">
+        <span
+          className={`inline-block px-2 py-0.5 rounded-full text-xs border ${
+            statusBadge[call.status] || "bg-white/10 text-white/50 border-white/20"
+          }`}
+        >
+          {statusLabel[call.status] || call.status}
         </span>
       </td>
       <td className="py-4 px-4">
-        <button
-          onClick={onViewTranscript}
-          className="px-3 py-1 rounded-full text-xs font-medium bg-[#00B98E]/20 text-[#00B98E] border border-[#00B98E]/30 hover:bg-[#00B98E]/30 transition"
+        <span
+          className={`inline-block px-2 py-0.5 rounded-full text-xs border ${
+            campaignBadge[call.campaign_type] || "bg-white/10 text-white/50 border-white/20"
+          }`}
         >
-          📄 View
-        </button>
+          {call.campaign_type === "reactivation" ? "Reactivation" : "Fresh Lead"}
+        </span>
       </td>
+      <td className="py-4 px-4">
+        <span
+          className={`inline-block px-2 py-0.5 rounded-full text-xs border ${
+            tierBadge[call.lead_tier] || "bg-white/10 text-white/50 border-white/20"
+          }`}
+        >
+          {call.lead_tier.toUpperCase()}
+        </span>
+      </td>
+      <td className="py-4 px-4">
+        <span
+          className={`text-sm font-bold ${
+            call.lead_score >= 70
+              ? "text-red-400"
+              : call.lead_score >= 40
+              ? "text-orange-400"
+              : "text-white/40"
+          }`}
+        >
+          {call.lead_score}
+        </span>
+      </td>
+      <td className="py-4 px-4">
+        {call.wa_triggered ? (
+          <span className="text-green-400 text-xs font-medium">✓ Sent</span>
+        ) : (
+          <span className="text-white/30 text-xs">—</span>
+        )}
+      </td>
+      <td className="py-4 px-4 text-white/60 text-sm">{call.turn_count}</td>
     </tr>
   );
-};
+}
 
-function StatCard({
+function ExpandedRow({ call }: { call: CallRecord }) {
+  return (
+    <div className="px-6 py-5 space-y-5">
+      {/* Meta row */}
+      <div className="flex flex-wrap gap-6 text-sm">
+        <div>
+          <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Final State</p>
+          <p className="text-white font-medium">{call.final_state}</p>
+        </div>
+        <div>
+          <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Interest Signals</p>
+          <p className="text-green-400 font-bold">+{call.interest_signals}</p>
+        </div>
+        <div>
+          <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Rejection Signals</p>
+          <p className="text-red-400 font-bold">−{call.rejection_signals}</p>
+        </div>
+        <div>
+          <p className="text-xs text-white/40 uppercase tracking-wider mb-1">Turn Count</p>
+          <p className="text-white">{call.turn_count}</p>
+        </div>
+      </div>
+
+      {/* Audio player */}
+      {call.recording_url && (() => {
+        const recordingId = call.recording_url.split("/").pop()?.replace(/\.mp3$/i, "");
+        const proxySrc = recordingId ? `https://voice.thesocialhood.in/recording/${recordingId}` : null;
+        return proxySrc ? (
+          <div>
+            <p className="text-xs text-white/40 uppercase tracking-wider mb-2">Recording</p>
+            <audio
+              controls
+              src={proxySrc}
+              className="w-full max-w-lg rounded-xl"
+              style={{ accentColor: "#00B98E" }}
+            />
+          </div>
+        ) : null;
+      })()}
+
+      {/* Transcript */}
+      <div>
+        <p className="text-xs text-white/40 uppercase tracking-wider mb-3">Transcript</p>
+        {call.full_transcript.length === 0 ? (
+          <p className="text-white/30 text-sm">No transcript available.</p>
+        ) : (
+          <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+            {call.full_transcript.map(([role, text], idx) => {
+              const isUser = role === "user";
+              return (
+                <div key={idx} className={`flex ${isUser ? "justify-start" : "justify-end"}`}>
+                  <div
+                    className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm ${
+                      isUser
+                        ? "bg-white/10 border border-white/10 text-white/90 rounded-tl-sm"
+                        : "bg-[#00B98E]/20 border border-[#00B98E]/30 text-white rounded-tr-sm"
+                    }`}
+                  >
+                    <p className="text-[10px] font-semibold opacity-50 mb-1 uppercase tracking-wider">
+                      {isUser ? "Customer" : "AI"}
+                    </p>
+                    <p className="whitespace-pre-wrap break-words leading-snug">{text}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FilterGroup({
   label,
+  options,
   value,
-  color,
+  onChange,
 }: {
   label: string;
+  options: { value: string; label: string }[];
   value: string;
-  color: string;
+  onChange: (v: string) => void;
 }) {
-  const colorMap: Record<string, string> = {
+  return (
+    <div className="flex items-center gap-2">
+      <span className="text-xs text-white/40 uppercase tracking-wider mr-1">{label}:</span>
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
+            value === opt.value
+              ? "bg-[#00B98E] text-black"
+              : "border border-white/10 bg-white/5 text-white/70 hover:border-[#00B98E]/50"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
+  const border: Record<string, string> = {
     blue: "border-blue-500/30 bg-blue-500/10",
     red: "border-red-500/30 bg-red-500/10",
-    yellow: "border-yellow-500/30 bg-yellow-500/10",
     green: "border-green-500/30 bg-green-500/10",
     cyan: "border-cyan-500/30 bg-cyan-500/10",
     purple: "border-purple-500/30 bg-purple-500/10",
   };
-
-  const valueColorMap: Record<string, string> = {
+  const text: Record<string, string> = {
     blue: "text-blue-400",
     red: "text-red-400",
-    yellow: "text-yellow-400",
     green: "text-green-400",
     cyan: "text-cyan-400",
     purple: "text-purple-400",
   };
-
   return (
-    <div className={`rounded-2xl border p-4 ${colorMap[color]}`}>
+    <div className={`rounded-2xl border p-4 ${border[color]}`}>
       <p className="text-sm text-white/70 font-medium">{label}</p>
-      <p className={`text-2xl font-bold mt-2 ${valueColorMap[color]}`}>{value}</p>
-    </div>
-  );
-}
-
-function TranscriptModal({ isOpen, callData, onClose }: TranscriptModalProps) {
-  if (!isOpen || !callData) return null;
-
-  if (typeof window !== "undefined") {
-    console.log("[TranscriptModal] full_transcript:", callData.full_transcript);
-    console.log("[TranscriptModal] full_transcript type:", typeof callData.full_transcript);
-  }
-
-  const extractArrayFromObject = (obj: any): any[] | null => {
-    if (!obj || typeof obj !== "object") return null;
-    if (Array.isArray(obj)) return obj;
-    const keys = ["messages", "conversation", "chat", "transcript", "turns", "dialog", "dialogue", "history"];
-    for (const k of keys) {
-      if (Array.isArray(obj[k])) return obj[k];
-    }
-    return null;
-  };
-
-  const formatTranscript = (transcript: any): any[] => {
-    if (transcript == null) return [];
-
-    if (Array.isArray(transcript)) return transcript;
-
-    if (typeof transcript === "string") {
-      const trimmed = transcript.trim();
-      if (!trimmed) return [];
-      try {
-        const parsed = JSON.parse(trimmed);
-        const arr = extractArrayFromObject(parsed);
-        if (arr) return arr;
-        if (typeof parsed === "string") return [{ role: "system", content: parsed }];
-        if (typeof parsed === "object" && parsed !== null) {
-          if (typeof parsed.content === "string") return [{ role: "system", content: parsed.content }];
-          if (typeof parsed.text === "string") return [{ role: "system", content: parsed.text }];
-          return [{ role: "system", content: JSON.stringify(parsed, null, 2) }];
-        }
-        return [{ role: "system", content: String(parsed) }];
-      } catch {
-        return [{ role: "system", content: trimmed }];
-      }
-    }
-
-    if (typeof transcript === "object") {
-      const arr = extractArrayFromObject(transcript);
-      if (arr) return arr;
-      if (typeof transcript.content === "string") return [{ role: "system", content: transcript.content }];
-      if (typeof transcript.text === "string") return [{ role: "system", content: transcript.text }];
-      return [{ role: "system", content: JSON.stringify(transcript, null, 2) }];
-    }
-
-    return [{ role: "system", content: String(transcript) }];
-  };
-
-  const getMessageRole = (msg: any): string => {
-    if (!msg || typeof msg !== "object") return "system";
-    const raw = msg.role || msg.speaker || msg.from || msg.sender || msg.who || msg.type || "";
-    return String(raw).toLowerCase();
-  };
-
-  const getMessageContent = (msg: any): string => {
-    if (msg == null) return "";
-    if (typeof msg === "string") return msg;
-    if (typeof msg !== "object") return String(msg);
-    const candidates = [
-      msg.content,
-      msg.text,
-      msg.message,
-      msg.transcript,
-      msg.utterance,
-      msg.value,
-      msg.body,
-      msg.response,
-      msg.dialogue,
-      msg.line,
-    ];
-    for (const c of candidates) {
-      if (typeof c === "string" && c.trim()) return c;
-      if (typeof c === "number") return String(c);
-    }
-    // Some shapes: { agent: "...", user: "..." } — one of these will be the text
-    if (typeof msg.agent === "string" && msg.agent.trim()) return msg.agent;
-    if (typeof msg.user === "string" && msg.user.trim()) return msg.user;
-    if (typeof msg.caller === "string" && msg.caller.trim()) return msg.caller;
-    return "";
-  };
-
-  const isCallerRole = (role: string): boolean => {
-    return ["user", "caller", "customer", "client", "human", "lead"].includes(role);
-  };
-
-  const rawTranscript = callData.full_transcript;
-  const hasTranscript =
-    rawTranscript != null &&
-    !(typeof rawTranscript === "string" && (rawTranscript.trim() === "" || rawTranscript === "No transcript available")) &&
-    !(Array.isArray(rawTranscript) && rawTranscript.length === 0);
-
-  const transcriptData = hasTranscript ? formatTranscript(rawTranscript) : [];
-
-  return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-black border border-white/10 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl shadow-black/50">
-        {/* Header */}
-        <div className="border-b border-white/10 p-6 flex items-start justify-between">
-          <div>
-            <p className="text-sm text-[#00B98E] font-medium">CALL TRANSCRIPT</p>
-            <h2 className="text-2xl font-bold text-white mt-2">{callData.lead_name}</h2>
-            <p className="text-sm text-white/70 mt-1">{callData.phone_number}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-white/70 hover:text-white transition text-2xl w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-full"
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Call Summary */}
-        <div className="border-b border-white/10 p-6 bg-white/5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-            <div>
-              <p className="text-xs text-white/70 uppercase tracking-wider">Lead Score</p>
-              <p className={`text-lg font-bold mt-1 ${
-                callData.lead_tier === "hot" ? "text-red-400" :
-                callData.lead_tier === "warm" ? "text-yellow-400" :
-                "text-blue-400"
-              }`}>
-                {callData.lead_tier.toUpperCase()} • {callData.lead_score}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-white/70 uppercase tracking-wider">Duration</p>
-              <p className="text-lg font-bold mt-1 text-cyan-400">
-                {Math.floor(callData.duration_seconds / 60)}m {callData.duration_seconds % 60}s
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-white/70 uppercase tracking-wider">Budget</p>
-              <p className="text-lg font-bold mt-1 text-green-400">{callData.budget_mentioned}</p>
-            </div>
-            <div>
-              <p className="text-xs text-white/70 uppercase tracking-wider">Urgency</p>
-              <p className="text-lg font-bold mt-1 text-purple-400">{callData.urgency_mentioned}</p>
-            </div>
-          </div>
-          <div>
-            <p className="text-xs text-white/70 uppercase tracking-wider mb-2">Interest</p>
-            <p className="text-white">{callData.product_interest}</p>
-          </div>
-        </div>
-
-        {/* Transcript Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
-          {!hasTranscript ? (
-            <div className="text-center py-8 text-white/70">
-              <p>No transcript available for this call.</p>
-            </div>
-          ) : transcriptData.length === 0 ? (
-            <div className="text-center py-8 text-white/70">
-              <p>Transcript data is empty.</p>
-            </div>
-          ) : (
-            transcriptData.map((msg: any, idx: number) => {
-              const role = getMessageRole(msg);
-              const content = getMessageContent(msg);
-              const caller = isCallerRole(role);
-              return (
-                <div
-                  key={idx}
-                  className={`flex ${caller ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-md px-4 py-3 rounded-2xl ${
-                      caller
-                        ? "bg-[#00B98E]/20 border border-[#00B98E]/30 text-white"
-                        : "bg-white/10 border border-white/20 text-white/90"
-                    }`}
-                  >
-                    <p className="text-xs font-semibold opacity-70 mb-1">
-                      {caller ? "Caller" : role ? role.charAt(0).toUpperCase() + role.slice(1) : "Agent"}
-                    </p>
-                    {content ? (
-                      <p className="text-sm whitespace-pre-wrap break-words">{content}</p>
-                    ) : (
-                      <pre className="text-[10px] whitespace-pre-wrap break-all opacity-60 font-mono">
-                        {JSON.stringify(msg, null, 2)}
-                      </pre>
-                    )}
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </div>
-
-        {/* Summary Footer */}
-        {callData.summary_text && (
-          <div className="border-t border-white/10 p-6 bg-white/5">
-            <p className="text-xs text-white/70 uppercase tracking-wider mb-2">Call Summary</p>
-            <p className="text-sm text-white/80 leading-relaxed">{callData.summary_text}</p>
-          </div>
-        )}
-      </div>
+      <p className={`text-2xl font-bold mt-2 ${text[color]}`}>{value}</p>
     </div>
   );
 }
