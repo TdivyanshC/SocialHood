@@ -23,7 +23,7 @@ interface CallRecord {
   full_transcript: [string, string][];
 }
 
-type CampaignFilter = "all" | "reactivation" | "fresh_lead";
+type CampaignFilter = "all" | "fresh_lead" | "react_a" | "react_b" | "react_c" | "reactivation" | "followup_wa";
 type TierFilter = "all" | "hot" | "warm" | "cold";
 type StatusFilter = "all" | "answered" | "mid_answered" | "unanswered";
 
@@ -123,7 +123,7 @@ export function CallsDataDashboard() {
           status: s.wa_triggered ? "answered" : s.turn_count > 0 ? "answered" : "unanswered",
           turn_count: s.turn_count ?? 0,
           final_state: s.final_state || "-",
-          recording_url: s.recording_url || log?.recording_url || null,
+          recording_url: s.recording_url || null,
           interest_signals: s.interest_signals ?? 0,
           rejection_signals: s.rejection_signals ?? 0,
           wa_triggered: s.wa_triggered ?? false,
@@ -191,8 +191,12 @@ export function CallsDataDashboard() {
           label="Campaign"
           options={[
             { value: "all", label: "All" },
-            { value: "reactivation", label: "Reactivation" },
             { value: "fresh_lead", label: "Fresh Lead" },
+            { value: "react_a", label: "Plan A" },
+            { value: "react_b", label: "Plan B" },
+            { value: "react_c", label: "Plan C" },
+            { value: "reactivation", label: "Reactivation" },
+            { value: "followup_wa", label: "Follow Up" },
           ]}
           value={campaignFilter}
           onChange={(v) => setCampaignFilter(v as CampaignFilter)}
@@ -320,8 +324,20 @@ function CallRow({
     cold: "bg-white/10 text-white/50 border-white/20",
   };
   const campaignBadge: Record<string, string> = {
-    reactivation: "bg-purple-500/20 text-purple-300 border-purple-500/30",
-    fresh_lead: "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    react_a:      "bg-cyan-500/20 text-cyan-300 border-cyan-500/30",
+    react_b:      "bg-purple-500/20 text-purple-300 border-purple-500/30",
+    react_c:      "bg-indigo-500/20 text-indigo-300 border-indigo-500/30",
+    reactivation: "bg-orange-500/20 text-orange-300 border-orange-500/30",
+    fresh_lead:   "bg-blue-500/20 text-blue-300 border-blue-500/30",
+    followup_wa:  "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+  };
+  const campaignLabel: Record<string, string> = {
+    react_a:      "Plan A",
+    react_b:      "Plan B",
+    react_c:      "Plan C",
+    reactivation: "Reactivation",
+    fresh_lead:   "Fresh Lead",
+    followup_wa:  "Follow Up",
   };
 
   const statusLabel: Record<string, string> = {
@@ -362,7 +378,7 @@ function CallRow({
             campaignBadge[call.campaign_type] || "bg-white/10 text-white/50 border-white/20"
           }`}
         >
-          {call.campaign_type === "reactivation" ? "Reactivation" : "Fresh Lead"}
+          {campaignLabel[call.campaign_type] || call.campaign_type}
         </span>
       </td>
       <td className="py-4 px-4">
