@@ -94,7 +94,8 @@ export function CallsDataDashboard() {
           created_at,
           duration_seconds,
           caller_name,
-          started_at
+          started_at,
+          call_logs(recording_url)
         `
         )
         .eq("tenant_id", "krishna_furniture")
@@ -108,6 +109,7 @@ export function CallsDataDashboard() {
       }
 
       const rows: CallRecord[] = (data || []).map((s: any) => {
+        const log = Array.isArray(s.call_logs) ? s.call_logs[0] : s.call_logs;
         return {
           id: s.id,
           call_uuid: s.call_uuid,
@@ -121,7 +123,7 @@ export function CallsDataDashboard() {
           status: s.wa_triggered ? "answered" : s.turn_count > 0 ? "answered" : "unanswered",
           turn_count: s.turn_count ?? 0,
           final_state: s.final_state || "-",
-          recording_url: s.recording_url || null,
+          recording_url: s.recording_url || log?.recording_url || null,
           interest_signals: s.interest_signals ?? 0,
           rejection_signals: s.rejection_signals ?? 0,
           wa_triggered: s.wa_triggered ?? false,
@@ -254,6 +256,7 @@ export function CallsDataDashboard() {
                   <th className="text-left py-3 px-4 font-medium">Score</th>
                   <th className="text-left py-3 px-4 font-medium">WA</th>
                   <th className="text-left py-3 px-4 font-medium">Turns</th>
+                  <th className="py-3 px-4 font-medium"></th>
                 </tr>
               </thead>
               <tbody>
@@ -269,7 +272,7 @@ export function CallsDataDashboard() {
                     />
                     {expandedId === call.call_uuid && (
                       <tr key={`${call.call_uuid}-expand`}>
-                        <td colSpan={9} className="bg-black/40 border-b border-white/10">
+                        <td colSpan={10} className="bg-black/40 border-b border-white/10">
                           <ExpandedRow call={call} />
                         </td>
                       </tr>
@@ -392,6 +395,22 @@ function CallRow({
         )}
       </td>
       <td className="py-4 px-4 text-white/60 text-sm">{call.turn_count}</td>
+      <td className="py-4 px-2" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={() => call.recording_url && window.open(call.recording_url, "_blank")}
+          title={call.recording_url ? "Play recording" : "No recording"}
+          disabled={!call.recording_url}
+          className={`flex items-center justify-center w-7 h-7 rounded-full border transition ${
+            call.recording_url
+              ? "bg-[#00B98E]/15 border-[#00B98E]/30 text-[#00B98E] hover:bg-[#00B98E]/30 cursor-pointer"
+              : "bg-white/5 border-white/10 text-white/20 cursor-not-allowed"
+          }`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
+            <path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.84Z" />
+          </svg>
+        </button>
+      </td>
     </tr>
   );
 }
@@ -420,21 +439,32 @@ function ExpandedRow({ call }: { call: CallRecord }) {
       </div>
 
       {/* Audio player */}
-      {call.recording_url && (() => {
-        const recordingId = call.recording_url.split("/").pop()?.replace(/\.mp3$/i, "");
-        const proxySrc = recordingId ? `https://voice.thesocialhood.in/recording/${recordingId}` : null;
-        return proxySrc ? (
-          <div>
-            <p className="text-xs text-white/40 uppercase tracking-wider mb-2">Recording</p>
-            <audio
-              controls
-              src={proxySrc}
-              className="w-full max-w-lg rounded-xl"
-              style={{ accentColor: "#00B98E" }}
-            />
-          </div>
-        ) : null;
-      })()}
+      <div>
+        <div className="flex items-center gap-3 mb-2">
+          <p className="text-xs text-white/40 uppercase tracking-wider">Recording</p>
+          {call.recording_url ? (
+            <button
+              onClick={() => window.open(call.recording_url!, "_blank")}
+              title="Open in new tab"
+              className="flex items-center justify-center w-6 h-6 rounded-full bg-[#00B98E]/15 border border-[#00B98E]/30 text-[#00B98E] hover:bg-[#00B98E]/30 transition"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                <path d="M6.3 2.84A1.5 1.5 0 0 0 4 4.11v11.78a1.5 1.5 0 0 0 2.3 1.27l9.344-5.891a1.5 1.5 0 0 0 0-2.538L6.3 2.84Z" />
+              </svg>
+            </button>
+          ) : (
+            <span className="text-xs text-white/30">No recording available</span>
+          )}
+        </div>
+        {call.recording_url && (
+          <audio
+            controls
+            src={call.recording_url}
+            className="w-full max-w-lg rounded-xl"
+            style={{ accentColor: "#00B98E" }}
+          />
+        )}
+      </div>
 
       {/* Transcript */}
       <div>
