@@ -54,7 +54,7 @@ export function WhatsAppDashboard() {
       .channel("lead_dashboard_changes")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "lead_dashboard" },
+        { event: "*", schema: "public", table: "leads" },
         () => load(),
       )
       .subscribe();

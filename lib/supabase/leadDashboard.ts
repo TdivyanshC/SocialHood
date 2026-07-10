@@ -38,43 +38,59 @@ function isMeaningfulString(value: unknown): value is string {
   return v !== "" && v !== "null" && v !== "none";
 }
 
-// visit_date/awaiting_visit_date live in conversation_memory.extracted_data,
-// not in the lead_dashboard view, so they're fetched separately and merged
-// client-side by phone. A visit counts as "confirmed" once the customer has
-// named a day/date and the bot is no longer waiting on one.
+function hoursSince(iso: string | null | undefined): number | null {
+  if (!iso) return null;
+  const ms = Date.now() - new Date(iso).getTime();
+  if (!Number.isFinite(ms)) return null;
+  return ms / (1000 * 60 * 60);
+}
+
+interface LeadsTableRow {
+  phone: string;
+  source: string | null;
+  interested_in: string | null;
+  budget: number | null;
+  style_preference: string | null;
+  selected_product_name: string | null;
+  selected_product_price: number | null;
+  liked_product_1: string | null;
+  liked_product_2: string | null;
+  lead_status: string | null;
+  lead_score: string | number | null;
+  conversation_summary: string | null;
+  last_message: string | null;
+  last_contact: string | null;
+  interaction_count: number | null;
+  created_at: string | null;
+  visit_date: string | null;
+  visit_date_status: string | null;
+}
+
+// The dashboard used to read a `lead_dashboard` view, which the backend has
+// since dropped in favor of querying the `leads` table directly — it now
+// carries visit_date/visit_date_status natively, so no more client-side join
+// with conversation_memory is needed for that. `leads` also drops the view's
+// `priority`/`hours_since_contact` convenience columns and stores lead_score
+// as a string, so those are derived here to keep LeadDashboardRow stable for
+// the rest of the dashboard.
 export async function fetchLeadDashboard(): Promise<LeadDashboardRow[]> {
   const supabase = requireClient();
-  const [{ data, error }, memoryResult] = await Promise.all([
-    supabase
-      .from("lead_dashboard")
-      .select("*")
-      .order("last_contact", { ascending: false, nullsFirst: false }),
-    supabase.from("conversation_memory").select("phone, extracted_data"),
-  ]);
+  const { data, error } = await supabase
+    .from("leads")
+    .select(
+      "phone, source, interested_in, budget, style_preference, selected_product_name, selected_product_price, liked_product_1, liked_product_2, lead_status, lead_score, conversation_summary, last_message, last_contact, interaction_count, created_at, visit_date, visit_date_status",
+    )
+    .order("last_contact", { ascending: false, nullsFirst: false });
   if (error) throw error;
 
-  const visitByPhone = new Map<string, { visit_date: string | null; confirmed: boolean }>();
-  if (!memoryResult.error) {
-    for (const row of memoryResult.data || []) {
-      const extracted = (row as any)?.extracted_data;
-      const visitDate = extracted?.visit_date;
-      if (isMeaningfulString(visitDate)) {
-        visitByPhone.set((row as any).phone, {
-          visit_date: visitDate,
-          confirmed: extracted?.awaiting_visit_date !== true,
-        });
-      }
-    }
-  }
-
-  return ((data || []) as LeadDashboardRow[]).map((row) => {
-    const visit = visitByPhone.get(row.phone);
-    return {
-      ...row,
-      visit_date: visit?.visit_date ?? null,
-      visit_confirmed: visit?.confirmed ?? false,
-    };
-  });
+  return ((data || []) as LeadsTableRow[]).map((row) => ({
+    ...row,
+    score: row.lead_score != null ? Number(row.lead_score) : null,
+    priority: row.lead_status,
+    hours_since_contact: hoursSince(row.last_contact ?? row.created_at),
+    visit_date: isMeaningfulString(row.visit_date) ? row.visit_date : null,
+    visit_confirmed: isMeaningfulString(row.visit_date),
+  }));
 }
 
 export interface WhatsAppMessage {
