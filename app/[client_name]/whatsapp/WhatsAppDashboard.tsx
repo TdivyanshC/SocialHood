@@ -9,7 +9,18 @@ import { getSupabaseClient } from "@/lib/supabaseClient";
 import { ConversationCard } from "./ConversationCard";
 import { ConversationDetailModal } from "./ConversationDetailModal";
 
-type StatusFilter = "all" | "hot" | "warm" | "cold";
+type StatusFilter = "all" | "hot" | "warm" | "cold" | "visit";
+
+const TEMPERATURE_RANK: Record<string, number> = { hot: 0, warm: 1, cold: 2 };
+
+function sortByTemperature(rows: LeadDashboardRow[]): LeadDashboardRow[] {
+  return [...rows].sort((a, b) => {
+    const rankA = TEMPERATURE_RANK[(a.lead_status || "").toLowerCase()] ?? 3;
+    const rankB = TEMPERATURE_RANK[(b.lead_status || "").toLowerCase()] ?? 3;
+    if (rankA !== rankB) return rankA - rankB;
+    return (b.score ?? -Infinity) - (a.score ?? -Infinity);
+  });
+}
 
 export function WhatsAppDashboard() {
   const [rows, setRows] = useState<LeadDashboardRow[]>([]);
@@ -52,18 +63,21 @@ export function WhatsAppDashboard() {
     };
   }, [load]);
 
+  const sortedRows = useMemo(() => sortByTemperature(rows), [rows]);
+
   const stats = useMemo(() => {
     const total = rows.length;
     const hot = rows.filter((r) => (r.lead_status || "").toLowerCase() === "hot").length;
     const warm = rows.filter((r) => (r.lead_status || "").toLowerCase() === "warm").length;
     const cold = rows.filter((r) => (r.lead_status || "").toLowerCase() === "cold").length;
+    const visitConfirmed = rows.filter((r) => r.visit_confirmed).length;
     const totalInteractions = rows.reduce((s, r) => s + (r.interaction_count || 0), 0);
     const scored = rows.filter((r) => r.score != null);
     const avgScore =
       scored.length > 0
         ? Math.round(scored.reduce((s, r) => s + (r.score || 0), 0) / scored.length)
         : 0;
-    return { total, hot, warm, cold, totalInteractions, avgScore };
+    return { total, hot, warm, cold, visitConfirmed, totalInteractions, avgScore };
   }, [rows]);
 
   const pipeline = useMemo(() => {
@@ -82,8 +96,10 @@ export function WhatsAppDashboard() {
   }, [stats]);
 
   const filtered = useMemo(() => {
-    let r = rows;
-    if (statusFilter !== "all") {
+    let r = sortedRows;
+    if (statusFilter === "visit") {
+      r = r.filter((row) => row.visit_confirmed);
+    } else if (statusFilter !== "all") {
       r = r.filter((row) => (row.lead_status || "").toLowerCase() === statusFilter);
     }
     const term = search.trim().toLowerCase();
@@ -101,16 +117,17 @@ export function WhatsAppDashboard() {
       );
     }
     return r;
-  }, [rows, statusFilter, search]);
+  }, [sortedRows, statusFilter, search]);
 
   return (
     <div className="space-y-6">
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <MetricCard label="Total Leads" value={stats.total.toString()} color="green" />
         <MetricCard label="Hot Leads" value={stats.hot.toString()} color="red" />
         <MetricCard label="Warm Leads" value={stats.warm.toString()} color="yellow" />
         <MetricCard label="Cold Leads" value={stats.cold.toString()} color="blue" />
+        <MetricCard label="Visit Confirmed" value={stats.visitConfirmed.toString()} color="purple" />
         <MetricCard label="Avg Score" value={stats.avgScore.toString()} color="cyan" />
       </div>
 
@@ -146,20 +163,28 @@ export function WhatsAppDashboard() {
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
         <div className="flex flex-wrap gap-2">
-          {(["all", "hot", "warm", "cold"] as StatusFilter[]).map((s) => (
+          {(["all", "hot", "warm", "cold", "visit"] as StatusFilter[]).map((s) => (
             <button
               key={s}
               onClick={() => setStatusFilter(s)}
-              className={`rounded-full px-4 py-1.5 text-sm font-medium capitalize transition ${
+              className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+                s === "visit" ? "" : "capitalize"
+              } ${
                 statusFilter === s
                   ? "bg-[#00B98E] text-black"
                   : "border border-white/10 bg-white/5 text-white hover:border-[#00B98E]"
               }`}
             >
-              {s}
+              {s === "visit" ? "Visit Confirmed" : s}
               {s !== "all" && (
                 <span className="ml-1.5 text-xs opacity-70">
-                  {s === "hot" ? stats.hot : s === "warm" ? stats.warm : stats.cold}
+                  {s === "hot"
+                    ? stats.hot
+                    : s === "warm"
+                    ? stats.warm
+                    : s === "cold"
+                    ? stats.cold
+                    : stats.visitConfirmed}
                 </span>
               )}
             </button>

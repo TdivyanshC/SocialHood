@@ -35,6 +35,17 @@ h1, h2, h3, h4, h5, h6,
   font-weight: 600;
 }
 
+/* CRM dashboard is a data tool, not marketing copy — keep headings plain, bold sans-serif */
+.crm-dashboard h1,
+.crm-dashboard h2,
+.crm-dashboard h3,
+.crm-dashboard h4,
+.crm-dashboard h5,
+.crm-dashboard h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 700;
+}
+
 /* Make all text larger */
 .text-sm {
   font-size: 0.95rem;

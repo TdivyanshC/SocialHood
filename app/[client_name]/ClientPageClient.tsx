@@ -112,7 +112,7 @@ export default function ClientPageClient({ clientName }: { clientName: string })
   }
 
   return (
-    <main className="min-h-screen bg-black text-white px-4 py-6">
+    <main className="crm-dashboard min-h-screen bg-black text-white px-4 py-6">
       <div className="mx-auto max-w-full">
         {/* Header */}
         <div className="mb-8">

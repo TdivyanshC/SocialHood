@@ -95,7 +95,7 @@ export function CallsDataDashboard() {
           duration_seconds,
           caller_name,
           started_at,
-          call_logs(recording_url)
+          call_logs(recording_url, status, hangup_cause, duration_seconds)
         `
         )
         .eq("tenant_id", "krishna_furniture")
@@ -120,7 +120,17 @@ export function CallsDataDashboard() {
           campaign_type: s.campaign_type || "fresh_lead",
           duration_seconds: s.duration_seconds ?? 0,
           started_at: s.started_at || s.created_at,
-          status: s.wa_triggered ? "answered" : s.turn_count > 0 ? "answered" : "unanswered",
+          // Ground truth for "did the phone get picked up" is call_logs.status,
+          // not conversation-engagement fields like turn_count/wa_triggered.
+          // Fall back to duration_seconds only when call_logs has no status.
+          status:
+            typeof log?.status === "string"
+              ? log.status.toLowerCase() === "answered"
+                ? "answered"
+                : "unanswered"
+              : (s.duration_seconds ?? log?.duration_seconds ?? 0) > 0
+              ? "answered"
+              : "unanswered",
           turn_count: s.turn_count ?? 0,
           final_state: s.final_state || "-",
           recording_url: s.recording_url || null,

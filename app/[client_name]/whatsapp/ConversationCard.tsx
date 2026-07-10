@@ -55,6 +55,11 @@ export function ConversationCard({ row, onClick }: ConversationCardProps) {
                 {row.interaction_count} msgs
               </span>
             )}
+            {row.visit_confirmed && (
+              <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-medium bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                📅 Visit: {row.visit_date}
+              </span>
+            )}
           </div>
         </div>
       </div>
