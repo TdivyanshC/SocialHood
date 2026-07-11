@@ -111,6 +111,31 @@ export async function fetchLeadDashboard(): Promise<LeadDashboardRow[]> {
   }));
 }
 
+// conversation_memory.extracted_data.conversation_history predates
+// lead_full_details and is a rolling window rather than the full history,
+// but unlike conversation_summary (a lossy, regex-parsed text tail) it has
+// real role/content/timestamp turns for both sides — the best available
+// fallback for leads whose conversation_history_full is missing AI replies.
+export async function fetchConversationMemoryHistory(phone: string): Promise<ChatMessage[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("conversation_memory")
+    .select("extracted_data")
+    .eq("phone", phone)
+    .maybeSingle();
+  if (error) throw error;
+  const history = (data as any)?.extracted_data?.conversation_history;
+  if (!Array.isArray(history)) return [];
+  return history
+    .filter((t: any) => t && t.content && String(t.content).trim())
+    .map((t: any) => ({
+      content: t.content,
+      direction: t.role === "assistant" ? "outbound" : "inbound",
+      created_at: t.timestamp,
+      message_type: "text",
+    }));
+}
+
 export interface ParsedChatTurn {
   role: "customer" | "ai" | "other";
   text: string;

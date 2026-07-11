@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
+  type ChatMessage,
   type LeadDashboardRow,
+  fetchConversationMemoryHistory,
   parseConversationSummary,
 } from "@/lib/supabase/leadDashboard";
 import {
@@ -19,15 +22,41 @@ interface ConversationDetailModalProps {
 }
 
 export function ConversationDetailModal({ row, onClose }: ConversationDetailModalProps) {
-  if (!row) return null;
-  const parsed = parseConversationSummary(row.conversation_summary);
+  const [memoryHistory, setMemoryHistory] = useState<ChatMessage[]>([]);
+  const [loadingMemory, setLoadingMemory] = useState(false);
+
   // conversation_history_full only started capturing the AI's side of the
   // chat recently — leads from before that only have inbound messages here,
-  // which would render as a one-sided transcript. Fall back to the recent
-  // turns embedded in conversation_summary (already fetched, has both
-  // sides) for those, rather than showing a broken-looking chat.
-  const hasBidirectionalHistory = row.conversation_history.some((m) => m.direction === "outbound");
-  const hasHistory = hasBidirectionalHistory && row.conversation_history.length > 0;
+  // which would render as a one-sided transcript. Fall back to
+  // conversation_memory.extracted_data.conversation_history for those: it
+  // predates lead_full_details and is only a rolling window, but it has real
+  // role/content/timestamp turns for both sides, unlike conversation_summary
+  // (a lossy, regex-parsed text tail).
+  const hasBidirectionalHistory = !!row?.conversation_history.some((m) => m.direction === "outbound");
+
+  useEffect(() => {
+    if (!row?.phone || hasBidirectionalHistory) {
+      setMemoryHistory([]);
+      return;
+    }
+    let cancelled = false;
+    setLoadingMemory(true);
+    fetchConversationMemoryHistory(row.phone)
+      .then((history) => {
+        if (!cancelled) setMemoryHistory(history);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingMemory(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [row?.phone, hasBidirectionalHistory]);
+
+  if (!row) return null;
+  const parsed = parseConversationSummary(row.conversation_summary);
+  const displayHistory = hasBidirectionalHistory ? row.conversation_history : memoryHistory;
+  const hasHistory = displayHistory.length > 0;
   const hasShownProducts = (row.last_shown_names?.length ?? 0) > 0;
 
   return (
@@ -154,12 +183,18 @@ export function ConversationDetailModal({ row, onClose }: ConversationDetailModa
           {/* Chat */}
           <div>
             <p className="text-xs uppercase tracking-wider text-white/60 mb-3">
-              {hasHistory ? `Full chat (${row.conversation_history.length})` : "Recent chat"}
+              {hasBidirectionalHistory ? `Full chat (${displayHistory.length})` : "Recent chat"}
             </p>
 
-            {hasHistory ? (
+            {loadingMemory && (
+              <div className="flex justify-center py-4">
+                <div className="w-2 h-2 rounded-full bg-[#00B98E] animate-pulse" />
+              </div>
+            )}
+
+            {!loadingMemory && hasHistory ? (
               <div className="space-y-3">
-                {row.conversation_history.map((msg, i) => (
+                {displayHistory.map((msg, i) => (
                   <ChatBubble
                     key={i}
                     turn={{
@@ -170,13 +205,7 @@ export function ConversationDetailModal({ row, onClose }: ConversationDetailModa
                   />
                 ))}
               </div>
-            ) : parsed.turns.length > 0 ? (
-              <div className="space-y-3">
-                {parsed.turns.map((turn, i) => (
-                  <ChatBubble key={i} turn={turn} />
-                ))}
-              </div>
-            ) : row.last_message ? (
+            ) : !loadingMemory && row.last_message ? (
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <p className="text-xs uppercase tracking-wider text-white/60 mb-2">
                   Last message
