@@ -3,6 +3,13 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 
+export interface ChatMessage {
+  content: string | null;
+  direction: "inbound" | "outbound" | string;
+  created_at: string;
+  message_type: string | null;
+}
+
 export interface LeadDashboardRow {
   phone: string;
   source: string | null;
@@ -24,6 +31,10 @@ export interface LeadDashboardRow {
   hours_since_contact: string | number | null;
   visit_date: string | null;
   visit_confirmed: boolean;
+  conversation_history: ChatMessage[];
+  last_shown_names: string[] | null;
+  last_shown_prices: number[] | null;
+  products_last_shown_at: string | null;
 }
 
 function requireClient(): SupabaseClient {
@@ -45,7 +56,7 @@ function hoursSince(iso: string | null | undefined): number | null {
   return ms / (1000 * 60 * 60);
 }
 
-interface LeadsTableRow {
+interface LeadFullDetailsRow {
   phone: string;
   source: string | null;
   interested_in: string | null;
@@ -64,78 +75,40 @@ interface LeadsTableRow {
   created_at: string | null;
   visit_date: string | null;
   visit_date_status: string | null;
+  conversation_history_full: ChatMessage[] | null;
+  last_shown_names: string[] | null;
+  last_shown_prices: number[] | null;
+  products_last_shown_at: string | null;
 }
 
-// The dashboard used to read a `lead_dashboard` view, which the backend has
-// since dropped in favor of querying the `leads` table directly — it now
-// carries visit_date/visit_date_status natively, so no more client-side join
-// with conversation_memory is needed for that. `leads` also drops the view's
-// `priority`/`hours_since_contact` convenience columns and stores lead_score
-// as a string, so those are derived here to keep LeadDashboardRow stable for
-// the rest of the dashboard.
+// `lead_full_details` replaced the old `lead_dashboard` view (dropped on the
+// backend). It's a superset: visit_date/visit_date_status are native columns,
+// and conversation_history_full carries the complete chat log (including
+// outbound text, which whatsapp_conversations never logged) so the dashboard
+// no longer needs a separate per-conversation fetch or the old
+// summary/memory backfill heuristics. lead_score arrives as a string, and
+// priority/hours_since_contact aren't columns here, so those are derived.
 export async function fetchLeadDashboard(): Promise<LeadDashboardRow[]> {
   const supabase = requireClient();
   const { data, error } = await supabase
-    .from("leads")
+    .from("lead_full_details")
     .select(
-      "phone, source, interested_in, budget, style_preference, selected_product_name, selected_product_price, liked_product_1, liked_product_2, lead_status, lead_score, conversation_summary, last_message, last_contact, interaction_count, created_at, visit_date, visit_date_status",
+      "phone, source, interested_in, budget, style_preference, selected_product_name, selected_product_price, liked_product_1, liked_product_2, lead_status, lead_score, conversation_summary, last_message, last_contact, interaction_count, created_at, visit_date, visit_date_status, conversation_history_full, last_shown_names, last_shown_prices, products_last_shown_at",
     )
     .order("last_contact", { ascending: false, nullsFirst: false });
   if (error) throw error;
 
-  return ((data || []) as LeadsTableRow[]).map((row) => ({
+  return ((data || []) as LeadFullDetailsRow[]).map((row) => ({
     ...row,
     score: row.lead_score != null ? Number(row.lead_score) : null,
     priority: row.lead_status,
     hours_since_contact: hoursSince(row.last_contact ?? row.created_at),
     visit_date: isMeaningfulString(row.visit_date) ? row.visit_date : null,
     visit_confirmed: isMeaningfulString(row.visit_date),
+    conversation_history: Array.isArray(row.conversation_history_full)
+      ? row.conversation_history_full
+      : [],
   }));
-}
-
-export interface WhatsAppMessage {
-  id: string;
-  phone: string;
-  direction: "inbound" | "outbound" | string;
-  content: string | null;
-  media_url: string | null;
-  message_type: string | null;
-  message_status: string | null;
-  created_at: string;
-}
-
-export async function fetchWhatsAppConversation(phone: string): Promise<WhatsAppMessage[]> {
-  const supabase = requireClient();
-  const { data, error } = await supabase
-    .from("whatsapp_conversations")
-    .select("id, phone, direction, content, media_url, message_type, message_status, created_at")
-    .eq("phone", phone)
-    .order("created_at", { ascending: true });
-  if (error) throw error;
-  return (data || []) as WhatsAppMessage[];
-}
-
-export interface ConversationMemoryTurn {
-  role: "user" | "assistant" | string;
-  content: string;
-  timestamp: string;
-}
-
-// conversation_memory.extracted_data.conversation_history holds the bot's own
-// working memory of the chat, including the real text it sent (which
-// whatsapp_conversations never logs for outbound rows). It's a rolling
-// window, not the full history, so it's used to backfill, not as the source
-// of truth for the timeline.
-export async function fetchConversationMemory(phone: string): Promise<ConversationMemoryTurn[]> {
-  const supabase = requireClient();
-  const { data, error } = await supabase
-    .from("conversation_memory")
-    .select("extracted_data")
-    .eq("phone", phone)
-    .maybeSingle();
-  if (error) throw error;
-  const history = (data as any)?.extracted_data?.conversation_history;
-  return Array.isArray(history) ? (history as ConversationMemoryTurn[]) : [];
 }
 
 export interface ParsedChatTurn {

@@ -2,6 +2,7 @@
 
 import type { LeadDashboardRow } from "@/lib/supabase/leadDashboard";
 import {
+  cardAccentClasses,
   formatBudget,
   formatPhone,
   initialsFromPhone,
@@ -21,7 +22,7 @@ export function ConversationCard({ row, onClick }: ConversationCardProps) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left rounded-2xl border border-white/10 bg-white/5 hover:border-[#00B98E]/50 hover:bg-white/[0.07] transition p-4 flex flex-col gap-3"
+      className={`w-full text-left rounded-2xl p-4 flex flex-col gap-3 transition-all duration-300 ${cardAccentClasses(row.lead_status, row.visit_confirmed)}`}
     >
       {/* Top row: avatar + phone + time + priority */}
       <div className="flex items-start gap-3">

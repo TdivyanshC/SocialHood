@@ -228,7 +228,7 @@ export function WhatsAppDashboard() {
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filtered.map((row) => (
               <ConversationCard
                 key={row.phone}

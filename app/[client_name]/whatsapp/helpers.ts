@@ -6,6 +6,32 @@ export function priorityClasses(value: string | null | undefined): string {
   return "bg-white/10 text-white/70 border border-white/20";
 }
 
+// Same hot/warm/cold palette as priorityClasses, applied as a card-level
+// thick border instead of a badge. Glow shadows were tried first but read as
+// messy once many cards stack on a dark background — a solid, thicker
+// border reads cleanly at any list length. A confirmed visit is the
+// highest-signal state a lead can be in, so it overrides temperature
+// coloring with purple rather than combining with it.
+export function cardAccentClasses(
+  status: string | null | undefined,
+  visitConfirmed?: boolean,
+): string {
+  if (visitConfirmed) {
+    return "border-2 border-purple-500/60 bg-purple-500/[0.06] hover:border-purple-400/80";
+  }
+  const v = (status || "").toLowerCase();
+  if (v === "hot") {
+    return "border-2 border-red-500/50 bg-red-500/[0.05] hover:border-red-400/70";
+  }
+  if (v === "warm") {
+    return "border-2 border-yellow-500/50 bg-yellow-500/[0.05] hover:border-yellow-400/70";
+  }
+  if (v === "cold") {
+    return "border-2 border-blue-500/50 bg-blue-500/[0.05] hover:border-blue-400/70";
+  }
+  return "border-2 border-white/10 bg-white/5 hover:border-[#00B98E]/50 hover:bg-white/[0.07]";
+}
+
 export function scoreColor(score: number | null | undefined): string {
   if (score == null) return "text-white/60";
   if (score >= 75) return "text-red-300";
