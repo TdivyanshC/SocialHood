@@ -91,18 +91,17 @@ export function WhatsAppDashboard() {
   }, [rows]);
 
   const pipeline = useMemo(() => {
-    const total = Math.max(stats.total, 1);
-    return [
-      { label: "Hot", value: stats.hot, pct: (stats.hot / total) * 100, color: "bg-red-500/70" },
-      { label: "Warm", value: stats.warm, pct: (stats.warm / total) * 100, color: "bg-yellow-500/70" },
-      { label: "Cold", value: stats.cold, pct: (stats.cold / total) * 100, color: "bg-blue-500/70" },
-      {
-        label: "Other",
-        value: stats.total - stats.hot - stats.warm - stats.cold,
-        pct: ((stats.total - stats.hot - stats.warm - stats.cold) / total) * 100,
-        color: "bg-white/30",
-      },
+    // Fixed visual hierarchy (Hot > Warm > Cold) rather than a literal
+    // count-proportional bar, so Hot always reads as the most prominent
+    // segment even when it has the fewest leads. Empty buckets are dropped
+    // and the remaining shares renormalize to fill the bar.
+    const segments = [
+      { label: "Hot", value: stats.hot, share: 50, color: "bg-red-500/70" },
+      { label: "Warm", value: stats.warm, share: 30, color: "bg-yellow-500/70" },
+      { label: "Cold", value: stats.cold, share: 20, color: "bg-blue-500/70" },
     ].filter((seg) => seg.value > 0);
+    const shareTotal = segments.reduce((s, seg) => s + seg.share, 0) || 1;
+    return segments.map((seg) => ({ ...seg, pct: (seg.share / shareTotal) * 100 }));
   }, [stats]);
 
   const filtered = useMemo(() => {
