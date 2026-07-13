@@ -5,6 +5,7 @@ import {
   cardAccentClasses,
   formatBudget,
   formatPhone,
+  hasWhatsAppHistory,
   initialsFromPhone,
   priorityClasses,
   relativeFromHours,
@@ -18,11 +19,15 @@ interface ConversationCardProps {
 
 export function ConversationCard({ row, onClick }: ConversationCardProps) {
   const hasSelected = isPresent(row.selected_product_name);
+  // lead_status/lead_score can come from a separate voice-calling pipeline
+  // sharing this table, so only trust them for display once real WhatsApp
+  // messages exist.
+  const priority = hasWhatsAppHistory(row.conversation_history) ? row.priority : null;
 
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left rounded-2xl p-4 flex flex-col gap-3 transition-all duration-300 ${cardAccentClasses(row.lead_status, row.visit_confirmed)}`}
+      className={`w-full text-left rounded-2xl p-4 flex flex-col gap-3 transition-all duration-300 ${cardAccentClasses(priority, row.visit_confirmed)}`}
     >
       {/* Top row: avatar + phone + time + priority */}
       <div className="flex items-start gap-3">
@@ -37,11 +42,11 @@ export function ConversationCard({ row, onClick }: ConversationCardProps) {
             </span>
           </div>
           <div className="flex flex-wrap items-center gap-1.5 mt-1">
-            {row.priority && (
+            {priority && (
               <span
-                className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-medium ${priorityClasses(row.priority)}`}
+                className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-medium ${priorityClasses(priority)}`}
               >
-                {row.priority}
+                {priority}
               </span>
             )}
             {row.score != null && (

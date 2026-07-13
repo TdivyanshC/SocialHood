@@ -58,6 +58,10 @@ export function ConversationDetailModal({ row, onClose }: ConversationDetailModa
   const displayHistory = hasBidirectionalHistory ? row.conversation_history : memoryHistory;
   const hasHistory = displayHistory.length > 0;
   const hasShownProducts = (row.last_shown_names?.length ?? 0) > 0;
+  // lead_status/lead_score can come from a separate voice-calling pipeline
+  // sharing this table, so only trust them for display once real WhatsApp
+  // messages exist.
+  const priority = hasHistory ? row.priority : null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4">
@@ -70,11 +74,11 @@ export function ConversationDetailModal({ row, onClose }: ConversationDetailModa
               {formatPhone(row.phone)}
             </h2>
             <div className="flex flex-wrap items-center gap-2 mt-2">
-              {row.priority && (
+              {priority && (
                 <span
-                  className={`text-xs px-2 py-0.5 rounded-full ${priorityClasses(row.priority)}`}
+                  className={`text-xs px-2 py-0.5 rounded-full ${priorityClasses(priority)}`}
                 >
-                  {row.priority}
+                  {priority}
                 </span>
               )}
               {row.score != null && (

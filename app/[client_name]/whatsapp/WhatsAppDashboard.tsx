@@ -8,15 +8,25 @@ import {
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { ConversationCard } from "./ConversationCard";
 import { ConversationDetailModal } from "./ConversationDetailModal";
+import { hasWhatsAppHistory } from "./helpers";
 
 type StatusFilter = "all" | "hot" | "warm" | "cold" | "visit";
 
 const TEMPERATURE_RANK: Record<string, number> = { hot: 0, warm: 1, cold: 2 };
 
+// lead_status/lead_score can be written by a separate voice-calling pipeline
+// that shares the leads table, so a lead is only ever "hot"/"warm"/"cold" in
+// this WhatsApp view if it actually has WhatsApp message history — otherwise
+// it's unclassified here regardless of what those columns say.
+function temperature(row: LeadDashboardRow): string | null {
+  if (!hasWhatsAppHistory(row.conversation_history)) return null;
+  return (row.lead_status || "").toLowerCase() || null;
+}
+
 function sortByTemperature(rows: LeadDashboardRow[]): LeadDashboardRow[] {
   return [...rows].sort((a, b) => {
-    const rankA = TEMPERATURE_RANK[(a.lead_status || "").toLowerCase()] ?? 3;
-    const rankB = TEMPERATURE_RANK[(b.lead_status || "").toLowerCase()] ?? 3;
+    const rankA = TEMPERATURE_RANK[temperature(a) || ""] ?? 3;
+    const rankB = TEMPERATURE_RANK[temperature(b) || ""] ?? 3;
     if (rankA !== rankB) return rankA - rankB;
     return (b.score ?? -Infinity) - (a.score ?? -Infinity);
   });
@@ -67,9 +77,9 @@ export function WhatsAppDashboard() {
 
   const stats = useMemo(() => {
     const total = rows.length;
-    const hot = rows.filter((r) => (r.lead_status || "").toLowerCase() === "hot").length;
-    const warm = rows.filter((r) => (r.lead_status || "").toLowerCase() === "warm").length;
-    const cold = rows.filter((r) => (r.lead_status || "").toLowerCase() === "cold").length;
+    const hot = rows.filter((r) => temperature(r) === "hot").length;
+    const warm = rows.filter((r) => temperature(r) === "warm").length;
+    const cold = rows.filter((r) => temperature(r) === "cold").length;
     const visitConfirmed = rows.filter((r) => r.visit_confirmed).length;
     const totalInteractions = rows.reduce((s, r) => s + (r.interaction_count || 0), 0);
     const scored = rows.filter((r) => r.score != null);
@@ -100,7 +110,7 @@ export function WhatsAppDashboard() {
     if (statusFilter === "visit") {
       r = r.filter((row) => row.visit_confirmed);
     } else if (statusFilter !== "all") {
-      r = r.filter((row) => (row.lead_status || "").toLowerCase() === statusFilter);
+      r = r.filter((row) => temperature(row) === statusFilter);
     }
     const term = search.trim().toLowerCase();
     if (term) {

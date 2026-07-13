@@ -1,3 +1,12 @@
+import type { ChatMessage } from "@/lib/supabase/leadDashboard";
+
+// lead_status/lead_score are shared with a separate voice-calling pipeline
+// writing to the same leads table, so a temperature label is only trustworthy
+// here if the lead actually has WhatsApp message history behind it.
+export function hasWhatsAppHistory(history: ChatMessage[] | null | undefined): boolean {
+  return Array.isArray(history) && history.length > 0;
+}
+
 export function priorityClasses(value: string | null | undefined): string {
   const v = (value || "").toLowerCase();
   if (v === "hot") return "bg-red-500/20 text-red-300 border border-red-500/30";
