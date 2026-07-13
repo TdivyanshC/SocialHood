@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { CallsDataDashboard } from "./CallsDataDashboard";
+import { FollowupDashboard } from "./followup/FollowupDashboard";
 import { LeadsSection } from "./leads/LeadsSection";
 import { SupportTicketsSection } from "./support/SupportTicketsSection";
 import { WhatsAppDashboard } from "./whatsapp/WhatsAppDashboard";
@@ -17,7 +18,7 @@ interface ClientProfile {
 export default function ClientPageClient({ clientName }: { clientName: string }) {
   const [status, setStatus] = useState<"loading" | "authorized" | "denied" | "missing">("loading");
   const [profile, setProfile] = useState<ClientProfile | null>(null);
-  const [activeTab, setActiveTab] = useState<"calls" | "leads" | "support" | "whatsapp">("calls");
+  const [activeTab, setActiveTab] = useState<"calls" | "leads" | "support" | "whatsapp" | "followup">("calls");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -171,6 +172,16 @@ export default function ClientPageClient({ clientName }: { clientName: string })
             >
               💬 WhatsApp
             </button>
+            <button
+              onClick={() => setActiveTab("followup")}
+              className={`px-6 py-3 rounded-full font-medium transition ${
+                activeTab === "followup"
+                  ? "bg-[#00B98E] text-black"
+                  : "border border-white/10 bg-white/5 text-white hover:border-[#00B98E]"
+              }`}
+            >
+              📋 Follow-up
+            </button>
           </div>
         </div>
 
@@ -185,6 +196,9 @@ export default function ClientPageClient({ clientName }: { clientName: string })
 
         {/* WhatsApp Section */}
         {activeTab === "whatsapp" && <WhatsAppDashboard />}
+
+        {/* Follow-up Section */}
+        {activeTab === "followup" && <FollowupDashboard />}
       </div>
     </main>
   );
