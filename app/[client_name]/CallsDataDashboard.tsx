@@ -1,7 +1,10 @@
 "use client";
 
-import { useEffect, useState, useMemo, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
+import { normalizePhoneBatch } from "@/lib/phone";
+import { fetchWalkinSummaryByPhone, type WalkinCardSummary } from "@/lib/supabase/walkins";
+import { WALKIN_ACCENT_SHADOW, WalkinBadges } from "./walkins/WalkinIndicator";
 
 interface CallRecord {
   id: string;
@@ -28,6 +31,31 @@ type TierFilter = "all" | "hot" | "warm" | "cold";
 type StatusFilter = "all" | "answered" | "mid_answered" | "unanswered";
 
 const PAGE_SIZE = 50;
+const STATS_CHUNK_SIZE = 1000;
+
+interface CallStats {
+  total: number;
+  answered: number;
+  hot: number;
+  waTriggered: number;
+  avgDuration: number;
+}
+
+// Ground truth for "did the phone get picked up" is call_logs.status, not
+// conversation-engagement fields like turn_count/wa_triggered. Fall back to
+// duration_seconds only when call_logs has no status. Shared by the
+// paginated table fetch and the all-rows stats fetch so the two can't drift
+// out of sync on what counts as "answered".
+function deriveStatus(
+  logStatus: string | null | undefined,
+  durationSeconds: number | null | undefined,
+  logDuration: number | null | undefined,
+): "answered" | "unanswered" {
+  if (typeof logStatus === "string") {
+    return logStatus.toLowerCase() === "answered" ? "answered" : "unanswered";
+  }
+  return (durationSeconds ?? logDuration ?? 0) > 0 ? "answered" : "unanswered";
+}
 
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -60,6 +88,42 @@ export function CallsDataDashboard() {
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
+  // Keyed by normalize_phone()'s canonical form (see lib/phone.ts), then
+  // re-keyed to each call's raw phone string below for O(1) render lookups.
+  const [walkinSummaries, setWalkinSummaries] = useState<Map<string, WalkinCardSummary>>(new Map());
+  const [walkinByPhone, setWalkinByPhone] = useState<Map<string, WalkinCardSummary>>(new Map());
+
+  useEffect(() => {
+    fetchWalkinSummaryByPhone()
+      .then(setWalkinSummaries)
+      .catch(() => {
+        // Non-critical: card badges just won't show if this fails.
+      });
+  }, []);
+
+  useEffect(() => {
+    if (calls.length === 0 || walkinSummaries.size === 0) {
+      setWalkinByPhone(new Map());
+      return;
+    }
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+    let cancelled = false;
+    normalizePhoneBatch(supabase, calls.map((c) => c.phone)).then((keys) => {
+      if (cancelled) return;
+      const map = new Map<string, WalkinCardSummary>();
+      for (const call of calls) {
+        const key = keys.get(call.phone);
+        const summary = key ? walkinSummaries.get(key) : undefined;
+        if (summary) map.set(call.phone, summary);
+      }
+      setWalkinByPhone(map);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [calls, walkinSummaries]);
+
   const fetchCalls = useCallback(async (pageNum: number) => {
     setLoading(true);
     setError(null);
@@ -74,7 +138,7 @@ export function CallsDataDashboard() {
       const from = (pageNum - 1) * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
 
-      const { data, error: fetchError } = await supabase
+      let query = supabase
         .from("call_summaries")
         .select(
           `
@@ -98,7 +162,29 @@ export function CallsDataDashboard() {
           call_logs(recording_url, status, hangup_cause, duration_seconds)
         `
         )
-        .eq("tenant_id", "krishna_furniture")
+        .eq("tenant_id", "krishna_furniture");
+
+      // Applied server-side (not client-side over whatever's been paginated
+      // in so far) so "Load More" keeps fetching more *matching* rows —
+      // filtering the already-loaded page alone was under-reporting real
+      // totals for anyone who hadn't clicked through every page yet.
+      if (campaignFilter !== "all") query = query.eq("campaign_type", campaignFilter);
+      if (tierFilter !== "all") query = query.eq("lead_tier", tierFilter);
+
+      // deriveStatus() prefers call_logs.status as ground truth over the
+      // duration_seconds fallback — but call_logs is empty tenant-wide right
+      // now (confirmed directly against the table), so that branch never
+      // actually fires today and this filter is exactly equivalent to
+      // deriveStatus() as currently observed. "mid_answered" never occurs —
+      // deriveStatus only ever returns answered/unanswered — so it's left
+      // matching zero rows, same as before this fix. If call_logs starts
+      // getting written to, this filter and deriveStatus() will need to be
+      // reconciled together.
+      if (statusFilter === "answered") query = query.gt("duration_seconds", 0);
+      else if (statusFilter === "unanswered") query = query.or("duration_seconds.is.null,duration_seconds.lte.0");
+      else if (statusFilter === "mid_answered") query = query.eq("id", "00000000-0000-0000-0000-000000000000");
+
+      const { data, error: fetchError } = await query
         .order("created_at", { ascending: false })
         .range(from, to);
 
@@ -120,17 +206,7 @@ export function CallsDataDashboard() {
           campaign_type: s.campaign_type || "fresh_lead",
           duration_seconds: s.duration_seconds ?? 0,
           started_at: s.started_at || s.created_at,
-          // Ground truth for "did the phone get picked up" is call_logs.status,
-          // not conversation-engagement fields like turn_count/wa_triggered.
-          // Fall back to duration_seconds only when call_logs has no status.
-          status:
-            typeof log?.status === "string"
-              ? log.status.toLowerCase() === "answered"
-                ? "answered"
-                : "unanswered"
-              : (s.duration_seconds ?? log?.duration_seconds ?? 0) > 0
-              ? "answered"
-              : "unanswered",
+          status: deriveStatus(log?.status, s.duration_seconds, log?.duration_seconds),
           turn_count: s.turn_count ?? 0,
           final_state: s.final_state || "-",
           recording_url: s.recording_url || null,
@@ -152,7 +228,7 @@ export function CallsDataDashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [campaignFilter, tierFilter, statusFilter]);
 
   useEffect(() => {
     setPage(1);
@@ -165,34 +241,83 @@ export function CallsDataDashboard() {
     fetchCalls(next);
   };
 
-  const filtered = useMemo(() => {
-    return calls.filter((c) => {
-      if (campaignFilter !== "all" && c.campaign_type !== campaignFilter) return false;
-      if (tierFilter !== "all" && c.lead_tier !== tierFilter) return false;
-      if (statusFilter !== "all" && c.status !== statusFilter) return false;
-      return true;
-    });
-  }, [calls, campaignFilter, tierFilter, statusFilter]);
+  const [stats, setStats] = useState<CallStats>({ total: 0, answered: 0, hot: 0, waTriggered: 0, avgDuration: 0 });
+  const [statsLoading, setStatsLoading] = useState(true);
 
-  const stats = useMemo(() => ({
-    total: calls.length,
-    answered: calls.filter((c) => c.status === "answered").length,
-    hot: calls.filter((c) => c.lead_tier === "hot").length,
-    waTriggered: calls.filter((c) => c.wa_triggered).length,
-    avgDuration: calls.length > 0
-      ? Math.round(calls.reduce((s, c) => s + c.duration_seconds, 0) / calls.length)
-      : 0,
-  }), [calls]);
+  // The stat cards are meant to describe every call ever made, not just the
+  // page(s) of 50 loaded into the table below — so this walks the whole
+  // call_summaries table in its own chunked pass, independent of `calls`/
+  // pagination, accumulating counts rather than holding every row in memory.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchAllStats() {
+      setStatsLoading(true);
+      const supabase = getSupabaseClient();
+      if (!supabase) {
+        setStatsLoading(false);
+        return;
+      }
+
+      const totals = { total: 0, answered: 0, hot: 0, waTriggered: 0, durationSum: 0 };
+      let from = 0;
+
+      while (true) {
+        const { data, error: fetchError } = await supabase
+          .from("call_summaries")
+          .select("duration_seconds, lead_tier, wa_triggered, call_logs(status, duration_seconds)")
+          .eq("tenant_id", "krishna_furniture")
+          .range(from, from + STATS_CHUNK_SIZE - 1);
+
+        if (cancelled) return;
+        if (fetchError || !data) break;
+
+        for (const s of data as any[]) {
+          const log = Array.isArray(s.call_logs) ? s.call_logs[0] : s.call_logs;
+          totals.total += 1;
+          if (deriveStatus(log?.status, s.duration_seconds, log?.duration_seconds) === "answered") {
+            totals.answered += 1;
+          }
+          if (s.lead_tier === "hot") totals.hot += 1;
+          if (s.wa_triggered) totals.waTriggered += 1;
+          totals.durationSum += s.duration_seconds ?? 0;
+        }
+
+        if (data.length < STATS_CHUNK_SIZE) break;
+        from += STATS_CHUNK_SIZE;
+      }
+
+      if (!cancelled) {
+        setStats({
+          total: totals.total,
+          answered: totals.answered,
+          hot: totals.hot,
+          waTriggered: totals.waTriggered,
+          avgDuration: totals.total > 0 ? Math.round(totals.durationSum / totals.total) : 0,
+        });
+        setStatsLoading(false);
+      }
+    }
+
+    fetchAllStats();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Campaign, tier, and status are now all applied server-side in
+  // fetchCalls, so `calls` already only contains matching rows.
+  const filtered = calls;
 
   return (
     <div className="space-y-6">
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <StatCard label="Total Calls" value={String(stats.total)} color="blue" />
-        <StatCard label="Answered" value={String(stats.answered)} color="green" />
-        <StatCard label="Hot Leads" value={String(stats.hot)} color="red" />
-        <StatCard label="WA Triggered" value={String(stats.waTriggered)} color="purple" />
-        <StatCard label="Avg Duration" value={formatDuration(stats.avgDuration)} color="cyan" />
+        <StatCard label="Total Calls" value={statsLoading ? "…" : String(stats.total)} color="blue" />
+        <StatCard label="Answered" value={statsLoading ? "…" : String(stats.answered)} color="green" />
+        <StatCard label="Hot Leads" value={statsLoading ? "…" : String(stats.hot)} color="red" />
+        <StatCard label="WA Triggered" value={statsLoading ? "…" : String(stats.waTriggered)} color="purple" />
+        <StatCard label="Avg Duration" value={statsLoading ? "…" : formatDuration(stats.avgDuration)} color="cyan" />
       </div>
 
       {/* Filters */}
@@ -279,6 +404,7 @@ export function CallsDataDashboard() {
                     <CallRow
                       key={call.call_uuid}
                       call={call}
+                      walkin={walkinByPhone.get(call.phone)}
                       expanded={expandedId === call.call_uuid}
                       onToggle={() =>
                         setExpandedId(expandedId === call.call_uuid ? null : call.call_uuid)
@@ -316,10 +442,12 @@ export function CallsDataDashboard() {
 
 function CallRow({
   call,
+  walkin,
   expanded,
   onToggle,
 }: {
   call: CallRecord;
+  walkin?: WalkinCardSummary;
   expanded: boolean;
   onToggle: () => void;
 }) {
@@ -360,12 +488,17 @@ function CallRow({
     <tr
       className={`border-b border-white/5 cursor-pointer transition-colors ${
         expanded ? "bg-white/5" : "hover:bg-white/[0.03]"
-      }`}
+      } ${walkin ? WALKIN_ACCENT_SHADOW : ""}`}
       onClick={onToggle}
     >
       <td className="py-4 px-4">
         <p className="text-white font-medium leading-tight">{call.caller_name}</p>
         <p className="text-white/40 text-xs mt-0.5">{call.phone}</p>
+        {walkin && (
+          <div className="flex flex-wrap items-center gap-1 mt-1.5">
+            <WalkinBadges walkin={walkin} />
+          </div>
+        )}
       </td>
       <td className="py-4 px-4 text-white/60 text-xs whitespace-nowrap">
         {formatDateTime(call.started_at)}

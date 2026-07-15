@@ -7,6 +7,7 @@ import { CallsDataDashboard } from "./CallsDataDashboard";
 import { FollowupDashboard } from "./followup/FollowupDashboard";
 import { LeadsSection } from "./leads/LeadsSection";
 import { SupportTicketsSection } from "./support/SupportTicketsSection";
+import { WalkinsDashboard } from "./walkins/WalkinsDashboard";
 import { WhatsAppDashboard } from "./whatsapp/WhatsAppDashboard";
 
 interface ClientProfile {
@@ -18,7 +19,7 @@ interface ClientProfile {
 export default function ClientPageClient({ clientName }: { clientName: string }) {
   const [status, setStatus] = useState<"loading" | "authorized" | "denied" | "missing">("loading");
   const [profile, setProfile] = useState<ClientProfile | null>(null);
-  const [activeTab, setActiveTab] = useState<"calls" | "leads" | "support" | "whatsapp" | "followup">("calls");
+  const [activeTab, setActiveTab] = useState<"calls" | "leads" | "support" | "whatsapp" | "followup" | "walkins">("calls");
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -182,6 +183,16 @@ export default function ClientPageClient({ clientName }: { clientName: string })
             >
               📋 Follow-up
             </button>
+            <button
+              onClick={() => setActiveTab("walkins")}
+              className={`px-6 py-3 rounded-full font-medium transition ${
+                activeTab === "walkins"
+                  ? "bg-[#00B98E] text-black"
+                  : "border border-white/10 bg-white/5 text-white hover:border-[#00B98E]"
+              }`}
+            >
+              🚶 Walk-ins
+            </button>
           </div>
         </div>
 
@@ -199,6 +210,9 @@ export default function ClientPageClient({ clientName }: { clientName: string })
 
         {/* Follow-up Section */}
         {activeTab === "followup" && <FollowupDashboard />}
+
+        {/* Walk-ins Section */}
+        {activeTab === "walkins" && <WalkinsDashboard />}
       </div>
     </main>
   );

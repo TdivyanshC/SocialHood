@@ -6,6 +6,8 @@ import {
   fetchLeadDashboard,
 } from "@/lib/supabase/leadDashboard";
 import { getSupabaseClient } from "@/lib/supabaseClient";
+import { normalizePhoneBatch } from "@/lib/phone";
+import { fetchWalkinSummaryByPhone, type WalkinCardSummary } from "@/lib/supabase/walkins";
 import { ConversationCard } from "./ConversationCard";
 import { ConversationDetailModal } from "./ConversationDetailModal";
 import { hasWhatsAppHistory } from "./helpers";
@@ -39,6 +41,42 @@ export function WhatsAppDashboard() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<LeadDashboardRow | null>(null);
+
+  // Keyed by normalize_phone()'s canonical form, then re-keyed to each row's
+  // raw phone string below for O(1) render lookups.
+  const [walkinSummaries, setWalkinSummaries] = useState<Map<string, WalkinCardSummary>>(new Map());
+  const [walkinByPhone, setWalkinByPhone] = useState<Map<string, WalkinCardSummary>>(new Map());
+
+  useEffect(() => {
+    fetchWalkinSummaryByPhone()
+      .then(setWalkinSummaries)
+      .catch(() => {
+        // Non-critical: card badges just won't show if this fails.
+      });
+  }, []);
+
+  useEffect(() => {
+    if (rows.length === 0 || walkinSummaries.size === 0) {
+      setWalkinByPhone(new Map());
+      return;
+    }
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+    let cancelled = false;
+    normalizePhoneBatch(supabase, rows.map((r) => r.phone)).then((keys) => {
+      if (cancelled) return;
+      const map = new Map<string, WalkinCardSummary>();
+      for (const row of rows) {
+        const key = keys.get(row.phone);
+        const summary = key ? walkinSummaries.get(key) : undefined;
+        if (summary) map.set(row.phone, summary);
+      }
+      setWalkinByPhone(map);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [rows, walkinSummaries]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -242,6 +280,7 @@ export function WhatsAppDashboard() {
               <ConversationCard
                 key={row.phone}
                 row={row}
+                walkin={walkinByPhone.get(row.phone)}
                 onClick={() => setSelected(row)}
               />
             ))}
