@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { formatPhone } from "../whatsapp/helpers";
-import type { WalkinTableRow } from "@/lib/supabase/walkins";
+import { markWalkinConverted, type WalkinTableRow } from "@/lib/supabase/walkins";
+import { useToast } from "../leads/Toast";
 import {
+  CONVERTED_ACCENT_SHADOW,
   convertedBadgeClasses,
   formatCurrency,
   formatVisitDate,
@@ -15,9 +18,10 @@ interface WalkinsTableProps {
   rows: WalkinTableRow[];
   loading: boolean;
   error: string | null;
+  onConverted: () => void;
 }
 
-export function WalkinsTable({ rows, loading, error }: WalkinsTableProps) {
+export function WalkinsTable({ rows, loading, error, onConverted }: WalkinsTableProps) {
   return (
     <div className="rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
       <div className="p-6 border-b border-white/10">
@@ -54,7 +58,12 @@ export function WalkinsTable({ rows, loading, error }: WalkinsTableProps) {
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.03] transition-colors">
+                <tr
+                  key={row.id}
+                  className={`border-b border-white/5 hover:bg-white/[0.03] transition-colors ${
+                    row.converted ? CONVERTED_ACCENT_SHADOW : ""
+                  }`}
+                >
                   <td className="py-4 px-4">
                     <p className="text-white font-medium leading-tight">{row.leadName || "Unknown"}</p>
                     <p className="text-white/40 text-xs mt-0.5">{formatPhone(row.phone)}</p>
@@ -79,11 +88,14 @@ export function WalkinsTable({ rows, loading, error }: WalkinsTableProps) {
                   </td>
                   <td className="py-4 px-4 text-white/70">{row.followup_calls_made}/3</td>
                   <td className="py-4 px-4">
-                    <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-xs border ${convertedBadgeClasses(row.converted)}`}
-                    >
-                      {row.converted ? "✓ Converted" : "Not yet"}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-block px-2 py-0.5 rounded-full text-xs border ${convertedBadgeClasses(row.converted)}`}
+                      >
+                        {row.converted ? "✓ Converted" : "Not yet"}
+                      </span>
+                      {!row.converted && <MarkConvertedButton walkinId={row.id} onConverted={onConverted} />}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -92,6 +104,53 @@ export function WalkinsTable({ rows, loading, error }: WalkinsTableProps) {
         </div>
       )}
     </div>
+  );
+}
+
+// Requires a second click within 3s to actually commit — this flips a real
+// DB column the client relies on for their conversion report, so a single
+// accidental click on a dense row list must not silently convert a lead.
+function MarkConvertedButton({ walkinId, onConverted }: { walkinId: string; onConverted: () => void }) {
+  const toast = useToast();
+  const [confirming, setConfirming] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!confirming) return;
+    const timer = window.setTimeout(() => setConfirming(false), 3000);
+    return () => window.clearTimeout(timer);
+  }, [confirming]);
+
+  const handleClick = async () => {
+    if (!confirming) {
+      setConfirming(true);
+      return;
+    }
+    setSaving(true);
+    try {
+      await markWalkinConverted(walkinId);
+      toast.push("success", "Marked as converted");
+      onConverted();
+    } catch (err: any) {
+      toast.push("error", err?.message || "Failed to mark converted");
+      setSaving(false);
+      setConfirming(false);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={saving}
+      className={`px-2.5 py-0.5 rounded-full text-xs font-medium border transition disabled:opacity-50 ${
+        confirming
+          ? "bg-green-500 text-black border-green-500"
+          : "bg-white/5 text-white/60 border-white/15 hover:border-green-500/50 hover:text-green-300"
+      }`}
+    >
+      {saving ? "Saving…" : confirming ? "Confirm?" : "Mark Converted"}
+    </button>
   );
 }
 

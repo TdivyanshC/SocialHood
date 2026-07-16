@@ -115,7 +115,7 @@ function WalkinsDashboardInner() {
       </div>
 
       {view === "table" ? (
-        <WalkinsTable rows={rows} loading={rowsLoading} error={rowsError} />
+        <WalkinsTable rows={rows} loading={rowsLoading} error={rowsError} onConverted={refreshAll} />
       ) : (
         <ConversionReport report={report} loading={reportLoading} error={reportError} />
       )}

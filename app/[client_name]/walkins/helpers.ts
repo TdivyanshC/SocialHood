@@ -18,6 +18,12 @@ export function convertedBadgeClasses(converted: boolean): string {
     : "bg-white/10 text-white/40 border-white/20";
 }
 
+// Distinct from WALKIN_ACCENT_SHADOW's pink (WalkinIndicator.tsx) — this row
+// already represents a walk-in, so the accent here marks conversion status,
+// not walk-in presence. Same inset-box-shadow-as-left-border technique so it
+// layers over the row's existing bottom divider instead of fighting it.
+export const CONVERTED_ACCENT_SHADOW = "shadow-[inset_3px_0_0_0_rgba(34,197,94,0.65)]";
+
 export function formatCurrency(value: number | null | undefined): string {
   if (value == null) return "—";
   return `₹${value.toLocaleString("en-IN")}`;

@@ -4,7 +4,26 @@ import { useEffect, useState, useCallback } from "react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { normalizePhoneBatch } from "@/lib/phone";
 import { fetchWalkinSummaryByPhone, type WalkinCardSummary } from "@/lib/supabase/walkins";
-import { WALKIN_ACCENT_SHADOW, WalkinBadges } from "./walkins/WalkinIndicator";
+import { WalkinBadges } from "./walkins/WalkinIndicator";
+
+// call_number 2/3 accents need to stack with the pink walk-in accent when a
+// row is both a follow-up call and a walk-in (inline style, not the
+// WALKIN_ACCENT_SHADOW Tailwind class, since the combined band widths are
+// computed per-row rather than being one of a fixed set of literal classes
+// Tailwind's JIT scanner could pick up statically).
+const WALKIN_RGBA = "rgba(244,114,182,0.65)";
+const CALL_STAGE: Record<number, { label: string; badgeClass: string; rgba: string }> = {
+  2: { label: "2nd Follow-up", badgeClass: "bg-amber-500/20 text-amber-300 border-amber-500/30", rgba: "rgba(245,158,11,0.6)" },
+  3: { label: "Final Call", badgeClass: "bg-red-400/20 text-red-300 border-red-400/30", rgba: "rgba(248,113,113,0.55)" },
+};
+
+function rowAccentStyle(hasWalkin: boolean, callNumber: number | null): React.CSSProperties | undefined {
+  const layers: string[] = [];
+  if (hasWalkin) layers.push(`inset 3px 0 0 0 ${WALKIN_RGBA}`);
+  const stage = callNumber != null ? CALL_STAGE[callNumber] : undefined;
+  if (stage) layers.push(`inset ${hasWalkin ? 6 : 3}px 0 0 0 ${stage.rgba}`);
+  return layers.length ? { boxShadow: layers.join(", ") } : undefined;
+}
 
 interface CallRecord {
   id: string;
@@ -24,6 +43,7 @@ interface CallRecord {
   rejection_signals: number;
   wa_triggered: boolean;
   full_transcript: [string, string][];
+  call_number: number | null;
 }
 
 type CampaignFilter = "all" | "fresh_lead" | "react_a" | "react_b" | "react_c" | "reactivation" | "followup_wa";
@@ -41,20 +61,22 @@ interface CallStats {
   avgDuration: number;
 }
 
-// Ground truth for "did the phone get picked up" is call_logs.status, not
-// conversation-engagement fields like turn_count/wa_triggered. Fall back to
-// duration_seconds only when call_logs has no status. Shared by the
-// paginated table fetch and the all-rows stats fetch so the two can't drift
-// out of sync on what counts as "answered".
+// Ground truth for "did the phone get picked up" would be call_logs.status,
+// but that table is empty tenant-wide (confirmed directly against it), so
+// this always falls through to the turn_count check. duration_seconds > 0
+// was tried first and rejected: 74% of calls it called "answered" had
+// turn_count === 0 — a brief connect/voicemail with no real back-and-forth,
+// not a picked-up call. turn_count > 0 means the customer actually said
+// something. Shared by the paginated table fetch and the all-rows stats
+// fetch so the two can't drift out of sync on what counts as "answered".
 function deriveStatus(
   logStatus: string | null | undefined,
-  durationSeconds: number | null | undefined,
-  logDuration: number | null | undefined,
+  turnCount: number | null | undefined,
 ): "answered" | "unanswered" {
   if (typeof logStatus === "string") {
     return logStatus.toLowerCase() === "answered" ? "answered" : "unanswered";
   }
-  return (durationSeconds ?? logDuration ?? 0) > 0 ? "answered" : "unanswered";
+  return (turnCount ?? 0) > 0 ? "answered" : "unanswered";
 }
 
 function formatDuration(seconds: number): string {
@@ -159,6 +181,7 @@ export function CallsDataDashboard() {
           duration_seconds,
           caller_name,
           started_at,
+          call_number,
           call_logs(recording_url, status, hangup_cause, duration_seconds)
         `
         )
@@ -171,17 +194,16 @@ export function CallsDataDashboard() {
       if (campaignFilter !== "all") query = query.eq("campaign_type", campaignFilter);
       if (tierFilter !== "all") query = query.eq("lead_tier", tierFilter);
 
-      // deriveStatus() prefers call_logs.status as ground truth over the
-      // duration_seconds fallback — but call_logs is empty tenant-wide right
-      // now (confirmed directly against the table), so that branch never
-      // actually fires today and this filter is exactly equivalent to
-      // deriveStatus() as currently observed. "mid_answered" never occurs —
-      // deriveStatus only ever returns answered/unanswered — so it's left
-      // matching zero rows, same as before this fix. If call_logs starts
-      // getting written to, this filter and deriveStatus() will need to be
-      // reconciled together.
-      if (statusFilter === "answered") query = query.gt("duration_seconds", 0);
-      else if (statusFilter === "unanswered") query = query.or("duration_seconds.is.null,duration_seconds.lte.0");
+      // deriveStatus() prefers call_logs.status as ground truth, but
+      // call_logs is empty tenant-wide (confirmed directly against the
+      // table), so that branch never actually fires today and this filter
+      // is exactly equivalent to deriveStatus() as currently observed.
+      // "mid_answered" never occurs — deriveStatus only ever returns
+      // answered/unanswered — so it's left matching zero rows, same as
+      // before this fix. If call_logs starts getting written to, this
+      // filter and deriveStatus() will need to be reconciled together.
+      if (statusFilter === "answered") query = query.gt("turn_count", 0);
+      else if (statusFilter === "unanswered") query = query.or("turn_count.is.null,turn_count.lte.0");
       else if (statusFilter === "mid_answered") query = query.eq("id", "00000000-0000-0000-0000-000000000000");
 
       const { data, error: fetchError } = await query
@@ -206,7 +228,7 @@ export function CallsDataDashboard() {
           campaign_type: s.campaign_type || "fresh_lead",
           duration_seconds: s.duration_seconds ?? 0,
           started_at: s.started_at || s.created_at,
-          status: deriveStatus(log?.status, s.duration_seconds, log?.duration_seconds),
+          status: deriveStatus(log?.status, s.turn_count),
           turn_count: s.turn_count ?? 0,
           final_state: s.final_state || "-",
           recording_url: s.recording_url || null,
@@ -214,6 +236,9 @@ export function CallsDataDashboard() {
           rejection_signals: s.rejection_signals ?? 0,
           wa_triggered: s.wa_triggered ?? false,
           full_transcript: Array.isArray(s.full_transcript) ? s.full_transcript : [],
+          // NULL on any row from before the call_number migration — expected,
+          // not an error case. Badge is simply omitted for those rows.
+          call_number: typeof s.call_number === "number" ? s.call_number : null,
         };
       });
 
@@ -265,7 +290,7 @@ export function CallsDataDashboard() {
       while (true) {
         const { data, error: fetchError } = await supabase
           .from("call_summaries")
-          .select("duration_seconds, lead_tier, wa_triggered, call_logs(status, duration_seconds)")
+          .select("duration_seconds, turn_count, lead_tier, wa_triggered, call_logs(status)")
           .eq("tenant_id", "krishna_furniture")
           .range(from, from + STATS_CHUNK_SIZE - 1);
 
@@ -275,7 +300,7 @@ export function CallsDataDashboard() {
         for (const s of data as any[]) {
           const log = Array.isArray(s.call_logs) ? s.call_logs[0] : s.call_logs;
           totals.total += 1;
-          if (deriveStatus(log?.status, s.duration_seconds, log?.duration_seconds) === "answered") {
+          if (deriveStatus(log?.status, s.turn_count) === "answered") {
             totals.answered += 1;
           }
           if (s.lead_tier === "hot") totals.hot += 1;
@@ -484,19 +509,32 @@ function CallRow({
     unanswered: "No Answer",
   };
 
+  const callStage = call.call_number != null ? CALL_STAGE[call.call_number] : undefined;
+
   return (
     <tr
       className={`border-b border-white/5 cursor-pointer transition-colors ${
         expanded ? "bg-white/5" : "hover:bg-white/[0.03]"
-      } ${walkin ? WALKIN_ACCENT_SHADOW : ""}`}
+      }`}
+      style={rowAccentStyle(!!walkin, call.call_number)}
       onClick={onToggle}
     >
       <td className="py-4 px-4">
         <p className="text-white font-medium leading-tight">{call.caller_name}</p>
         <p className="text-white/40 text-xs mt-0.5">{call.phone}</p>
-        {walkin && (
+        {(call.call_number != null || walkin) && (
           <div className="flex flex-wrap items-center gap-1 mt-1.5">
-            <WalkinBadges walkin={walkin} />
+            {call.call_number != null && (
+              <span className="inline-block px-2 py-0.5 rounded-full text-xs border bg-white/10 text-white/60 border-white/20">
+                Call {call.call_number}
+              </span>
+            )}
+            {callStage && (
+              <span className={`inline-block px-2 py-0.5 rounded-full text-xs border ${callStage.badgeClass}`}>
+                {callStage.label}
+              </span>
+            )}
+            {walkin && <WalkinBadges walkin={walkin} />}
           </div>
         )}
       </td>

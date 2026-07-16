@@ -189,6 +189,18 @@ export async function bulkUploadWalkins(rows: BulkWalkinRow[]): Promise<BulkWalk
   return { added, skipped: rows.length - added, skippedReasons };
 }
 
+export async function markWalkinConverted(id: string): Promise<WalkinRow> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("walkins")
+    .update({ converted: true, converted_date: new Date().toISOString().slice(0, 10) })
+    .eq("id", id)
+    .select(SELECT_COLUMNS)
+    .single();
+  if (error) throw error;
+  return data as WalkinRow;
+}
+
 export interface WalkinCardSummary {
   source: WalkinSource;
   visitNumber: number;
