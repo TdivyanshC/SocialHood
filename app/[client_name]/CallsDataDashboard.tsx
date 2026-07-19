@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { normalizePhoneBatch } from "@/lib/phone";
 import { fetchWalkinSummaryByPhone, type WalkinCardSummary } from "@/lib/supabase/walkins";
+import { deriveCallOutcome } from "@/lib/supabase/callHistory";
 import { WalkinBadges } from "./walkins/WalkinIndicator";
 
 // call_number 2/3 accents need to stack with the pink walk-in accent when a
@@ -61,23 +62,11 @@ interface CallStats {
   avgDuration: number;
 }
 
-// Ground truth for "did the phone get picked up" would be call_logs.status,
-// but that table is empty tenant-wide (confirmed directly against it), so
-// this always falls through to the turn_count check. duration_seconds > 0
-// was tried first and rejected: 74% of calls it called "answered" had
-// turn_count === 0 — a brief connect/voicemail with no real back-and-forth,
-// not a picked-up call. turn_count > 0 means the customer actually said
-// something. Shared by the paginated table fetch and the all-rows stats
-// fetch so the two can't drift out of sync on what counts as "answered".
-function deriveStatus(
-  logStatus: string | null | undefined,
-  turnCount: number | null | undefined,
-): "answered" | "unanswered" {
-  if (typeof logStatus === "string") {
-    return logStatus.toLowerCase() === "answered" ? "answered" : "unanswered";
-  }
-  return (turnCount ?? 0) > 0 ? "answered" : "unanswered";
-}
+// deriveCallOutcome lives in lib/supabase/callHistory.ts so this table and
+// the WhatsApp lead cards' call-history badges can't drift into two
+// different definitions of "answered"/"mid_answered"/"unanswered". Aliased
+// to the name this file already uses at every call site.
+const deriveStatus = deriveCallOutcome;
 
 function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
@@ -194,14 +183,16 @@ export function CallsDataDashboard() {
       if (campaignFilter !== "all") query = query.eq("campaign_type", campaignFilter);
       if (tierFilter !== "all") query = query.eq("lead_tier", tierFilter);
 
-      // deriveStatus() prefers call_logs.status as ground truth, but
-      // call_logs is empty tenant-wide (confirmed directly against the
-      // table), so that branch never actually fires today and this filter
-      // is exactly equivalent to deriveStatus() as currently observed.
-      // "mid_answered" never occurs — deriveStatus only ever returns
-      // answered/unanswered — so it's left matching zero rows, same as
-      // before this fix. If call_logs starts getting written to, this
-      // filter and deriveStatus() will need to be reconciled together.
+      // call_logs actually has real status data (confirmed: no_answer 546,
+      // mid_answered 337, answered 97, tenant-wide) — the "call_logs is
+      // empty" premise this filter was written under no longer holds, and
+      // deriveStatus() below now returns real mid_answered rows. This filter
+      // still runs on turn_count only, not call_logs.status, so "Answered"/
+      // "Unanswered" here can disagree with the badge a filtered row
+      // actually renders (e.g. a short mid_answered call with turn_count>0
+      // matches "Answered" here but badges as "Mid"). "mid_answered" is left
+      // matching zero rows, same as before. Reconciling this filter with
+      // deriveStatus() is a separate, deliberately out-of-scope follow-up.
       if (statusFilter === "answered") query = query.gt("turn_count", 0);
       else if (statusFilter === "unanswered") query = query.or("turn_count.is.null,turn_count.lte.0");
       else if (statusFilter === "mid_answered") query = query.eq("id", "00000000-0000-0000-0000-000000000000");

@@ -2,6 +2,7 @@
 
 import type { LeadDashboardRow } from "@/lib/supabase/leadDashboard";
 import type { WalkinCardSummary } from "@/lib/supabase/walkins";
+import type { CallHistorySummary } from "@/lib/supabase/callHistory";
 import { WALKIN_ACCENT_SHADOW, WalkinBadges } from "../walkins/WalkinIndicator";
 import {
   cardAccentClasses,
@@ -9,18 +10,32 @@ import {
   formatPhone,
   hasWhatsAppHistory,
   initialsFromPhone,
+  OUTCOME_LABEL,
+  OUTCOME_TEXT_CLASSES,
+  pickupRateClasses,
   priorityClasses,
   relativeFromHours,
+  relativeFromISO,
   scoreColor,
 } from "./helpers";
+
+// Mirrors the three states a caller can actually be in: still fetching (show
+// a skeleton, not a flash of "Not called yet" that then flips to real data),
+// the endpoint failed (omit the piece entirely rather than guess), or
+// resolved — which itself may be zero calls, and that's not an error.
+export type CallHistoryCardState =
+  | { status: "loading" }
+  | { status: "unavailable" }
+  | { status: "ready"; summary: CallHistorySummary };
 
 interface ConversationCardProps {
   row: LeadDashboardRow;
   onClick: () => void;
   walkin?: WalkinCardSummary;
+  callHistory?: CallHistoryCardState;
 }
 
-export function ConversationCard({ row, onClick, walkin }: ConversationCardProps) {
+export function ConversationCard({ row, onClick, walkin, callHistory }: ConversationCardProps) {
   const hasSelected = isPresent(row.selected_product_name);
   // lead_status/lead_score can come from a separate voice-calling pipeline
   // sharing this table, so only trust them for display once real WhatsApp
@@ -70,7 +85,9 @@ export function ConversationCard({ row, onClick, walkin }: ConversationCardProps
               </span>
             )}
             {walkin && <WalkinBadges walkin={walkin} />}
+            <CallHistoryBadge callHistory={callHistory} />
           </div>
+          <LastCallCaption callHistory={callHistory} />
         </div>
       </div>
 
@@ -92,6 +109,46 @@ export function ConversationCard({ row, onClick, walkin }: ConversationCardProps
         />
       </div>
     </button>
+  );
+}
+
+function CallHistoryBadge({ callHistory }: { callHistory?: CallHistoryCardState }) {
+  if (!callHistory || callHistory.status === "unavailable") return null;
+
+  if (callHistory.status === "loading") {
+    return (
+      <span className="inline-block h-[18px] w-[88px] rounded-full bg-white/5 border border-white/10 animate-pulse" />
+    );
+  }
+
+  const { summary } = callHistory;
+  if (summary.callsMade === 0) {
+    return (
+      <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-medium bg-white/10 text-white/70 border border-white/20">
+        📞 Not called yet
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full font-medium ${pickupRateClasses(summary.pickupRate!)}`}
+    >
+      📞 {summary.callsMade} {summary.callsMade === 1 ? "call" : "calls"} · {summary.pickupRate}%
+    </span>
+  );
+}
+
+function LastCallCaption({ callHistory }: { callHistory?: CallHistoryCardState }) {
+  if (!callHistory || callHistory.status !== "ready") return null;
+  const { summary } = callHistory;
+  if (summary.callsMade === 0 || !summary.lastCallAt || !summary.lastCallOutcome) return null;
+
+  return (
+    <p className="text-[10px] text-white/40 mt-1">
+      Last call: <span className={OUTCOME_TEXT_CLASSES[summary.lastCallOutcome]}>{OUTCOME_LABEL[summary.lastCallOutcome]}</span>{" "}
+      · {relativeFromISO(summary.lastCallAt)}
+    </p>
   );
 }
 

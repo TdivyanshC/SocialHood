@@ -7,10 +7,13 @@ import {
   fetchConversationMemoryHistory,
   parseConversationSummary,
 } from "@/lib/supabase/leadDashboard";
+import { type CallHistoryEntry, fetchCallHistoryForPhone } from "@/lib/supabase/callHistory";
 import {
   formatBudget,
   formatLastContact,
   formatPhone,
+  OUTCOME_BADGE_CLASSES,
+  OUTCOME_LABEL,
   priorityClasses,
   relativeFromHours,
   scoreColor,
@@ -24,6 +27,37 @@ interface ConversationDetailModalProps {
 export function ConversationDetailModal({ row, onClose }: ConversationDetailModalProps) {
   const [memoryHistory, setMemoryHistory] = useState<ChatMessage[]>([]);
   const [loadingMemory, setLoadingMemory] = useState(false);
+
+  const [callHistory, setCallHistory] = useState<CallHistoryEntry[]>([]);
+  const [loadingCallHistory, setLoadingCallHistory] = useState(false);
+  const [callHistoryFailed, setCallHistoryFailed] = useState(false);
+
+  // Fetched on-demand per lead when the modal opens, same as
+  // fetchConversationMemoryHistory below, rather than keeping every lead's
+  // full call-by-call history in memory just for the summary badge on the card.
+  useEffect(() => {
+    if (!row?.phone) {
+      setCallHistory([]);
+      setCallHistoryFailed(false);
+      return;
+    }
+    let cancelled = false;
+    setLoadingCallHistory(true);
+    setCallHistoryFailed(false);
+    fetchCallHistoryForPhone(row.phone)
+      .then((entries) => {
+        if (!cancelled) setCallHistory(entries);
+      })
+      .catch(() => {
+        if (!cancelled) setCallHistoryFailed(true);
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingCallHistory(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [row?.phone]);
 
   // conversation_history_full only started capturing the AI's side of the
   // chat recently — leads from before that only have inbound messages here,
@@ -109,6 +143,42 @@ export function ConversationDetailModal({ row, onClose }: ConversationDetailModa
             <InfoCell label="Style" value={row.style_preference} />
             <InfoCell label="Budget" value={formatBudget(row.budget)} />
             <InfoCell label="Interactions" value={row.interaction_count?.toString()} />
+          </div>
+
+          {/* Call history */}
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <p className="text-xs uppercase tracking-wider text-white/60 mb-2">
+              Call history
+            </p>
+            {loadingCallHistory ? (
+              <div className="flex justify-center py-3">
+                <div className="w-2 h-2 rounded-full bg-[#00B98E] animate-pulse" />
+              </div>
+            ) : callHistoryFailed ? (
+              <p className="text-sm text-white/40">Call history unavailable right now.</p>
+            ) : callHistory.length === 0 ? (
+              <p className="text-sm text-white/40">Not called yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {callHistory.map((entry) => (
+                  <li key={entry.callUuid} className="flex items-center justify-between gap-3 text-sm">
+                    <span className="text-white/70">{formatLastContact(entry.startedAt)}</span>
+                    <span className="flex items-center gap-2">
+                      {entry.durationSeconds > 0 && (
+                        <span className="text-white/40 text-xs font-mono">
+                          {Math.floor(entry.durationSeconds / 60)}:{String(entry.durationSeconds % 60).padStart(2, "0")}
+                        </span>
+                      )}
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full border ${OUTCOME_BADGE_CLASSES[entry.outcome]}`}
+                      >
+                        {OUTCOME_LABEL[entry.outcome]}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {row.visit_confirmed && (

@@ -41,6 +41,38 @@ export function cardAccentClasses(
   return "border-2 border-white/10 bg-white/5 hover:border-[#00B98E]/50 hover:bg-white/[0.07]";
 }
 
+// Same green/yellow/red tiers CallsDataDashboard already uses for its
+// Answered/Mid/No-Answer status pills — reused here so a pickup rate reads
+// on the same color scale as the rest of the CRM instead of inventing one.
+export function pickupRateClasses(rate: number): string {
+  if (rate >= 60) return "bg-green-500/20 text-green-300 border border-green-500/30";
+  if (rate >= 30) return "bg-yellow-500/20 text-yellow-300 border border-yellow-500/30";
+  return "bg-red-500/20 text-red-300 border border-red-500/30";
+}
+
+// Single source of truth for the three-way call outcome shown in both the
+// card's LastCallCaption and the modal's call-by-call list, matching
+// CallsDataDashboard's own statusBadge/statusLabel. mid_answered (phone was
+// picked up, call ended in seconds with no real conversation) is kept
+// distinct from unanswered (never picked up) everywhere it's displayed.
+export const OUTCOME_LABEL: Record<string, string> = {
+  answered: "Answered",
+  mid_answered: "Mid",
+  unanswered: "No Answer",
+};
+
+export const OUTCOME_BADGE_CLASSES: Record<string, string> = {
+  answered: "bg-green-500/20 text-green-300 border-green-500/30",
+  mid_answered: "bg-yellow-500/20 text-yellow-300 border-yellow-500/30",
+  unanswered: "bg-red-500/20 text-red-300 border-red-500/30",
+};
+
+export const OUTCOME_TEXT_CLASSES: Record<string, string> = {
+  answered: "text-green-400",
+  mid_answered: "text-yellow-400",
+  unanswered: "text-red-400",
+};
+
 export function scoreColor(score: number | null | undefined): string {
   if (score == null) return "text-white/60";
   if (score >= 75) return "text-red-300";
@@ -94,4 +126,11 @@ export function relativeFromHours(hours: string | number | null | undefined): st
   const days = Math.round(n / 24);
   if (days < 30) return `${days}d ago`;
   return `${Math.round(days / 30)}mo ago`;
+}
+
+export function relativeFromISO(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  const ms = Date.now() - new Date(iso).getTime();
+  if (!Number.isFinite(ms)) return "—";
+  return relativeFromHours(ms / (1000 * 60 * 60));
 }

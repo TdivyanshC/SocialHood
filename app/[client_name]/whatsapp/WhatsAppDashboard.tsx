@@ -8,13 +8,23 @@ import {
 import { getSupabaseClient } from "@/lib/supabaseClient";
 import { normalizePhoneBatch } from "@/lib/phone";
 import { fetchWalkinSummaryByPhone, type WalkinCardSummary } from "@/lib/supabase/walkins";
-import { ConversationCard } from "./ConversationCard";
+import { fetchCallHistoryByPhone, type CallHistorySummary } from "@/lib/supabase/callHistory";
+import { ConversationCard, type CallHistoryCardState } from "./ConversationCard";
 import { ConversationDetailModal } from "./ConversationDetailModal";
 import { hasWhatsAppHistory } from "./helpers";
 
 type StatusFilter = "all" | "hot" | "warm" | "cold" | "visit";
 
 const TEMPERATURE_RANK: Record<string, number> = { hot: 0, warm: 1, cold: 2 };
+
+const EMPTY_CALL_HISTORY: CallHistorySummary = {
+  callsMade: 0,
+  answeredCount: 0,
+  midAnsweredCount: 0,
+  pickupRate: null,
+  lastCallAt: null,
+  lastCallOutcome: null,
+};
 
 // lead_status/lead_score can be written by a separate voice-calling pipeline
 // that shares the leads table, so a lead is only ever "hot"/"warm"/"cold" in
@@ -77,6 +87,59 @@ export function WhatsAppDashboard() {
       cancelled = true;
     };
   }, [rows, walkinSummaries]);
+
+  // Same two-step normalize-then-rekey pattern as walkins above. Loading and
+  // error are tracked separately from "resolved but zero calls" so the card
+  // can tell apart "still fetching" (skeleton), "endpoint failed" (omit
+  // quietly), and "genuinely never called" (its own calm badge).
+  const [callHistorySummaries, setCallHistorySummaries] = useState<Map<string, CallHistorySummary>>(new Map());
+  const [callHistoryByPhone, setCallHistoryByPhone] = useState<Map<string, CallHistorySummary>>(new Map());
+  const [callHistoryLoading, setCallHistoryLoading] = useState(true);
+  const [callHistoryError, setCallHistoryError] = useState(false);
+
+  useEffect(() => {
+    fetchCallHistoryByPhone()
+      .then((map) => {
+        setCallHistorySummaries(map);
+        setCallHistoryError(false);
+      })
+      .catch(() => {
+        setCallHistoryError(true);
+      })
+      .finally(() => setCallHistoryLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (rows.length === 0 || callHistorySummaries.size === 0) {
+      setCallHistoryByPhone(new Map());
+      return;
+    }
+    const supabase = getSupabaseClient();
+    if (!supabase) return;
+    let cancelled = false;
+    normalizePhoneBatch(supabase, rows.map((r) => r.phone)).then((keys) => {
+      if (cancelled) return;
+      const map = new Map<string, CallHistorySummary>();
+      for (const row of rows) {
+        const key = keys.get(row.phone);
+        const summary = key ? callHistorySummaries.get(key) : undefined;
+        if (summary) map.set(row.phone, summary);
+      }
+      setCallHistoryByPhone(map);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [rows, callHistorySummaries]);
+
+  const callHistoryState = useCallback(
+    (phone: string): CallHistoryCardState => {
+      if (callHistoryLoading) return { status: "loading" };
+      if (callHistoryError) return { status: "unavailable" };
+      return { status: "ready", summary: callHistoryByPhone.get(phone) ?? EMPTY_CALL_HISTORY };
+    },
+    [callHistoryLoading, callHistoryError, callHistoryByPhone],
+  );
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -281,6 +344,7 @@ export function WhatsAppDashboard() {
                 key={row.phone}
                 row={row}
                 walkin={walkinByPhone.get(row.phone)}
+                callHistory={callHistoryState(row.phone)}
                 onClick={() => setSelected(row)}
               />
             ))}
