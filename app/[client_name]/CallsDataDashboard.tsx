@@ -182,7 +182,7 @@ export function CallsDataDashboard() {
           caller_name,
           started_at,
           call_number,
-          call_logs(recording_url, status, hangup_cause, duration_seconds)
+          call_logs(recording_url, status, hangup_cause, duration_seconds, call_number)
         `
         )
         .eq("tenant_id", "krishna_furniture");
@@ -236,9 +236,13 @@ export function CallsDataDashboard() {
           rejection_signals: s.rejection_signals ?? 0,
           wa_triggered: s.wa_triggered ?? false,
           full_transcript: Array.isArray(s.full_transcript) ? s.full_transcript : [],
-          // NULL on any row from before the call_number migration — expected,
-          // not an error case. Badge is simply omitted for those rows.
-          call_number: typeof s.call_number === "number" ? s.call_number : null,
+          // call_logs.call_number is ground truth (written once at dispatch);
+          // call_summaries.call_number silently defaulted to 1 whenever a
+          // call's WebSocket stream never connected (fixed backend-side, but
+          // still prefer the reliable column here). NULL on any row from
+          // before the call_number migration — expected, not an error case.
+          // Badge is simply omitted for those rows.
+          call_number: typeof log?.call_number === "number" ? log.call_number : (typeof s.call_number === "number" ? s.call_number : null),
         };
       });
 
