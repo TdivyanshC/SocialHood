@@ -48,27 +48,6 @@ const metrics = [
   },
 ];
 
-const testimonials = [
-  {
-    quote:
-      "SocialHood transformed our business with a custom website and automation tools. Our operational costs dropped by 60% and leads increased 5x in just 3 months.",
-    author: "Rajesh Kumar",
-    title: "CEO, TechStart Solutions",
-  },
-  {
-    quote:
-      "The guaranteed lead generation is real. They delivered 3x more queries than our previous agency. The tech stack they built for us is world-class.",
-    author: "Anita Sharma",
-    title: "Director, GrowthMart",
-  },
-  {
-    quote:
-      "Finally, a company that focuses on results over vanity metrics. Their PPC campaigns doubled our sales in 60 days. Highly recommended.",
-    author: "Vikram Singh",
-    title: "Founder, AutoFlow",
-  },
-];
-
 export default function Results() {
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -103,22 +82,6 @@ export default function Results() {
           scrollTrigger: {
             trigger: ".metrics-container",
             start: "top 85%",
-          },
-        }
-      );
-
-      gsap.fromTo(
-        ".testimonial-card",
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.7,
-          stagger: 0.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".testimonials-grid",
-            start: "top 90%",
           },
         }
       );

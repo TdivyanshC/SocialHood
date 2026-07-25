@@ -94,17 +94,17 @@ export default function About() {
             Our Philosophy
           </p>
           <h2 className="about-heading font-display text-5xl md:text-6xl font-light leading-tight mb-8 text-white max-w-4xl mx-auto">
-            We Believe In Building{' '}
-            <span className="text-white">Trust First.</span>
+            We Build Systems.{' '}
+            <span className="text-white">Not Just</span>
             <br />
-            Money Second.
+            Websites Or Campaigns.
           </h2>
           <p className="about-text font-body text-white/50 leading-relaxed max-w-2xl mx-auto text-lg">
-            At The SocialHood Company, we measure our success by{' '}
-            <span className="text-white">your growth</span>. 
-            Our strategy is simple: when our clients succeed, we succeed. We use cutting-edge 
-            technology and proven growth strategies—the same tools used by Fortune 500 companies—
-            tailored for businesses of all sizes.
+            We help businesses scale using{' '}
+            <span className="text-white">AI, automation, and custom software</span>{' '}
+            instead of just delivering websites or marketing campaigns. Voice agents that answer
+            calls, WhatsApp agents that qualify leads, and custom systems that replace the
+            repetitive work eating your team's time — built once, running every day.
           </p>
         </div>
 
@@ -116,9 +116,10 @@ export default function About() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
               </svg>
             </div>
-            <h3 className="font-display text-xl text-white mb-3">Trust-Based Approach</h3>
+            <h3 className="font-display text-xl text-white mb-3">AI-First, Not AI-Washed</h3>
             <p className="font-body text-white/40 text-sm leading-relaxed">
-              We build lasting relationships through transparency, honest communication, and delivering on our promises.
+              Real voice and WhatsApp agents doing real work — qualifying leads, booking calls,
+              answering support questions — not a chatbot bolted onto an old website.
             </p>
           </div>
 
@@ -128,9 +129,10 @@ export default function About() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
               </svg>
             </div>
-            <h3 className="font-display text-xl text-white mb-3">Proven Growth</h3>
+            <h3 className="font-display text-xl text-white mb-3">Measurable ROI</h3>
             <p className="font-body text-white/40 text-sm leading-relaxed">
-              Data-driven strategies that actually work. We focus on metrics that matter—revenue, conversions, and ROI.
+              Less manpower spent on repetitive work, more conversions from every lead. We build
+              toward numbers you can point to, not vanity metrics.
             </p>
           </div>
 
@@ -150,7 +152,7 @@ export default function About() {
         {/* Bottom tagline */}
         <div className="mt-20 text-center">
           <p className="font-display text-3xl md:text-4xl font-light text-white/30">
-            Your growth is our <span className="text-white">priority</span>.
+            Business transformation is our <span className="text-white">priority</span>.
           </p>
         </div>
       </div>

@@ -28,8 +28,8 @@ const values = [
     ),
   },
   {
-    title: "Technology Excellence",
-    description: "We use only the latest and most advanced technologies for optimal results.",
+    title: "AI-First Engineering",
+    description: "Voice agents, WhatsApp agents, and automation systems built to actually replace manual work, not just assist it.",
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -119,12 +119,12 @@ export default function AboutPageClient() {
             About Us
           </p>
           <h1 className="about-header font-display text-5xl md:text-6xl font-light leading-tight mb-6">
-            We Get Rich By Making Our{' '}
-            <span className="text-white">Clients Richer</span>
+            An AI-First{' '}
+            <span className="text-white">Business Growth Partner</span>
           </h1>
           <p className="about-header text-white/50 text-lg max-w-2xl mx-auto font-body">
-            We are your partners in growth, committed to delivering real results through 
-            cutting-edge technology and proven strategies.
+            We help businesses scale using AI, automation, and custom software — instead of just
+            delivering websites or marketing campaigns.
           </p>
         </div>
       </section>
@@ -138,12 +138,14 @@ export default function AboutPageClient() {
                 Our <span className="text-white">Story</span>
               </h2>
               <p className="text-white/60 font-body leading-relaxed mb-6">
-                The SocialHood Company was founded with a simple belief: businesses deserve access to the 
-                same enterprise-grade tools and strategies that Fortune 500 companies use.
+                The SocialHood Company started by building websites and running ad campaigns.
+                Along the way, we kept building the same thing for every client: systems that
+                did the repetitive work so their teams didn't have to.
               </p>
               <p className="text-white/60 font-body leading-relaxed">
-                Today, we help businesses of all sizes transform their operations, increase 
-                leads, and scale faster using the latest technology and proven growth strategies.
+                Today, that's the whole business. We build AI voice agents, WhatsApp AI agents,
+                custom automation, and the software to run it all — helping businesses replace
+                manual work with intelligent systems and scalable digital infrastructure.
               </p>
             </div>
 

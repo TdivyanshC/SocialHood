@@ -16,6 +16,7 @@ export default function Footer() {
     { name: "About Us", href: "/about" },
     { name: "Our Work", href: "/work" },
     { name: "Services", href: "/services" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -57,7 +58,7 @@ export default function Footer() {
     },
     {
       name: "X",
-      href: "https://twitter.com",
+      href: "https://x.com/thesocialhood",
       icon: (
         <svg
           width="18"
@@ -87,8 +88,8 @@ export default function Footer() {
               The SocialHood Company
             </Link>
             <p className="text-white/50 text-base leading-relaxed mb-6">
-              India's most culturally wired social media agency. We combine
-              creativity, technology, and strategy to grow your brand.
+              An AI-first business growth partner. We build voice agents, WhatsApp automation,
+              and custom software that replace manual work — not just websites or campaigns.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((link) => (
@@ -170,18 +171,18 @@ export default function Footer() {
             © {currentYear} The SocialHood Company. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <a
-              href="#"
+            <Link
+              href="/privacy"
               className="text-white/30 hover:text-white/60 text-xs transition-colors"
             >
               Privacy Policy
-            </a>
-            <a
-              href="#"
+            </Link>
+            <Link
+              href="/terms"
               className="text-white/30 hover:text-white/60 text-xs transition-colors"
             >
               Terms of Service
-            </a>
+            </Link>
           </div>
         </div>
       </div>

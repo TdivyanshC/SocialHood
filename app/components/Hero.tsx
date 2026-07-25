@@ -368,12 +368,23 @@ export default function Hero() {
         ref={contentRef}
         className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 md:px-6"
       >
+        {/* Eyebrow */}
+        <p className="hero-eyebrow text-xs md:text-sm tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
+          AI Systems & Automation
+        </p>
+
         {/* Main Headline - White */}
         <h1 className="font-display text-[clamp(3rem,9vw,8rem)] font-light leading-[0.9] mb-8 tracking-tight">
-          <span className="hero-heading block text-white">We Get Rich By</span>
-          <span className="hero-heading block text-white">Making Our Clients</span>
-          <span className="hero-heading block text-white">Richer.</span>
+          <span className="hero-heading block text-white">We Build The Systems</span>
+          <span className="hero-heading block text-white">That Run Your Business</span>
+          <span className="hero-heading block text-white">While You Sleep.</span>
         </h1>
+
+        {/* Subline */}
+        <p className="hero-subline font-body text-white/50 text-base md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+          AI voice agents, WhatsApp automation, and custom software that replace manual work —
+          not just another website or ad campaign.
+        </p>
 
         {/* CTA Button - White */}
         <Link 

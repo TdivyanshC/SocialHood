@@ -3,65 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-const clients = [
-   {
-    id: 1,
-    name: "PaisaPriest",
-    website: "https://paisapriest.com",
-    image: "/images/paisa.jpg",
-    description: "Financial Services",
-  },
-  {
-    id: 2,
-    name: "KleoniVerse",
-    website: "https://kleoniverse.com",
-    image: "/images/kleoni.jpg",
-    description: "Fashion & Lifestyle Brand",
-  },
-    {
-    id: 3,
-    name: "SRLD Enterprises",
-    website: "https://yourlaptop.in",
-    image: "/images/SRLD.jpg",
-    description: "Tech Solutions & Services",
-  },
-  {
-    id: 4,
-    name: "Swadeshi Hind Party",
-    website: "https://swadeshihindparty.in",
-    image: "/images/swadeshi.jpg",
-    description: "Political Organization",
-  },
-  {
-    id: 5,
-    name: "Coursary",
-    website: "https://crackcuet.co.in",
-    image: "/images/coursary.jpeg",
-    description: "Education & Learning Platform",
-  },
-  {
-    id: 6,
-    name: "Elecment Design Fab",
-    website: "https://elecmentdesignfab.com",
-    image: "/images/elecment.jpg",
-    description: "Interior Design & Architecture",
-  },
-  {
-    id: 7,
-    name: "Fitness Store",
-    website: "https://thelionsgym.vercel.app",
-    image: "/images/fitness.jpg",
-    description: "Fitness & Wellness",
-  },
-  {
-    id: 8,
-    name: "Trust Acres",
-    website: "https://trustacres.com",
-    image: "/images/trust.jpg",
-    description: "Real Estate & Property",
-  },
-];
+import { CLIENTS as clients } from "../../lib/clients";
 
 export default function OurWork() {
   const scrollRef = useRef<HTMLDivElement>(null);

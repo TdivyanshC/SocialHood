@@ -13,6 +13,10 @@ const Services = dynamic(() => import("./components/Services"), {
   loading: () => <div className="h-[400px] bg-black" />,
 });
 
+const Industries = dynamic(() => import("./components/Industries"), {
+  loading: () => <div className="h-[400px] bg-black" />,
+});
+
 const Studio = dynamic(() => import("./components/Studio"), {
   loading: () => <div className="h-screen bg-black" />,
 });
@@ -29,6 +33,10 @@ const Results = dynamic(() => import("./components/Results"), {
   loading: () => <div className="h-[400px] bg-black" />,
 });
 
+const FAQ = dynamic(() => import("./components/FAQ"), {
+  loading: () => <div className="h-[400px] bg-black" />,
+});
+
 const Footer = dynamic(() => import("./components/Footer"), {
   loading: () => <div className="h-[200px] bg-black" />,
 });
@@ -40,10 +48,12 @@ export default function HomeClient() {
       <Hero />
       <About />
       <Services />
+      <Industries />
       <Studio />
       <OurWork />
       <Process />
       <Results />
+      <FAQ />
       <Footer />
     </main>
   );

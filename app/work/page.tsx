@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import WorkPageClient from "./WorkPageClient";
 
 export const metadata: Metadata = {
-  title: "Our Work | Portfolio - Website Development Projects India",
-  description: "View our portfolio of successful projects. We've helped businesses across Delhi, Mumbai, Bangalore, and all of India with premium web development, app development, and digital marketing.",
+  title: "Our Work | Client Portfolio - The SocialHood",
+  description: "Real estate, fintech, e-commerce, and enterprise businesses we've built AI systems, automation, and software for — including Trust Acres and others across India.",
   alternates: {
     canonical: "https://thesocialhood.in/work",
   },
   openGraph: {
-    title: "Our Work | Portfolio - Website Development Projects India",
-    description: "View our portfolio of successful web development and digital marketing projects in India.",
+    title: "Our Work | Client Portfolio - The SocialHood",
+    description: "Real estate, fintech, e-commerce, and enterprise businesses we've built AI systems and automation for.",
     url: "https://thesocialhood.in/work",
   },
 };

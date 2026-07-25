@@ -8,29 +8,34 @@ gsap.registerPlugin(ScrollTrigger);
 
 const faqs = [
   {
-    question: "How quickly can I see results?",
+    question: "What exactly does an AI voice agent do?",
     answer:
-      "Most clients see initial results within 30 days. Significant lead increases typically happen within 60-90 days as our strategies and automation take full effect.",
+      "It answers or makes calls on your behalf — qualifying leads, booking appointments, answering common questions, and following up — using your business's real information, and hands off to a human whenever a call needs one.",
+  },
+  {
+    question: "How is a WhatsApp AI agent different from a chatbot?",
+    answer:
+      "It runs on the official Meta Cloud API and connects directly into your CRM and workflows — nurturing leads, answering support questions, and triggering follow-ups automatically, not just replying to FAQs in a widget.",
+  },
+  {
+    question: "What kind of tasks can custom automation actually replace?",
+    answer:
+      "Repetitive work that eats staff time today — research, data scraping, report generation, emailing, CRM updates, and multi-step workflows. We map your actual process first, then automate the parts that don't need a human.",
+  },
+  {
+    question: "Do you only build AI systems, or also websites and software?",
+    answer:
+      "Both. Most engagements combine custom software or a website with the automation layer on top — dashboards, CRMs, internal tools, and product builds on Next.js, React, Node.js, MongoDB, and Supabase.",
   },
   {
     question: "Do you work with small businesses or only large companies?",
     answer:
-      "We work with businesses of all sizes—from startups to enterprises. Our solutions are scalable and tailored to your specific needs and budget.",
+      "We work with businesses of all sizes—from startups to enterprises—across Real Estate, Financial Services, E-commerce, Education, Manufacturing, and service businesses. Solutions are scoped to your budget and complexity.",
   },
   {
-    question: "What makes your web development different from others?",
+    question: "How quickly can I see results?",
     answer:
-      "We don't use basic WordPress templates. We build custom websites using enterprise-grade tech stacks (React, Next.js, Node.js) that the biggest companies use. This ensures speed, security, and scalability.",
-  },
-  {
-    question: "How does business automation help my company?",
-    answer:
-      "Automation eliminates repetitive tasks, reduces the need for additional employees, and increases efficiency. Our clients typically see 40-80% reduction in operational costs.",
-  },
-  {
-    question: "What is your guarantee on lead generation?",
-    answer:
-      "We guarantee a minimum increase in your daily queries based on your industry and current setup. This is backed by our performance contract—your growth is our priority.",
+      "Most engagements start delivering within 30 days; automation systems and AI agents typically show measurable impact — fewer manual hours, faster response times — within the first 60-90 days.",
   },
 ];
 
@@ -79,11 +84,25 @@ export default function FAQ() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+    })),
+  };
+
   return (
     <section
       ref={sectionRef}
       className="py-32 px-6 bg-black relative overflow-hidden"
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       {/* Background accents */}
       <div className="absolute top-1/2 left-0 w-[400px] h-[400px] rounded-full bg-gradient-to-r from-[#00B98E]/5 to-transparent pointer-events-none -translate-y-1/2" />
       <div className="absolute bottom-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-l from-[#00B98E]/3 to-transparent pointer-events-none" />

@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import AboutPageClient from "./AboutPageClient";
 
 export const metadata: Metadata = {
-  title: "About Us | The SocialHood - Premier Digital Agency India",
-  description: "Learn about The SocialHood, India's premier digital agency. We specialize in web development, AI automation, and digital marketing. Based in Delhi, serving clients across India.",
+  title: "About Us | The SocialHood - AI Systems & Automation Company",
+  description: "The SocialHood is an AI-first business growth partner — AI voice agents, WhatsApp AI agents, and custom automation systems for businesses across India.",
   alternates: {
     canonical: "https://thesocialhood.in/about",
   },
   openGraph: {
-    title: "About Us | The SocialHood - Premier Digital Agency India",
-    description: "Learn about The SocialHood, India's premier digital agency specializing in web development, AI automation, and digital marketing.",
+    title: "About Us | The SocialHood - AI Systems & Automation Company",
+    description: "The SocialHood is an AI-first business growth partner — AI voice agents, WhatsApp AI agents, and custom automation systems.",
     url: "https://thesocialhood.in/about",
   },
 };

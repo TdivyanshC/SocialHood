@@ -4,72 +4,7 @@ import Link from "next/link";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Image from "next/image";
-
-const clients = [
-  {
-    id: 1,
-    name: "KleoniVerse",
-    website: "https://kleoniverse.com",
-    image: "/images/kleoni.jpg",
-    description: "Fashion & Lifestyle Brand",
-  },
-  {
-    id: 9 ,
-    name: "Rajgharanaa",
-    website: "https://rajgharanaa.com/",
-    image: "/images/Screenshot (276).png",
-    description: "Bridal Wear & Couture",
-  },
-  {
-    id: 2,
-    name: "PaisaPriest",
-    website: "https://paisapriest.com",
-    image: "/images/paisa.jpg",
-    description: "Financial Services",
-  },
-  {
-    id: 3,
-    name: "SRLD Enterprises",
-    website: "https://yourlaptop.in",
-    image: "/images/SRLD.jpg",
-    description: "Tech Solutions & Services",
-  },
-  {
-    id: 4,
-    name: "Swadeshi Hind Party",
-    website: "https://swadeshihindparty.in",
-    image: "/images/swadeshi.jpg",
-    description: "Political Organization",
-  },
-  {
-    id: 5,
-    name: "Coursary",
-    website: "https://crackcuet.co.in",
-    image: "/images/coursary.jpeg",
-    description: "Education & Learning Platform",
-  },
-  {
-    id: 6,
-    name: "Fitness Store",
-    website: "https://thelionsgym.vercel.app",
-    image: "/images/fitness.jpg",
-    description: "Fitness & Wellness",
-  },
-  {
-    id: 7,
-    name: "Trust Acres",
-    website: "https://trustacres.com",
-    image: "/images/trust.jpg",
-    description: "Real Estate & Property",
-  },
-  {
-    id: 8,
-    name: "Elecment Design Fab",
-    website: "https://elecmentdesignfab.com",
-    image: "/images/elecment.jpg",
-    description: "Interior Design & Architecture",
-  },
-];
+import { CLIENTS as clients } from "../../lib/clients";
 
 export default function WorkPageClient() {
   return (
@@ -158,7 +93,7 @@ export default function WorkPageClient() {
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="font-display text-4xl mb-6">Want to Be Our Next Success Story?</h2>
           <p className="text-white/50 mb-8 font-body">
-            Let's discuss how we can transform your business just like we've done for hundreds of others.
+            Let's discuss how we can transform your business just like we've done for others.
           </p>
           <Link
             href="/contact"

@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import ServicesPageClient from "./ServicesPageClient";
 
 export const metadata: Metadata = {
-  title: "Services | Web Development, App Development & AI Solutions India",
-  description: "Explore our premium services: Website Development, Mobile App Development, AI Video Production, Business Automation, and Google & Meta Ads. Serving clients across Delhi, Mumbai, Bangalore, and all of India.",
+  title: "Services | AI Voice Agents, WhatsApp AI & Automation - The SocialHood",
+  description: "AI Voice Agents, WhatsApp AI Agents, custom AI automation systems, custom software, website development, SEO, and CRM integrations — for real estate, financial services, e-commerce, education, and manufacturing across India.",
   alternates: {
     canonical: "https://thesocialhood.in/services",
   },
   openGraph: {
-    title: "Services | Web Development & AI Solutions India - The SocialHood",
-    description: "Premium web development, app development, AI automation, and digital marketing services in India.",
+    title: "Services | AI Voice Agents, WhatsApp AI & Automation - The SocialHood",
+    description: "AI Voice Agents, WhatsApp AI Agents, custom AI automation systems, custom software, and CRM integrations.",
     url: "https://thesocialhood.in/services",
   },
 };

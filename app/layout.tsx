@@ -26,23 +26,23 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL("https://thesocialhood.in"),
   title: {
-    default: "The SocialHood | Web Development & AI Automation Agency India",
+    default: "The SocialHood | AI Systems & Automation Company India",
     template: "%s | The SocialHood",
   },
-  description: "Premier web development and AI automation agency in India. We build high-converting websites, mobile apps, and AI solutions for businesses across Delhi, Mumbai, Bangalore, and all of India.",
+  description: "We help businesses scale using AI, automation, and custom software — not just websites or marketing campaigns. AI voice agents, WhatsApp AI agents, and custom automation systems for real estate, financial services, e-commerce, education, and manufacturing across India.",
   keywords: [
-    "web development agency India",
-    "AI automation services India",
-    "digital marketing agency India",
-    "premium website development",
-    "mobile app development India",
-    "business automation India",
-    "AI video production",
-    "Google Ads management",
-    "Meta Ads management",
-    "social media agency Delhi",
-    "best web development company India",
-    "AI solutions for business",
+    "AI automation company India",
+    "AI voice agent for business",
+    "WhatsApp AI agent India",
+    "business process automation India",
+    "custom AI automation systems",
+    "AI systems company India",
+    "custom software development company India",
+    "SaaS product development agency",
+    "AI automation for real estate",
+    "AI automation for financial services",
+    "CRM integration company India",
+    "startup automation consulting",
   ],
   authors: [{ name: "The SocialHood Company" }],
   creator: "The SocialHood",
@@ -64,6 +64,9 @@ export const metadata: Metadata = {
     },
   },
   verification: {
+    // TODO: replace with the real Search Console verification string — this was
+    // still the literal placeholder before this refresh, so verification was
+    // never actually active via this method.
     google: "google-site-verification-code",
   },
   openGraph: {
@@ -71,21 +74,21 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: "https://thesocialhood.in",
     siteName: "The SocialHood",
-    title: "The SocialHood | Web Development & AI Automation Agency India",
-    description: "Premier web development and AI automation agency in India. We build high-converting websites, mobile apps, and AI solutions for businesses.",
+    title: "The SocialHood | AI Systems & Automation Company India",
+    description: "We help businesses scale using AI, automation, and custom software — not just websites or marketing campaigns.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "The SocialHood - Web Development & AI Agency India",
+        alt: "The SocialHood - AI Systems & Automation Company India",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The SocialHood | Web Development & AI Automation Agency India",
-    description: "Premier web development and AI automation agency in India.",
+    title: "The SocialHood | AI Systems & Automation Company India",
+    description: "We help businesses scale using AI, automation, and custom software — not just websites or marketing campaigns.",
     images: ["/og-image.jpg"],
     creator: "@thesocialhood",
   },
@@ -134,7 +137,7 @@ export default function RootLayout({
               "name": "The SocialHood",
               "url": "https://thesocialhood.in",
               "logo": "https://thesocialhood.in/logo.png",
-              "description": "Premier web development and AI automation agency in India.",
+              "description": "AI-first business growth partner — AI voice agents, WhatsApp AI agents, custom automation, and software development.",
               "foundingDate": "2020",
               "address": {
                 "@type": "PostalAddress",
@@ -144,7 +147,8 @@ export default function RootLayout({
               },
               "contactPoint": {
                 "@type": "ContactPoint",
-                "telephone": "+91-88829-88829",
+                "telephone": "+91-9198310770",
+                "email": "team@thesocialhood.in",
                 "contactType": "customer service",
                 "availableLanguage": ["English", "Hindi"]
               },
@@ -158,12 +162,14 @@ export default function RootLayout({
                 "name": "India"
               },
               "serviceType": [
-                "Web Development",
-                "Mobile App Development",
-                "AI Automation",
-                "Digital Marketing",
-                "Google Ads",
-                "Meta Ads"
+                "AI Voice Agents",
+                "WhatsApp AI Agents",
+                "Custom AI Automation Systems",
+                "Custom Software Development",
+                "Website & Product Development",
+                "SEO & Organic Growth",
+                "CRM Integrations",
+                "Startup Consulting"
               ]
             }),
           }}
@@ -175,12 +181,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "The SocialHood",
-              "url": "https://thesocialhood.in",
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://thesocialhood.in/search?q={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
+              "url": "https://thesocialhood.in"
             }),
           }}
         />
@@ -193,8 +194,8 @@ export default function RootLayout({
               "name": "The SocialHood",
               "image": "https://thesocialhood.in/logo.png",
               "url": "https://thesocialhood.in",
-              "telephone": "+91-88829-88829",
-              "email": "hello@thesocialhood.in",
+              "telephone": "+91-9198310770",
+              "email": "team@thesocialhood.in",
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "Delhi, India",
