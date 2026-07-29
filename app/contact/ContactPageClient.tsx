@@ -147,7 +147,7 @@ export default function ContactPageClient() {
                     </div>
                     <div>
                       <p className="text-xs text-white/40 uppercase tracking-wider">Phone</p>
-                      <p className="text-white">+91 9198310770</p>
+                      <p className="text-white">+91 8799712556</p>
                     </div>
                   </div>
                   
@@ -157,7 +157,7 @@ export default function ContactPageClient() {
                     </div>
                     <div>
                       <p className="text-xs text-white/40 uppercase tracking-wider">Location</p>
-                      <p className="text-white">Delhi, India</p>
+                      <p className="text-white">Delhi NCR, India</p>
                     </div>
                   </div>
                 </div>

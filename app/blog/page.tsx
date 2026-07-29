@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     title: "Blog | AI Automation Insights - The SocialHood",
     description: "How AI voice agents, WhatsApp automation, and custom systems help businesses scale.",
     url: "https://thesocialhood.in/blog",
+    images: ["/og-image.jpg"],
   },
 };
 

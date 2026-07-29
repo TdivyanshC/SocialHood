@@ -158,7 +158,7 @@ export default function Footer() {
               </li>
               <li className="pt-2">
                 <p className="text-white/40">
-                  Delhi, India
+                  Delhi NCR, India
                 </p>
               </li>
             </ul>

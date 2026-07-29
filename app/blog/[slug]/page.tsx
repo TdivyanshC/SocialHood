@@ -18,7 +18,12 @@ export async function generateMetadata({
   if (!post) return {};
 
   const metadata: Metadata = {
-    title: `${post.title} | The SocialHood`,
+    // Just post.title, no manual "| The SocialHood" suffix — the root
+    // layout's title template already appends it once; the old manual
+    // suffix here doubled it (caught by a live SEO audit, 2026-07-29,
+    // which flagged every single post's rendered title as too long for
+    // Google's ~70-char SERP display guideline).
+    title: post.title,
     description: post.description,
     ...(post.keyword ? { keywords: [post.keyword] } : {}),
     alternates: { canonical: `https://thesocialhood.in/blog/${post.slug}` },

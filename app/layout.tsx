@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, DM_Sans, Playfair_Display } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
+
+// GA4 — mirrors the exact pattern already proven live on sonikiupsc's
+// app/layout.jsx. Safe to ship inactive: renders nothing until
+// NEXT_PUBLIC_GA_MEASUREMENT_ID is set (see docs/socialhood_seo_setup.md).
+const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -64,10 +70,11 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // TODO: replace with the real Search Console verification string — this was
-    // still the literal placeholder before this refresh, so verification was
-    // never actually active via this method.
-    google: "google-site-verification-code",
+    // Real value comes from GSC_VERIFICATION_TOKEN once the SocialHood
+    // property is added in Search Console (docs/socialhood_seo_setup.md)
+    // — omitting the tag entirely (rather than shipping a placeholder
+    // string) until then, since a fake value would just fail silently.
+    ...(process.env.GSC_VERIFICATION_TOKEN ? { google: process.env.GSC_VERIFICATION_TOKEN } : {}),
   },
   openGraph: {
     type: "website",
@@ -147,7 +154,7 @@ export default function RootLayout({
               },
               "contactPoint": {
                 "@type": "ContactPoint",
-                "telephone": "+91-9198310770",
+                "telephone": "+91-8799712556",
                 "email": "team@thesocialhood.in",
                 "contactType": "customer service",
                 "availableLanguage": ["English", "Hindi"]
@@ -194,7 +201,7 @@ export default function RootLayout({
               "name": "The SocialHood",
               "image": "https://thesocialhood.in/logo.png",
               "url": "https://thesocialhood.in",
-              "telephone": "+91-9198310770",
+              "telephone": "+91-8799712556",
               "email": "team@thesocialhood.in",
               "address": {
                 "@type": "PostalAddress",
@@ -215,6 +222,13 @@ export default function RootLayout({
                 "opens": "09:00",
                 "closes": "18:00"
               },
+              "areaServed": [
+                { "@type": "Place", "name": "Delhi NCR" },
+                { "@type": "Place", "name": "Delhi" },
+                { "@type": "Place", "name": "Noida" },
+                { "@type": "Place", "name": "Gurugram" },
+                { "@type": "Country", "name": "India" }
+              ],
               "priceRange": "$$"
             }),
           }}
@@ -224,6 +238,22 @@ export default function RootLayout({
         <ClientLayout>
           {children}
         </ClientLayout>
+        {gaMeasurementId && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${gaMeasurementId}');
+              `}
+            </Script>
+          </>
+        )}
       </body>
     </html>
   );

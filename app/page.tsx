@@ -2,16 +2,17 @@ import type { Metadata } from "next";
 import HomeClient from "./HomeClient";
 
 export const metadata: Metadata = {
-  title: "The SocialHood | Web Development & AI Automation Agency India",
-  description: "Premier web development and AI automation agency in India. We build high-converting websites, mobile apps, AI video production, and business automation solutions for businesses across Delhi, Mumbai, Bangalore, and all of India.",
+  title: "The SocialHood | AI Automation & Business Growth Agency, Delhi NCR",
+  description: "AI-first business growth partner in Delhi NCR — AI voice agents, WhatsApp AI agents, and custom automation systems for businesses across India.",
   alternates: {
     canonical: "https://thesocialhood.in",
   },
   openGraph: {
-    title: "The SocialHood | Web Development & AI Automation Agency India",
-    description: "Premier web development and AI automation agency in India. We build high-converting websites, mobile apps, and AI solutions.",
+    title: "The SocialHood | AI Automation & Business Growth Agency, Delhi NCR",
+    description: "AI-first business growth partner — AI voice agents, WhatsApp AI agents, and custom automation systems for businesses across India.",
     url: "https://thesocialhood.in",
     siteName: "The SocialHood",
+    images: ["/og-image.jpg"],
   },
 };
 
