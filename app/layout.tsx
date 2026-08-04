@@ -144,7 +144,7 @@ export default function RootLayout({
               "name": "The SocialHood",
               "url": "https://thesocialhood.in",
               "logo": "https://thesocialhood.in/logo.png",
-              "description": "AI-first business growth partner — AI voice agents, WhatsApp AI agents, custom automation, and software development.",
+              "description": "AI Systems Studio — we build and run AI voice agents, WhatsApp AI agents, custom automation, and software development.",
               "foundingDate": "2020",
               "address": {
                 "@type": "PostalAddress",

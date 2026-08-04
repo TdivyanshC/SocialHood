@@ -88,7 +88,7 @@ export default function Footer() {
               The SocialHood Company
             </Link>
             <p className="text-white/50 text-base leading-relaxed mb-6">
-              An AI-first business growth partner. We build voice agents, WhatsApp automation,
+              An AI Systems Studio. We build voice agents, WhatsApp automation,
               and custom software that replace manual work — not just websites or campaigns.
             </p>
             <div className="flex gap-4">

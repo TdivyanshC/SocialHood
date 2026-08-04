@@ -17,10 +17,6 @@ const Industries = dynamic(() => import("./components/Industries"), {
   loading: () => <div className="h-[400px] bg-black" />,
 });
 
-const Studio = dynamic(() => import("./components/Studio"), {
-  loading: () => <div className="h-screen bg-black" />,
-});
-
 const OurWork = dynamic(() => import("./components/OurWork"), {
   loading: () => <div className="h-[400px] bg-black" />,
 });
@@ -49,7 +45,6 @@ export default function HomeClient() {
       <About />
       <Services />
       <Industries />
-      <Studio />
       <OurWork />
       <Process />
       <Results />

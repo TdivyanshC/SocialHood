@@ -119,8 +119,8 @@ export default function AboutPageClient() {
             About Us
           </p>
           <h1 className="about-header font-display text-5xl md:text-6xl font-light leading-tight mb-6">
-            An AI-First{' '}
-            <span className="text-white">Business Growth Partner</span>
+            An AI Systems{' '}
+            <span className="text-white">Studio</span>
           </h1>
           <p className="about-header text-white/50 text-lg max-w-2xl mx-auto font-body">
             We help businesses scale using AI, automation, and custom software — instead of just

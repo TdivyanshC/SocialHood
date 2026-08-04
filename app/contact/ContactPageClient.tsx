@@ -4,6 +4,8 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { useState } from "react";
 
+type SubmitStatus = "idle" | "loading" | "success" | "error";
+
 export default function ContactPageClient() {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,6 +14,8 @@ export default function ContactPageClient() {
     phone: "",
     message: "",
   });
+  const [status, setStatus] = useState<SubmitStatus>("idle");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -19,13 +23,31 @@ export default function ContactPageClient() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`New Contact Form Submission from ${formData.name}`);
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nCompany: ${formData.company}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nMessage:\n${formData.message}`
-    );
-    window.location.href = `mailto:team@thesocialhood.in?subject=${subject}&body=${body}`;
+    setStatus("loading");
+    setErrorMessage("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Something went wrong. Please try again.");
+      }
+
+      setStatus("success");
+      setFormData({ name: "", company: "", email: "", phone: "", message: "" });
+    } catch (err) {
+      setStatus("error");
+      setErrorMessage(
+        err instanceof Error ? err.message : "Something went wrong. Please try again."
+      );
+    }
   };
 
   return (
@@ -51,8 +73,30 @@ export default function ContactPageClient() {
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             <div className="bg-surface border border-white/5 rounded-xl p-8">
+              {status === "success" ? (
+                <div className="py-8 text-center">
+                  <div className="w-14 h-14 rounded-full bg-[#00B98E]/10 border border-[#00B98E]/30 flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-6 h-6 text-[#00B98E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h2 className="font-display text-2xl mb-3">Message sent.</h2>
+                  <p className="text-white/50 font-body max-w-sm mx-auto mb-8">
+                    We've sent a confirmation to your inbox — a real person from our team
+                    will follow up within one business day.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setStatus("idle")}
+                    className="text-xs tracking-widest text-[#00B98E] hover:text-white transition-colors uppercase"
+                  >
+                    Send another message
+                  </button>
+                </div>
+              ) : (
+              <>
               <h2 className="font-display text-2xl mb-6">Send us a Message</h2>
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -114,13 +158,26 @@ export default function ContactPageClient() {
                   />
                 </div>
 
+                {status === "error" && (
+                  <p className="text-red-400 text-sm font-body">
+                    {errorMessage}{" "}
+                    <a href="mailto:team@thesocialhood.in" className="underline hover:text-red-300">
+                      Email us directly
+                    </a>{" "}
+                    instead.
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full bg-[#00B98E] text-black font-medium py-4 rounded-lg text-sm tracking-widest hover:bg-[#00B98E]/80 transition-all duration-300"
+                  disabled={status === "loading"}
+                  className="w-full bg-[#00B98E] text-black font-medium py-4 rounded-lg text-sm tracking-widest hover:bg-[#00B98E]/80 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Message →
+                  {status === "loading" ? "Sending…" : "Send Message →"}
                 </button>
               </form>
+              </>
+              )}
             </div>
 
             <div className="space-y-8">
