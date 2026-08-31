@@ -2,16 +2,16 @@ import type { Metadata } from "next";
 import AboutPageClient from "./AboutPageClient";
 
 export const metadata: Metadata = {
-  title: "About Us | AI Systems & Automation Company", // see services/page.tsx comment re: title-template doubling
-  description: "The SocialHood is an AI Systems Studio — we build and run AI voice agents, WhatsApp AI agents, and custom automation systems for businesses across India.",
+  title: "About: An AI Systems Studio", // see services/page.tsx comment re: title-template doubling
+  description: "A small studio that designs, builds and then operates the systems doing a business's repeated work — voice, WhatsApp, automation, and the software underneath. How we work, and the one rule that costs us deals.",
   alternates: {
     canonical: "https://thesocialhood.in/about",
   },
   openGraph: {
-    title: "About Us | The SocialHood - AI Systems & Automation Company",
-    description: "The SocialHood is an AI Systems Studio — we build and run AI voice agents, WhatsApp AI agents, and custom automation systems.",
+    title: "About | The SocialHood — An AI Systems Studio",
+    description: "A studio that designs, builds and then operates the systems doing a business's repeated work.",
     url: "https://thesocialhood.in/about",
-    images: ["/og-image.jpg"],
+    images: ["/opengraph-image"],
   },
 };
 

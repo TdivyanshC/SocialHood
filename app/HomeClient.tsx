@@ -42,10 +42,12 @@ export default function HomeClient() {
     <main className="bg-black min-h-screen">
       <Navbar />
       <Hero />
+      {/* Order matters: who we are, what we build, then the proof it runs —
+          before we ask anyone to check whether they are a fit. */}
       <About />
       <Services />
-      <Industries />
       <OurWork />
+      <Industries />
       <Process />
       <Results />
       <FAQ />

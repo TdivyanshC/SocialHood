@@ -8,34 +8,44 @@ gsap.registerPlugin(ScrollTrigger);
 
 const faqs = [
   {
-    question: "What exactly does an AI voice agent do?",
+    question: "What does the voice agent actually do on a call?",
     answer:
-      "It answers or makes calls on your behalf — qualifying leads, booking appointments, answering common questions, and following up — using your business's real information, and hands off to a human whenever a call needs one.",
+      "It answers or places the call, works through your qualification script — budget, timeline, what they are actually looking for — books the visit or the callback into your calendar, and hands over to a human the moment the conversation needs one. Then it writes the transcript, the outcome and the score into your CRM before the next call starts.",
   },
   {
-    question: "How is a WhatsApp AI agent different from a chatbot?",
+    question: "Will it sound like a robot?",
     answer:
-      "It runs on the official Meta Cloud API and connects directly into your CRM and workflows — nurturing leads, answering support questions, and triggering follow-ups automatically, not just replying to FAQs in a widget.",
+      "Judge it yourself rather than take our word for it. On the first call we run a live call from the agent to your phone, in your language, using your script. Not a recording, not a demo video.",
   },
   {
-    question: "What kind of tasks can custom automation actually replace?",
+    question: "Does it speak Hindi?",
     answer:
-      "Repetitive work that eats staff time today — research, data scraping, report generation, emailing, CRM updates, and multi-step workflows. We map your actual process first, then automate the parts that don't need a human.",
+      "Hindi, English, Hinglish and regional languages. Most of the calls we run in India are mixed Hindi and English, which is how the callers actually speak.",
   },
   {
-    question: "Do you only build AI systems, or also websites and software?",
+    question: "My team already calls every lead. Why would I need this?",
     answer:
-      "Both. Most engagements combine custom software or a website with the automation layer on top — dashboards, CRMs, internal tools, and product builds on Next.js, React, Node.js, MongoDB, and Supabase.",
+      "How fast, and who calls the one that comes in at 11pm on a Sunday? The agent does not replace your team — it removes the dialling and the chasing, so they walk into a qualified conversation instead of working down a cold list.",
   },
   {
-    question: "Do you work with small businesses or only large companies?",
+    question: "We tried a chatbot before and it did nothing.",
     answer:
-      "We work with businesses of all sizes—from startups to enterprises—across Real Estate, Financial Services, E-commerce, Education, Manufacturing, and service businesses. Solutions are scoped to your budget and complexity.",
+      "A chatbot waits for someone to open your website. This calls them. The WhatsApp side runs on the official Meta Cloud API and shares a CRM with the voice agent, so a conversation that starts on a call continues on WhatsApp without anyone re-typing anything.",
   },
   {
-    question: "How quickly can I see results?",
+    question: "What do I actually see once it is running?",
     answer:
-      "Most engagements start delivering within 30 days; automation systems and AI agents typically show measurable impact — fewer manual hours, faster response times — within the first 60-90 days.",
+      "A portal of your own: every call handled with its transcript and outcome, every lead and where it stands, WhatsApp threads, the follow-up queue, support tickets, and walk-ins matched back to the calls that produced them. You do not have to ask anyone for a report.",
+  },
+  {
+    question: "How long before it is live?",
+    answer:
+      "We commit to a date in the scope document before any work starts, and it is short — this is a build we have done before, not research. Where it lands depends on how many products, languages and integrations the agent has to handle, which is exactly what the scoping call establishes.",
+  },
+  {
+    question: "Do you only build lead-response systems?",
+    answer:
+      "No. Lead response is where we have the clearest proof, so it is where most conversations start, but the same four practices build support desks, booking and recall systems, back-office automation, reporting pipelines and the dashboards and software those run inside. If the work repeats and follows rules, it is a candidate.",
   },
 ];
 
@@ -113,12 +123,13 @@ export default function FAQ() {
           <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
             FAQ
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-4">
-            Common Questions{' '}
-            <span className="text-white">Answered</span>
+          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-4 text-white">
+            The Questions We
+            <br />
+            Get Asked On Every Call
           </h2>
           <p className="text-white/50 text-sm font-body">
-            Everything you need to know about working with us.
+            Answered here so the first call can be about your numbers instead.
           </p>
         </div>
 
@@ -161,15 +172,17 @@ export default function FAQ() {
               </button>
 
               <div
-                className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                  openIndex === index ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+                className={`grid transition-all duration-300 ease-in-out ${
+                  openIndex === index ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
                 }`}
               >
-                <div className="px-6 pb-6">
-                  <div className="h-px bg-gradient-to-r from-[#00B98E]/20 via-[#00B98E]/10 to-transparent mb-4" />
-                  <p className="text-sm text-white/60 leading-relaxed font-body">
-                    {faq.answer}
-                  </p>
+                <div className="overflow-hidden">
+                  <div className="px-6 pb-6">
+                    <div className="h-px bg-gradient-to-r from-[#00B98E]/20 via-[#00B98E]/10 to-transparent mb-4" />
+                    <p className="text-sm text-white/60 leading-relaxed font-body">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>

@@ -1,82 +1,154 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import Image from "next/image";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { CLIENTS as clients } from "../../lib/clients";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CLIENT_SYSTEMS, STATUS_LABEL } from "../../lib/systems";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// The homepage proof slot. It used to be a carousel of client website
+// screenshots, then a single-product pitch for one system. Neither said what
+// the studio actually does. This shows the range: several systems, several
+// verticals, with the live one marked as live. Our own products live on /work.
+const SHOWCASE = CLIENT_SYSTEMS;
 
 export default function OurWork() {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const checkScroll = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    checkScroll();
-    const container = scrollRef.current;
-    if (container) {
-      container.addEventListener("scroll", checkScroll);
-      return () => container.removeEventListener("scroll", checkScroll);
-    }
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        ".systems-header",
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
+        }
+      );
+
+      gsap.fromTo(
+        ".system-tile",
+        { y: 40, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "power3.out",
+          scrollTrigger: { trigger: ".systems-grid", start: "top 85%" },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
   }, []);
 
-  // Auto-scroll effect
-  useEffect(() => {
-    if (isPaused) return;
-    
-    const interval = setInterval(() => {
-      if (scrollRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        // If at the end, scroll to beginning
-        if (scrollLeft >= scrollWidth - clientWidth - 10) {
-          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          scrollRef.current.scrollBy({ left: 380, behavior: "smooth" });
-        }
-      }
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [isPaused]);
-
-  const scroll = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const scrollAmount = 380;
-      scrollRef.current.scrollBy({
-        left: direction === "left" ? -scrollAmount : scrollAmount,
-        behavior: "smooth",
-      });
-    }
-  };
-
   return (
-    <section className="py-32 px-6 bg-black">
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-6">
-          <div>
-            <p className="text-xs tracking-[0.2em] text-[#00B98E] uppercase mb-4 font-body">
-              Our Work
-            </p>
-            <h2 className="font-display text-4xl md:text-5xl font-light">
-              Featured <span className="text-white">Projects</span>
-            </h2>
-          </div>
-          <Link 
-            href="/contact"
-            className="group relative inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-medium overflow-hidden transition-all duration-300"
-            style={{ background: 'transparent', border: '1px solid #00B98E' }}
+    <section ref={sectionRef} className="py-32 px-6 bg-black relative overflow-hidden">
+      <div className="absolute top-1/4 right-0 w-[500px] h-[500px] rounded-full bg-gradient-to-l from-[#00B98E]/5 to-transparent pointer-events-none" />
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        {/* Header */}
+        <div className="systems-header max-w-3xl mb-16">
+          <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
+            The Systems
+          </p>
+          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight text-white mb-6">
+            Different industries.
+            <br />
+            <span className="text-white/45">The same shape of loss.</span>
+          </h2>
+          <p className="font-body text-white/50 text-lg leading-relaxed">
+            Something arrives — a call, a form, a quote request — and nobody reaches it in time.
+            The shape repeats across verticals; only the conversation changes. These are the
+            systems we put in that gap.
+          </p>
+        </div>
+
+        {/* Systems */}
+        <div className="systems-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+          {SHOWCASE.map((system, i) => {
+            const isLive = system.status === "production";
+            return (
+              <Link
+                key={system.id}
+                href="/work"
+                className={`system-tile group relative flex flex-col rounded-2xl p-8 md:p-9 border transition-all duration-300 hover:-translate-y-0.5 ${
+                  isLive
+                    ? "border-[#00B98E]/30 bg-[#00B98E]/[0.04] hover:border-[#00B98E]/60"
+                    : "border-white/8 bg-white/[0.02] hover:border-white/20"
+                }`}
+              >
+                {/* Status + index */}
+                <div className="flex items-center justify-between mb-7">
+                  <span
+                    className={`inline-flex items-center gap-2 text-[10px] tracking-[0.18em] uppercase rounded-full px-3 py-1 border ${
+                      isLive
+                        ? "text-[#00B98E] border-[#00B98E]/40"
+                        : "text-white/35 border-white/10"
+                    }`}
+                  >
+                    {isLive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00B98E]" />
+                    )}
+                    {STATUS_LABEL[system.status]}
+                  </span>
+                  <span className="font-display text-xl text-white/12">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+
+                <p className="font-body text-xs tracking-[0.18em] uppercase text-white/35 mb-3">
+                  {system.vertical}
+                </p>
+                <h3 className="font-display text-2xl md:text-3xl font-light text-white mb-4 group-hover:text-[#00B98E] transition-colors">
+                  {system.name}
+                </h3>
+                <p className="font-body text-white/50 leading-relaxed">{system.headline}</p>
+
+                {/* Live systems earn a result line here. Blueprints do not. */}
+                {isLive && system.outcomes && (
+                  <p className="mt-6 font-body text-sm text-white/80">
+                    {system.outcomes[0]} &middot; {system.client}
+                  </p>
+                )}
+
+                <div className="mt-auto pt-8 flex items-center justify-between">
+                  <div className="flex flex-wrap gap-1.5">
+                    {system.practices.map((practice) => (
+                      <span
+                        key={practice}
+                        className="text-[10px] tracking-wider uppercase text-white/30 border border-white/8 rounded-full px-2.5 py-1"
+                      >
+                        {practice}
+                      </span>
+                    ))}
+                  </div>
+                  <span className="text-white/25 group-hover:text-[#00B98E] group-hover:translate-x-1 transition-all duration-300">
+                    &rarr;
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Link on to the rest of the portfolio */}
+        <div className="mt-12 text-center">
+          <Link
+            href="/work"
+            className="group relative inline-flex items-center gap-2 px-8 py-3.5 rounded-full text-sm font-medium overflow-hidden transition-all duration-300"
+            style={{ background: "transparent", border: "1px solid #00B98E" }}
           >
             <span className="absolute inset-0 w-full h-full bg-[#00B98E] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
-            <span className="relative z-10 text-[#00B98E] group-hover:text-black transition-colors duration-300">View Our Work</span>
+            <span className="relative z-10 text-[#00B98E] group-hover:text-black transition-colors duration-300">
+              Open the systems in detail
+            </span>
             <span className="relative z-10 flex items-center text-[#00B98E] group-hover:text-black transition-colors duration-300">
               <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -84,108 +156,7 @@ export default function OurWork() {
             </span>
           </Link>
         </div>
-
-        {/* Carousel Navigation */}
-        <div className="relative">
-          {/* Left Arrow */}
-          <button
-            onClick={() => scroll("left")}
-            disabled={!canScrollLeft}
-            className={`absolute left-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 border ${
-              canScrollLeft
-                ? "border-[#00B98E] text-[#00B98E] hover:bg-[#00B98E] hover:text-black"
-                : "border-white/10 text-white/30 cursor-not-allowed"
-            }`}
-            aria-label="Scroll left"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.75 19.5L8.25 12l7.5-7.5"
-              />
-            </svg>
-          </button>
-
-          {/* Right Arrow */}
-          <button
-            onClick={() => scroll("right")}
-            disabled={!canScrollRight}
-            className={`absolute right-0 top-1/2 -translate-y-1/2 z-20 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 border ${
-              canScrollRight
-                ? "border-[#00B98E] text-[#00B98E] hover:bg-[#00B98E] hover:text-black"
-                : "border-white/10 text-white/30 cursor-not-allowed"
-            }`}
-            aria-label="Scroll right"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8.25 4.5l7.5 7.5-7.5 7.5"
-              />
-            </svg>
-          </button>
-
-          {/* Carousel Container */}
-          <div
-            ref={scrollRef}
-            className="flex gap-8 overflow-x-auto scrollbar-hide pb-8 pt-4 px-4"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            {clients.map((client) => (
-              <a
-                key={client.id}
-                href={client.website}
-                target="__blank"
-                rel="noopener noreferrer"
-                className="flex-shrink-0 w-[85vw] md:w-[350px] block group"
-              >
-                <div className="bg-black border border-white/10 w-full h-auto rounded-2xl overflow-hidden transition-all duration-300 group-hover:border-[#00B98E] group-hover:shadow-[0_0_30px_rgba(0,185,142,0.15)]">
-                    <div className="w-full">
-                      <div className="relative aspect-[16/10] w-full overflow-hidden">
-                        <Image
-                          src={client.image}
-                          alt={client.name}
-                          fill
-                          loading="lazy"
-                          sizes="(max-width: 768px) 100vw, 350px"
-                          className="object-cover transition-all duration-300 group-hover:scale-105"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="p-5">
-                      <div className="text-lg font-bold text-white group-hover:text-[#00B98E] transition-colors">
-                        {client.name}
-                      </div>
-                      <p className="text-white/60 text-sm mt-1">
-                        {client.description}
-                      </p>
-                    </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
 }
-

@@ -370,36 +370,43 @@ export default function Hero() {
       >
         {/* Eyebrow */}
         <p className="hero-eyebrow text-xs md:text-sm tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
-          AI Systems & Automation
+          AI Systems Studio
         </p>
 
         {/* Main Headline - White */}
-        <h1 className="font-display text-[clamp(3rem,9vw,8rem)] font-light leading-[0.9] mb-8 tracking-tight">
-          <span className="hero-heading block text-white">We Build The Systems</span>
-          <span className="hero-heading block text-white">That Run Your Business</span>
-          <span className="hero-heading block text-white">While You Sleep.</span>
+        <h1 className="font-display text-[clamp(3rem,8.5vw,7.5rem)] font-light leading-[0.95] mb-8 tracking-tight">
+          <span className="hero-heading block text-white">Systems that</span>
+          <span className="hero-heading block text-white">do the work.</span>
         </h1>
 
         {/* Subline */}
         <p className="hero-subline font-body text-white/50 text-base md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-          AI voice agents, WhatsApp automation, and custom software that replace manual work —
-          not just another website or ad campaign.
+          Voice agents that answer and call. WhatsApp agents that follow up. The automation
+          behind them, and the software it all lives in — built, and then run, by us.
         </p>
 
-        {/* CTA Button - White */}
-        <Link 
-          href="/contact"
-          className="group relative inline-flex items-center gap-2 px-6 md:px-10 py-3 md:py-4 rounded-full text-xs md:text-sm font-medium overflow-hidden transition-all duration-300"
-          style={{ background: 'transparent', border: '1px solid #00B98E' }}
-        >
-          <span className="absolute inset-0 w-full h-full bg-[#00B98E] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
-          <span className="relative z-10 text-[#00B98E] group-hover:text-black transition-colors duration-300">Start Your Growth Journey</span>
-          <span className="relative z-10 flex items-center text-[#00B98E] group-hover:text-black transition-colors duration-300">
-            <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </span>
-        </Link>
+        {/* CTAs */}
+        <div className="hero-cta flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link
+            href="/work"
+            className="group relative inline-flex items-center gap-2 px-6 md:px-10 py-3 md:py-4 rounded-full text-xs md:text-sm font-medium overflow-hidden transition-all duration-300"
+            style={{ background: 'transparent', border: '1px solid #00B98E' }}
+          >
+            <span className="absolute inset-0 w-full h-full bg-[#00B98E] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out" />
+            <span className="relative z-10 text-[#00B98E] group-hover:text-black transition-colors duration-300">See the systems we run</span>
+            <span className="relative z-10 flex items-center text-[#00B98E] group-hover:text-black transition-colors duration-300">
+              <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </span>
+          </Link>
+          <Link
+            href="/contact"
+            className="inline-flex items-center px-6 md:px-8 py-3 md:py-4 rounded-full text-xs md:text-sm font-medium text-white/60 border border-white/10 hover:border-white/25 hover:text-white transition-colors duration-300"
+          >
+            Talk to us
+          </Link>
+        </div>
       </div>
 
       <style jsx>{`

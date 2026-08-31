@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import HomeClient from "./HomeClient";
 
 export const metadata: Metadata = {
-  title: "The SocialHood | AI Systems Studio — Voice & WhatsApp Agents, Automation | Delhi NCR",
-  description: "AI Systems Studio in Delhi NCR. We build and run AI voice agents, WhatsApp agents, and custom automation that replace manual work.",
+  title: "AI Systems Studio: Voice & WhatsApp Agents | The SocialHood",
+  description: "An AI Systems Studio. Voice agents that answer every call, WhatsApp agents that follow up, and the automation and software underneath. Running today at Krishna Furniture.",
   alternates: {
-    canonical: "https://thesocialhood.in",
+    canonical: "https://thesocialhood.in/",
   },
   openGraph: {
-    title: "The SocialHood | AI Systems Studio — Voice & WhatsApp Agents, Automation | Delhi NCR",
-    description: "AI Systems Studio in Delhi NCR. We build and run AI voice agents, WhatsApp agents, and custom automation that replace manual work.",
+    title: "AI Systems Studio: Voice & WhatsApp Agents | The SocialHood",
+    description: "Voice agents that answer every call. WhatsApp agents that follow up. The automation and software underneath.",
     url: "https://thesocialhood.in",
     siteName: "The SocialHood",
-    images: ["/og-image.jpg"],
+    images: ["/opengraph-image"],
   },
 };
 

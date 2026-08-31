@@ -5,47 +5,24 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const metrics = [
-  { 
-    value: "10x", 
-    label: "Average ROI Increase",
-    description: "For every ₹1 invested",
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-      </svg>
-    ),
-  },
-  { 
-    value: "300%", 
-    label: "Average Lead Growth",
-    description: "Within first 90 days",
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-      </svg>
-    ),
-  },
-  { 
-    value: "80%", 
-    label: "Cost Reduction",
-    description: "Via automation & AI",
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
-  { 
-    value: "24/7", 
-    label: "Support Available",
-    description: "Always here for you",
-    icon: (
-      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    ),
-  },
+// This section used to hold four invented metrics (10x ROI, 300% growth, 80%
+// cost reduction, 98% satisfaction). Unattributable numbers cost more
+// credibility than they buy, so the real ones now sit on the case study and
+// this slot does the more useful job: telling a reader whether to keep reading.
+const FITS = [
+  "You spend on ads or portals and the leads arrive faster than anyone can call them",
+  "The purchase is considered — a showroom visit, a site visit, a consultation",
+  "Enquiries land outside business hours and nobody picks them up",
+  "Follow-up stops after one or two attempts because the team runs out of time",
+  "An owner or director can decide, and wants to see what happened to every lead",
+];
+
+const DOES_NOT_FIT = [
+  "There is no paid lead flow yet — there is nothing for a system to catch",
+  "You are a marketplace or aggregator; you are the lead source",
+  "You want one AI that does everything, scoped as we go",
+  "The decision needs a committee and no owner will be in the room",
+  "You want a chatbot on the website and nothing else",
 ];
 
 export default function Results() {
@@ -54,35 +31,27 @@ export default function Results() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        ".results-header",
+        ".fit-header",
         { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
           duration: 0.8,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-          },
+          scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
         }
       );
 
-      // Animated counter for metrics
       gsap.fromTo(
-        ".metric-card",
-        { y: 40, opacity: 0, scale: 0.9 },
+        ".fit-column",
+        { y: 40, opacity: 0 },
         {
           y: 0,
           opacity: 1,
-          scale: 1,
-          duration: 0.6,
+          duration: 0.8,
           stagger: 0.15,
           ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".metrics-container",
-            start: "top 85%",
-          },
+          scrollTrigger: { trigger: ".fit-columns", start: "top 85%" },
         }
       );
     }, sectionRef);
@@ -91,66 +60,67 @@ export default function Results() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="py-32 px-6 bg-black relative overflow-hidden"
-    >
-      {/* Background accents */}
+    <section ref={sectionRef} className="py-32 px-6 bg-black relative overflow-hidden">
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-gradient-to-t from-white/3 to-transparent pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="results-header text-center mb-20">
+      <div className="max-w-5xl mx-auto relative z-10">
+        <div className="fit-header text-center mb-16">
           <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
-            Results That Matter
+            Before You Book A Call
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight mb-4">
-            <span className="text-white">Real Numbers.</span> Real Growth.{' '}
-            <span className="text-white">Real ROI.</span>
+          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight text-white mb-4">
+            These Systems Are Not
+            <br />
+            For Everyone.
           </h2>
-          <p className="text-white/50 text-sm max-w-xl mx-auto font-body">
-            We don't just promise results—we deliver measurable outcomes that impact your bottom line.
+          <p className="text-white/50 text-sm max-w-xl mx-auto font-body leading-relaxed">
+            They pay for themselves where lead volume and deal value are already there. Where
+            they are not, we will say so on the first call rather than sell you one.
           </p>
         </div>
 
-        {/* Metrics */}
-        <div className="metrics-container grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-20">
-          {metrics.map((metric, index) => (
-            <div 
-              key={metric.value} 
-              className="metric-card group relative bg-white/[0.02] border border-white/5 rounded-2xl p-6 md:p-8 hover:border-[#00B98E]/30 hover:bg-[#00B98E]/5 transition-all duration-300"
-            >
-              {/* Background glow on hover */}
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[#00B98E]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-              <div className="relative z-10">
-                {/* Icon */}
-                <div className="w-12 h-12 rounded-xl bg-[#00B98E]/10 flex items-center justify-center text-[#00B98E] mb-4 group-hover:bg-[#00B98E] group-hover:text-black transition-all duration-300">
-                  {metric.icon}
-                </div>
-
-                {/* Value */}
-                <p className="font-display text-5xl md:text-6xl font-light text-white mb-2">
-                  {metric.value}
-                </p>
-
-                {/* Label */}
-                <p className="font-body text-sm text-white font-medium mb-1">
-                  {metric.label}
-                </p>
-
-                {/* Description */}
-                <p className="text-xs text-white/40">
-                  {metric.description}
-                </p>
-              </div>
+        <div className="fit-columns grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Fits */}
+          <div className="fit-column bg-white/[0.02] border border-[#00B98E]/20 rounded-2xl p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-8 h-8 rounded-full bg-[#00B98E]/15 flex items-center justify-center text-[#00B98E]">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.5 12.75l6 6 9-13.5" />
+                </svg>
+              </span>
+              <h3 className="font-display text-xl text-white">This is built for you if</h3>
             </div>
-          ))}
-        </div>
+            <ul className="space-y-4">
+              {FITS.map((item) => (
+                <li key={item} className="flex gap-3 font-body text-sm text-white/60 leading-relaxed">
+                  <span className="shrink-0 mt-2 w-1 h-1 rounded-full bg-[#00B98E]" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
 
+          {/* Does not fit */}
+          <div className="fit-column bg-white/[0.02] border border-white/10 rounded-2xl p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-white/40">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </span>
+              <h3 className="font-display text-xl text-white/70">It is the wrong call if</h3>
+            </div>
+            <ul className="space-y-4">
+              {DOES_NOT_FIT.map((item) => (
+                <li key={item} className="flex gap-3 font-body text-sm text-white/40 leading-relaxed">
+                  <span className="shrink-0 mt-2 w-1 h-1 rounded-full bg-white/20" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
   );
 }
-

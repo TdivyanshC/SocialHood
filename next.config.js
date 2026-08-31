@@ -17,6 +17,21 @@ const nextConfig = {
   async headers() {
     return [
       {
+        // Baseline security headers. No CSP: this site loads Spline, GSAP,
+        // GA4 and inline bootstrap scripts, so a policy tight enough to be
+        // worth having would need its own pass with nonces.
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
+          // Apex only — no includeSubDomains/preload, both of which are hard
+          // to walk back if a subdomain ever needs plain HTTP.
+          { key: 'Strict-Transport-Security', value: 'max-age=31536000' },
+        ],
+      },
+      {
         source: '/((?!_next/static|_next/image|favicon|.*\\.(?:js|css|png|jpg|jpeg|svg|webp|avif|ico|woff2?|ttf|otf|mp4)).*)',
         headers: [
           {

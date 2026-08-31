@@ -91,60 +91,50 @@ export default function About() {
         {/* Main Content */}
         <div className="text-center mb-20">
           <p className="about-eyebrow text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
-            Our Philosophy
+            What We Mean By A System
           </p>
-          <h2 className="about-heading font-display text-5xl md:text-6xl font-light leading-tight mb-8 text-white max-w-4xl mx-auto">
-            We Build Systems.{' '}
-            <span className="text-white">Not Just</span>
+          <h2 className="about-heading font-display text-4xl md:text-6xl font-light leading-[1.08] mb-8 text-white max-w-4xl mx-auto">
+            A tool waits to be opened.
             <br />
-            Websites Or Campaigns.
+            <span className="text-white/45">A system does the work.</span>
           </h2>
           <p className="about-text font-body text-white/50 leading-relaxed max-w-2xl mx-auto text-lg">
-            We help businesses scale using{' '}
-            <span className="text-white">AI, automation, and custom software</span>{' '}
-            instead of just delivering websites or marketing campaigns. Voice agents that answer
-            calls, WhatsApp agents that qualify leads, and custom systems that replace the
-            repetitive work eating your team's time — built once, running every day.
+            Most of what a company runs on cannot be bought off a shelf. It is the specific way
+            this business answers, qualifies, follows up, records and reports — and today most of
+            that runs on somebody remembering to do it. We build that layer as software, shaped
+            around how you already operate, and then we run it.
           </p>
         </div>
 
         {/* Feature Cards Grid */}
         <div className="features-grid grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="feature-card p-8 border border-white/10 rounded-2xl bg-white/5 backdrop-blur-sm hover:border-[#00B98E]/30 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-full bg-[#00B98E]/10 flex items-center justify-center mb-6">
-              <svg className="w-6 h-6 text-[#00B98E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-            <h3 className="font-display text-xl text-white mb-3">AI-First, Not AI-Washed</h3>
-            <p className="font-body text-white/40 text-sm leading-relaxed">
-              Real voice and WhatsApp agents doing real work — qualifying leads, booking calls,
-              answering support questions — not a chatbot bolted onto an old website.
+          <div className="feature-card p-8 border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-sm hover:border-[#00B98E]/30 transition-colors duration-300">
+            <p className="font-display text-3xl text-white/15 mb-6">01</p>
+            <h3 className="font-display text-xl text-white mb-3">Shaped around your process</h3>
+            <p className="font-body text-white/45 text-sm leading-relaxed">
+              We do not install a product and ask your team to change to fit it. The system is
+              built around the way this business already sells, books and records — including
+              the parts that only make sense here.
             </p>
           </div>
 
-          <div className="feature-card p-8 border border-white/10 rounded-2xl bg-white/5 backdrop-blur-sm hover:border-[#00B98E]/30 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-full bg-[#00B98E]/10 flex items-center justify-center mb-6">
-              <svg className="w-6 h-6 text-[#00B98E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-            </div>
-            <h3 className="font-display text-xl text-white mb-3">Measurable ROI</h3>
-            <p className="font-body text-white/40 text-sm leading-relaxed">
-              Less manpower spent on repetitive work, more conversions from every lead. We build
-              toward numbers you can point to, not vanity metrics.
+          <div className="feature-card p-8 border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-sm hover:border-[#00B98E]/30 transition-colors duration-300">
+            <p className="font-display text-3xl text-white/15 mb-6">02</p>
+            <h3 className="font-display text-xl text-white mb-3">It runs unattended</h3>
+            <p className="font-body text-white/45 text-sm leading-relaxed">
+              No queue to work down, no dashboard anyone has to remember to open. The system does
+              the work and then tells you what it did — at 2am, on a Sunday, on the four-hundredth
+              conversation of the month.
             </p>
           </div>
 
-          <div className="feature-card p-8 border border-white/10 rounded-2xl bg-white/5 backdrop-blur-sm hover:border-[#00B98E]/30 transition-colors duration-300">
-            <div className="w-12 h-12 rounded-full bg-[#00B98E]/10 flex items-center justify-center mb-6">
-              <svg className="w-6 h-6 text-[#00B98E]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </div>
-            <h3 className="font-display text-xl text-white mb-3">Partner Mindset</h3>
-            <p className="font-body text-white/40 text-sm leading-relaxed">
-              We don't just work for you—we work with you. Your success is our success, and we treat it that way.
+          <div className="feature-card p-8 border border-white/10 rounded-2xl bg-white/[0.03] backdrop-blur-sm hover:border-[#00B98E]/30 transition-colors duration-300">
+            <p className="font-display text-3xl text-white/15 mb-6">03</p>
+            <h3 className="font-display text-xl text-white mb-3">We stay on it after launch</h3>
+            <p className="font-body text-white/45 text-sm leading-relaxed">
+              A system handed over and forgotten drifts within a month. We read what it produced,
+              tune it against real conversations, and remain accountable for what it does — not
+              only for shipping it.
             </p>
           </div>
         </div>
@@ -152,7 +142,7 @@ export default function About() {
         {/* Bottom tagline */}
         <div className="mt-20 text-center">
           <p className="font-display text-3xl md:text-4xl font-light text-white/30">
-            Business transformation is our <span className="text-white">priority</span>.
+            Not a project that ends. A system that <span className="text-white">keeps running</span>.
           </p>
         </div>
       </div>

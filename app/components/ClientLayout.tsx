@@ -20,18 +20,20 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       touchMultiplier: 2,
     });
     
-    const onRaf = (time: number) => { 
-      lenis.raf(time); 
-      requestAnimationFrame(onRaf); 
-    };
-    requestAnimationFrame(onRaf);
-    
-    // Sync with GSAP ScrollTrigger
+    // One driver only. This used to run a self-recursing requestAnimationFrame
+    // loop *and* a gsap.ticker callback, so lenis.raf() was called twice per
+    // frame; the rAF loop was also never cancelled, so it kept calling into a
+    // destroyed Lenis after unmount.
     lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    const tick = (time: number) => { lenis.raf(time * 1000); };
+    gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
-    
-    return () => { lenis.destroy(); };
+
+    return () => {
+      gsap.ticker.remove(tick);
+      lenis.off('scroll', ScrollTrigger.update);
+      lenis.destroy();
+    };
   }, []);
 
   return <>{children}</>;
