@@ -12,6 +12,9 @@ export interface PostSummary {
   title: string;
   description: string;
   date: string;
+  /** Optional `updated:` frontmatter — feeds Article.dateModified and the
+   *  sitemap. Falls back to `date` when a post has never been revised. */
+  updated: string;
   keyword?: string;
   image: string | null;
   draft: boolean;
@@ -48,6 +51,7 @@ export function getAllPosts({ includeDrafts = false } = {}): PostSummary[] {
         title: data.title,
         description: data.description,
         date: data.date,
+        updated: data.updated || data.date,
         keyword: data.keyword,
         image: data.image || null,
         draft: Boolean(data.draft),
@@ -69,6 +73,7 @@ export function getPostBySlug(slug: string): Post | null {
     title: data.title,
     description: data.description,
     date: data.date,
+    updated: data.updated || data.date,
     keyword: data.keyword,
     image: data.image || null,
     draft: Boolean(data.draft),

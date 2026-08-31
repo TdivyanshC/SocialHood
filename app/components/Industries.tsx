@@ -2,18 +2,9 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { VERTICALS } from "../../lib/systems";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const industries = [
-  { name: "Real Estate & PropTech" },
-  { name: "Financial Services" },
-  { name: "E-commerce" },
-  { name: "Education" },
-  { name: "Manufacturing" },
-  { name: "Service Businesses" },
-  { name: "Custom Enterprise Solutions" },
-];
 
 export default function Industries() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -59,20 +50,26 @@ export default function Industries() {
       <div className="max-w-5xl mx-auto relative z-10 text-center">
         <div className="industries-header mb-16">
           <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-6 font-body">
-            Who We Work With
+            Where We Build
           </p>
-          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight">
-            Industries We <span className="text-white">Serve</span>
+          <h2 className="font-display text-4xl md:text-5xl font-light leading-tight text-white">
+            Sectors Where A Slow
+            <br />
+            Callback Costs A Sale
           </h2>
+          <p className="mt-6 text-white/50 font-body max-w-xl mx-auto leading-relaxed">
+            High-consideration purchases with real ad spend behind them. The agents run in
+            English, Hindi, Hinglish and regional languages.
+          </p>
         </div>
 
         <div className="industries-grid flex flex-wrap justify-center gap-4">
-          {industries.map((industry) => (
+          {VERTICALS.map((vertical) => (
             <div
-              key={industry.name}
+              key={vertical}
               className="industry-pill px-6 py-4 rounded-full border border-white/10 bg-white/[0.02] text-white/70 font-body text-sm md:text-base hover:border-[#00B98E]/40 hover:text-white transition-colors duration-300"
             >
-              {industry.name}
+              {vertical}
             </div>
           ))}
         </div>

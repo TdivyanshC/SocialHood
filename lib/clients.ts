@@ -30,7 +30,7 @@ export const CLIENTS: Client[] = [
     id: 9,
     name: "Rajgharanaa",
     website: "https://rajgharanaa.com/",
-    image: "/images/Screenshot (276).png",
+    image: "/images/rajgharanaa.jpg",
     description: "Bridal Wear & Couture",
   },
   {

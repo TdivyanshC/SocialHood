@@ -7,135 +7,169 @@ import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { CLIENTS as clients } from "../../lib/clients";
-
-interface AiSystemProject {
-  id: string;
-  category: string;
-  title: string;
-  tagline: string;
-  context: string;
-  problem: string;
-  whatWeBuilt: string;
-  keyExecution: string[];
-  result: string;
-  stack: string[];
-}
-
-const AI_SYSTEMS: AiSystemProject[] = [
-  {
-    id: "voice-ai-furniture",
-    category: "Voice AI",
-    title: "Furniture Lead AI",
-    tagline:
-      "An AI voice agent that qualifies leads and books showroom visits — 24/7, no missed calls.",
-    context:
-      "₹2L/month in ad spend, 30-40 daily inbound leads, 5-6 person manual sales team. No lead infrastructure. Leads were sitting uncontacted for hours.",
-    problem:
-      "High volume of inbound and follow-up calls handled manually; leads going cold and slow response times.",
-    whatWeBuilt:
-      "Built a two-part AI agent system for a furniture business leaking revenue through uncontacted leads. A voice AI qualifies 30-40 daily leads within minutes of inquiry; a WhatsApp agent moves cold prospects to warm to hot over time. The 5-6 person manual follow-up team is being systematically replaced.",
-    keyExecution: [
-      "Inbound calls answered and qualified by the voice agent in real time, no hold time",
-      "Structured qualification flow captures budget, timeline, and product interest on every call",
-      "Appointments booked directly into the showroom calendar",
-      "Automated follow-up sequence for leads who don't convert on the first call",
-      "Every call transcribed, scored, and logged to the CRM automatically",
-    ],
-    result:
-      "High ad spend with no systematic catch on the other side. Leads uncontacted for hours, manual team couldn't scale, and there was zero visibility into the pipeline.",
-    stack: ["AI voice agent", "CRM integration", "Appointment scheduling", "Automated follow-up"],
-  },
-  {
-    id: "social-auto-posting",
-    category: "Automation",
-    title: "Social Media Auto-Posting Agent",
-    tagline: "Hands-off content publishing across platforms on a consistent cadence.",
-    context:
-      "A team publishing across Instagram, Facebook, and LinkedIn by hand — content sitting ready in drafts for days because nobody owned hitting publish on schedule.",
-    problem:
-      "Inconsistent posting and manual content ops eating team time — a queue of ready content with no reliable system to actually ship it.",
-    whatWeBuilt:
-      "An automation agent that prepares, schedules, and publishes content across social platforms on a set cadence, with an approval step before anything goes live.",
-    keyExecution: [
-      "Content queue pulled from a shared brief and auto-formatted per platform",
-      "AI drafts captions and hashtags for each post",
-      "Human approval step before anything goes live — nothing publishes unreviewed",
-      "Scheduled publishing to Instagram, Facebook, and LinkedIn via native APIs",
-      "Posting cadence and engagement logged automatically for weekly review",
-    ],
-    result:
-      "Posting cadence went from a handful of posts a month to a consistent daily schedule, with zero missed publish windows since launch.",
-    stack: ["Workflow automation (n8n)", "Social platform APIs", "AI content generation", "Approval workflow"],
-  },
-  {
-    id: "ai-organic-growth-saas",
-    category: "SaaS Product",
-    title: "AI Organic Growth SaaS",
-    tagline: "A product that turns AI into repeatable organic growth.",
-    context:
-      "Built in-house after watching the same organic-growth bottleneck repeat across client engagements — SEO and content work that stalls the moment it depends on a full-time team.",
-    problem: "Organic growth via SEO/content is slow, manual, and hard to sustain.",
-    whatWeBuilt:
-      "An in-house SaaS product that uses AI to drive organic growth — content, SEO, and distribution — as a self-serve system rather than one-off manual work.",
-    keyExecution: [
-      "AI-generated content and topic clusters mapped to real search intent",
-      "Automated technical SEO audits with prioritized, actionable fixes",
-      "Distribution scheduled automatically across owned channels",
-      "Self-serve dashboard — no in-house SEO team required to run it",
-      "Keyword rankings and traffic tracked continuously, not in one-off reports",
-    ],
-    result:
-      "Currently running on our own content and SEO — shipping 15+ optimized pieces a month with ranking movement tracked weekly. Opening to early pilot customers now.",
-    stack: ["Next.js", "AI/LLM", "SEO automation"],
-  },
-];
+import {
+  SYSTEMS,
+  PRODUCTION_SYSTEMS,
+  BLUEPRINT_SYSTEMS,
+  PRODUCT_SYSTEMS,
+  STATUS_LABEL,
+  type SystemEntry,
+} from "../../lib/systems";
 
 // Cards with no live production URL (e.g. *.vercel.app preview links) render
 // without an outbound link instead of pointing at a broken/mismatched domain.
 const isLiveLink = (url: string) => !url.includes(".vercel.app");
 
-function AiSystemCard({
-  project,
+function StatusChip({ system }: { system: SystemEntry }) {
+  const isLive = system.status === "production";
+  return (
+    <span
+      className={`inline-flex items-center gap-2 text-[10px] tracking-[0.18em] uppercase rounded-full px-3 py-1 border ${
+        isLive ? "text-[#00B98E] border-[#00B98E]/40" : "text-white/35 border-white/10"
+      }`}
+    >
+      {isLive && <span className="w-1.5 h-1.5 rounded-full bg-[#00B98E]" />}
+      {STATUS_LABEL[system.status]}
+    </span>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Featured — the one system that is live for a named client.
+ * ------------------------------------------------------------------ */
+function FeaturedSystem({
+  system,
+  onOpen,
+}: {
+  system: SystemEntry;
+  onOpen: (id: string, el: HTMLButtonElement) => void;
+}) {
+  return (
+    <div className="relative rounded-3xl border border-[#00B98E]/25 bg-[#00B98E]/[0.03] overflow-hidden">
+      <div className="absolute top-0 right-0 w-[420px] h-[420px] rounded-full bg-gradient-to-bl from-[#00B98E]/[0.08] to-transparent pointer-events-none" />
+
+      <div className="relative z-10 grid lg:grid-cols-12">
+        {/* Narrative */}
+        <div className="lg:col-span-7 p-9 md:p-14">
+          <StatusChip system={system} />
+
+          <p className="mt-8 font-body text-xs tracking-[0.2em] uppercase text-white/35">
+            {system.vertical}
+          </p>
+          <h3 className="mt-4 font-display text-4xl md:text-5xl font-light text-white leading-[1.05]">
+            {system.client}
+          </h3>
+          <p className="mt-3 font-body text-lg text-[#00B98E]">{system.name}</p>
+
+          <p className="mt-8 font-body text-white/55 text-lg leading-relaxed max-w-xl">
+            {system.headline}
+          </p>
+
+          <div className="mt-10 flex flex-wrap gap-2">
+            {system.practices.map((practice) => (
+              <span
+                key={practice}
+                className="text-[10px] tracking-wider uppercase text-white/40 border border-white/10 rounded-full px-3 py-1.5"
+              >
+                {practice}
+              </span>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => onOpen(system.id, e.currentTarget)}
+            className="mt-10 group inline-flex items-center gap-3 text-sm text-white hover:text-[#00B98E] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00B98E] rounded-full"
+          >
+            <span className="w-10 h-10 rounded-full border border-white/15 group-hover:border-[#00B98E] flex items-center justify-center transition-colors">
+              &rarr;
+            </span>
+            Open the full case study
+          </button>
+        </div>
+
+        {/* Outcomes */}
+        <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-white/8 p-9 md:p-14 flex flex-col justify-center">
+          <p className="font-body text-xs tracking-[0.2em] uppercase text-white/35 mb-8">
+            What it did
+          </p>
+          <div className="space-y-6">
+            {system.outcomes?.map((outcome) => (
+              <div key={outcome} className="flex gap-4">
+                <span className="shrink-0 mt-2.5 w-1.5 h-1.5 rounded-full bg-[#00B98E]" />
+                <p className="font-body text-white/85 leading-relaxed">{outcome}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Blueprint / in-house card.
+ * ------------------------------------------------------------------ */
+function SystemCard({
+  system,
   index,
   onOpen,
 }: {
-  project: AiSystemProject;
+  system: SystemEntry;
   index: number;
   onOpen: (id: string, el: HTMLButtonElement) => void;
 }) {
   return (
     <button
       type="button"
-      onClick={(e) => onOpen(project.id, e.currentTarget)}
-      className="group h-full w-full flex flex-col text-left bg-black border border-white/10 rounded-2xl p-8 md:p-10 transition-all duration-300 hover:-translate-y-1 hover:border-[#00B98E] hover:shadow-[0_0_30px_rgba(0,185,142,0.15)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00B98E] focus-visible:ring-offset-2 focus-visible:ring-offset-black cursor-pointer"
+      onClick={(e) => onOpen(system.id, e.currentTarget)}
+      className="group h-full w-full flex flex-col text-left rounded-2xl border border-white/8 bg-white/[0.02] p-8 md:p-10 transition-all duration-300 hover:-translate-y-1 hover:border-white/25 hover:bg-white/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00B98E] focus-visible:ring-offset-2 focus-visible:ring-offset-black cursor-pointer"
     >
       <div className="flex items-start justify-between mb-8">
-        <span className="text-[10px] tracking-[0.2em] text-[#00B98E] uppercase border border-[#00B98E]/30 rounded-full px-3 py-1">
-          {project.category}
-        </span>
-        <span className="font-display text-2xl text-white/15 group-hover:text-[#00B98E]/40 transition-colors">
+        <StatusChip system={system} />
+        <span className="font-display text-xl text-white/12">
           {String(index + 1).padStart(2, "0")}
         </span>
       </div>
-      <h3 className="text-2xl font-bold text-white leading-snug">{project.title}</h3>
-      <p className="text-white/50 text-[15px] mt-4 leading-relaxed">{project.tagline}</p>
-      <div className="mt-auto pt-6 flex items-center gap-2 text-xs tracking-[0.2em] text-white/30 uppercase border-t border-white/5 group-hover:text-[#00B98E] group-hover:border-[#00B98E]/20 transition-colors">
-        <span>View Case Study</span>
-        <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+
+      <p className="font-body text-xs tracking-[0.18em] uppercase text-white/35 mb-3">
+        {system.vertical}
+      </p>
+      <h3 className="font-display text-2xl md:text-3xl font-light text-white leading-snug group-hover:text-[#00B98E] transition-colors">
+        {system.name}
+      </h3>
+      <p className="mt-4 font-body text-white/50 leading-relaxed">{system.headline}</p>
+
+      <div className="mt-7 pt-6 border-t border-white/5">
+        <p className="font-body text-[10px] tracking-[0.2em] uppercase text-white/25 mb-3">
+          What it takes over
+        </p>
+        <ul className="space-y-2">
+          {system.howItRuns.slice(0, 3).map((item) => (
+            <li key={item} className="flex gap-2.5 font-body text-sm text-white/45 leading-relaxed">
+              <span className="shrink-0 mt-[9px] w-1 h-1 rounded-full bg-white/25" />
+              {item}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-auto pt-8 flex items-center justify-between">
+        <span className="font-body text-xs tracking-[0.2em] uppercase text-white/30 group-hover:text-[#00B98E] transition-colors">
+          Open the system
+        </span>
+        <span className="text-white/25 group-hover:text-[#00B98E] group-hover:translate-x-1 transition-all duration-300">
+          &rarr;
+        </span>
       </div>
     </button>
   );
 }
 
-function ProjectModal({
-  project,
-  index,
-  onClose,
-}: {
-  project: AiSystemProject;
-  index: number;
-  onClose: () => void;
-}) {
+/* ------------------------------------------------------------------ *
+ * Detail modal.
+ * ------------------------------------------------------------------ */
+function SystemModal({ system, onClose }: { system: SystemEntry; onClose: () => void }) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -155,9 +189,18 @@ function ProjectModal({
     };
   }, [onClose]);
 
+  const Block = ({ label, children }: { label: string; children: React.ReactNode }) => (
+    <div>
+      <p className="font-body text-[10px] tracking-[0.25em] uppercase text-[#00B98E] mb-4">
+        {label}
+      </p>
+      {children}
+    </div>
+  );
+
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 md:p-8 bg-black/85 backdrop-blur-sm"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -167,226 +210,296 @@ function ProjectModal({
       <motion.div
         role="dialog"
         aria-modal="true"
-        aria-labelledby="project-modal-title"
+        aria-labelledby="system-modal-title"
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 12, scale: 0.98 }}
         transition={{ duration: 0.25, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto bg-black border border-white/10 rounded-2xl p-8 md:p-12 shadow-[0_0_60px_rgba(0,185,142,0.1)]"
+        className="relative w-full max-w-4xl max-h-[88vh] flex flex-col bg-[#08080A] border border-white/10 rounded-2xl overflow-hidden shadow-[0_0_80px_rgba(0,185,142,0.08)]"
       >
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] rounded-full bg-gradient-to-bl from-[#00B98E]/5 to-transparent pointer-events-none" />
-
-        <button
-          type="button"
-          ref={closeButtonRef}
-          onClick={onClose}
-          aria-label="Close details"
-          className="absolute top-6 right-6 w-9 h-9 rounded-full border border-white/10 flex items-center justify-center text-white/50 hover:text-black hover:bg-[#00B98E] hover:border-[#00B98E] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00B98E]"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-[10px] tracking-[0.2em] text-[#00B98E] uppercase border border-[#00B98E]/30 rounded-full px-3 py-1">
-              {project.category}
-            </span>
-            <span className="text-xs text-white/30 tracking-widest">
-              {String(index + 1).padStart(2, "0")} / {String(AI_SYSTEMS.length).padStart(2, "0")}
-            </span>
+        {/* Sticky header */}
+        <div className="shrink-0 flex items-start justify-between gap-6 px-7 md:px-12 pt-8 md:pt-10 pb-6 border-b border-white/8">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-3 mb-4">
+              <StatusChip system={system} />
+              <span className="font-body text-xs tracking-[0.18em] uppercase text-white/30">
+                {system.vertical}
+              </span>
+            </div>
+            <h3
+              id="system-modal-title"
+              className="font-display text-3xl md:text-4xl font-light text-white leading-tight"
+            >
+              {system.client ?? system.name}
+            </h3>
+            {system.client && (
+              <p className="mt-2 font-body text-[#00B98E]">{system.name}</p>
+            )}
           </div>
 
-          <h3
-            id="project-modal-title"
-            className="font-display text-3xl md:text-4xl font-light text-white mb-3 leading-tight"
+          <button
+            type="button"
+            ref={closeButtonRef}
+            onClick={onClose}
+            aria-label="Close details"
+            className="shrink-0 w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white/50 hover:text-black hover:bg-[#00B98E] hover:border-[#00B98E] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00B98E]"
           >
-            {project.title}
-          </h3>
-          <p className="text-white/50 italic text-lg mb-10 font-body">{project.tagline}</p>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
-          <div className="grid md:grid-cols-2 gap-10">
-            <div className="space-y-8">
-              <div>
-                <p className="text-xs tracking-[0.25em] text-[#00B98E] uppercase mb-3 font-body">
-                  Context
-                </p>
-                <p className="text-white/60 text-sm leading-relaxed">{project.context}</p>
-              </div>
-              <div>
-                <p className="text-xs tracking-[0.25em] text-[#00B98E] uppercase mb-3 font-body">
-                  The Problem
-                </p>
-                <p className="text-white/60 text-sm leading-relaxed">{project.problem}</p>
-              </div>
-              <div>
-                <p className="text-xs tracking-[0.25em] text-[#00B98E] uppercase mb-3 font-body">
-                  What We Built
-                </p>
-                <p className="text-white/60 text-sm leading-relaxed">{project.whatWeBuilt}</p>
+        {/*
+          data-lenis-prevent stops the global Lenis smooth-scroll from swallowing
+          the wheel/trackpad event and scrolling the page behind the modal;
+          overscroll-contain stops the scroll chaining once this pane hits an end.
+          body{overflow:hidden} alone does neither, because Lenis drives scroll
+          with transforms rather than the document's own scrollTop.
+        */}
+        <div
+          data-lenis-prevent
+          className="flex-1 overflow-y-auto overscroll-contain px-7 md:px-12 py-8 md:py-10"
+        >
+          <p className="font-body text-lg md:text-xl text-white/70 leading-relaxed mb-10 max-w-2xl">
+            {system.headline}
+          </p>
+
+          {system.outcomes && (
+            <div
+              className={`rounded-2xl p-6 md:p-7 mb-10 border ${
+                system.status === "production"
+                  ? "bg-[#00B98E]/[0.06] border-[#00B98E]/20"
+                  : "bg-white/[0.02] border-white/10"
+              }`}
+            >
+              <p className="font-body text-[10px] tracking-[0.25em] uppercase text-[#00B98E] mb-5">
+                {system.status === "production" ? "What it did" : "Where it stands"}
+              </p>
+              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+                {system.outcomes.map((outcome) => (
+                  <div key={outcome} className="flex gap-2.5">
+                    <span className="shrink-0 mt-[9px] w-1 h-1 rounded-full bg-[#00B98E]" />
+                    <p className="font-body text-white text-sm leading-relaxed">{outcome}</p>
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="space-y-8">
-              <div>
-                <p className="text-xs tracking-[0.25em] text-[#00B98E] uppercase mb-3 font-body">
-                  Key Execution
+          )}
+
+          <div className="grid md:grid-cols-2 gap-10 md:gap-12">
+            <div className="space-y-9">
+              <Block label="What leaks today">
+                <p className="font-body text-white/55 text-sm leading-relaxed">{system.leak}</p>
+              </Block>
+              <Block label="What the system does">
+                <p className="font-body text-white/55 text-sm leading-relaxed">
+                  {system.whatItDoes}
                 </p>
-                <div className="space-y-3">
-                  {project.keyExecution.map((item, i) => (
-                    <div key={item} className="flex gap-3">
-                      <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full border border-white/15 flex items-center justify-center text-[10px] text-white/50">
-                        {i + 1}
-                      </span>
-                      <p className="text-white/60 text-sm leading-relaxed">{item}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-white/[0.03] border border-white/10 rounded-xl p-5">
-                <p className="text-xs tracking-[0.25em] text-[#00B98E] uppercase mb-3 font-body">
-                  Result
-                </p>
-                <p className="text-white text-sm leading-relaxed">{project.result}</p>
-              </div>
-              <div>
-                <p className="text-xs tracking-[0.25em] text-[#00B98E] uppercase mb-3 font-body">
-                  Stack
-                </p>
+              </Block>
+              <Block label="Built with">
                 <div className="flex flex-wrap gap-2">
-                  {project.stack.map((item) => (
+                  {system.stack.map((item) => (
                     <span
                       key={item}
-                      className="text-xs text-white/70 border border-white/10 rounded-full px-3 py-1"
+                      className="text-xs text-white/60 border border-white/10 rounded-full px-3 py-1.5"
                     >
                       {item}
                     </span>
                   ))}
                 </div>
-              </div>
+              </Block>
+            </div>
+
+            <div className="space-y-9">
+              <Block label="How it runs">
+                <div className="space-y-3">
+                  {system.howItRuns.map((item, i) => (
+                    <div key={item} className="flex gap-3">
+                      <span className="shrink-0 mt-0.5 w-5 h-5 rounded-full border border-white/15 flex items-center justify-center text-[10px] text-white/45">
+                        {i + 1}
+                      </span>
+                      <p className="font-body text-white/55 text-sm leading-relaxed">{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </Block>
+              <Block label="What the owner sees">
+                <ul className="space-y-2.5">
+                  {system.measured.map((item) => (
+                    <li key={item} className="flex gap-2.5 font-body text-sm text-white/55 leading-relaxed">
+                      <span className="shrink-0 mt-[9px] w-1 h-1 rounded-full bg-[#00B98E]" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </Block>
             </div>
           </div>
+        </div>
 
-          <div className="flex items-center justify-between mt-12 pt-8 border-t border-white/5">
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-xs tracking-widest text-white/40 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00B98E] rounded"
-            >
-              CLOSE DETAILS
-            </button>
-            <Link
-              href="/contact"
-              className="inline-flex items-center gap-2 bg-[#00B98E] text-black font-medium px-6 py-3 rounded-full text-xs tracking-widest hover:bg-[#00B98E]/80 transition-all duration-300"
-            >
-              Build Something Like This →
-            </Link>
-          </div>
+        {/* Sticky footer */}
+        <div className="shrink-0 flex items-center justify-between gap-4 px-7 md:px-12 py-5 border-t border-white/8 bg-black/40">
+          <button
+            type="button"
+            onClick={onClose}
+            className="font-body text-xs tracking-[0.2em] uppercase text-white/40 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00B98E] rounded"
+          >
+            Close
+          </button>
+          <Link
+            href="/contact"
+            className="inline-flex items-center gap-2 bg-[#00B98E] text-black font-medium px-6 py-3 rounded-full text-xs tracking-widest hover:bg-[#00B98E]/85 transition-all duration-300"
+          >
+            Talk about this one &rarr;
+          </Link>
         </div>
       </motion.div>
     </motion.div>
   );
 }
 
+/* ------------------------------------------------------------------ */
+
 export default function WorkPageClient() {
   const [openId, setOpenId] = useState<string | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
 
-  const openProject = (id: string, el: HTMLButtonElement) => {
+  const openSystem = (id: string, el: HTMLButtonElement) => {
     triggerRef.current = el;
     setOpenId(id);
   };
 
-  const closeProject = () => {
+  const closeSystem = () => {
     setOpenId(null);
     triggerRef.current?.focus();
   };
 
-  const activeIndex = AI_SYSTEMS.findIndex((p) => p.id === openId);
-  const activeProject = activeIndex >= 0 ? AI_SYSTEMS[activeIndex] : null;
+  const activeSystem = SYSTEMS.find((s) => s.id === openId) ?? null;
 
   return (
     <main className="bg-black min-h-screen">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-6">
-        <div className="max-w-6xl mx-auto text-center">
-          <p className="text-xs tracking-[0.2em] text-white uppercase mb-6 font-body">
+      {/* Hero */}
+      <section className="pt-32 pb-16 px-6">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-xs tracking-[0.2em] text-[#00B98E] uppercase mb-6 font-body">
             Our Work
           </p>
-          <h1 className="font-display text-5xl md:text-6xl font-light leading-tight mb-6">
-            AI Systems <span style={{ color: '#00B98E' }}>We've Built & Run</span>
+          <h1 className="font-display text-5xl md:text-6xl font-light leading-[1.05] mb-8 text-white">
+            The systems,
+            <br />
+            <span className="text-white/45">opened up.</span>
           </h1>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto font-body">
-            Voice agents, automation pipelines, and products we've shipped — plus the
-            websites and platforms we've built along the way.
+          <p className="text-white/50 text-lg max-w-2xl font-body leading-relaxed">
+            Each one below opens into what leaks today, what the system takes over, how it runs,
+            and what the owner sees once it does. Two labels appear:{" "}
+            <span className="text-[#00B98E]">in production</span> means live for a named client,
+            with their numbers. <span className="text-white/70">System we build</span> means a
+            system design we deploy for that vertical — described as it is built, not dressed up
+            as someone else&apos;s case study.
           </p>
         </div>
       </section>
 
-      {/* Group A - AI Systems */}
+      {/* In production */}
       <section className="pb-20 px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-10">
+          {PRODUCTION_SYSTEMS.map((system) => (
+            <FeaturedSystem key={system.id} system={system} onOpen={openSystem} />
+          ))}
+        </div>
+      </section>
+
+      {/* Systems we build */}
+      <section className="py-20 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-12 max-w-2xl">
             <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-4 font-body">
-              Group A
+              Systems We Build
             </p>
-            <h2 className="font-display text-3xl md:text-4xl font-light text-white">
-              AI Systems
+            <h2 className="font-display text-3xl md:text-4xl font-light text-white mb-4">
+              Same shape, different conversation
             </h2>
+            <p className="font-body text-white/45 leading-relaxed">
+              The mechanism transfers across verticals; the script, the qualification and the
+              calendar do not. These are the system designs we deploy, written out in full.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-            {AI_SYSTEMS.map((project, index) => (
-              <AiSystemCard
-                key={project.id}
-                project={project}
-                index={index}
-                onOpen={openProject}
-              />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-stretch">
+            {BLUEPRINT_SYSTEMS.map((system, index) => (
+              <SystemCard key={system.id} system={system} index={index} onOpen={openSystem} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Built in-house */}
+      <section className="py-20 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-10 max-w-2xl">
+            <p className="text-xs tracking-[0.3em] text-[#00B98E] uppercase mb-4 font-body">
+              Our Own Products
+            </p>
+            <h2 className="font-display text-3xl md:text-4xl font-light text-white mb-4">
+              Built for ourselves first
+            </h2>
+            <p className="font-body text-white/45 leading-relaxed">
+              The same four practices, pointed inward. What works here becomes something we
+              can put in front of a client; what does not, we find out on our own time.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {PRODUCT_SYSTEMS.map((system, index) => (
+              <SystemCard key={system.id} system={system} index={index} onOpen={openSystem} />
             ))}
           </div>
         </div>
       </section>
 
       <AnimatePresence>
-        {activeProject && (
-          <ProjectModal project={activeProject} index={activeIndex} onClose={closeProject} />
-        )}
+        {activeSystem && <SystemModal system={activeSystem} onClose={closeSystem} />}
       </AnimatePresence>
 
-      {/* Group B - Web & Product Builds */}
-      <section className="py-20 px-6 border-t border-zinc-900">
+      {/* Prior work — websites and platforms. Deliberately quieter than the
+          systems above: these are credentials, not the offer. */}
+      <section className="py-20 px-6 border-t border-white/5">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-10">
-            <p className="text-xs tracking-[0.3em] text-white/40 uppercase mb-4 font-body">
-              Group B
+          <div className="mb-10 max-w-2xl">
+            <p className="text-xs tracking-[0.3em] text-white/30 uppercase mb-4 font-body">
+              Before The Systems
             </p>
-            <h2 className="font-display text-2xl md:text-3xl font-light text-white/70">
-              Web & Product Builds
+            <h2 className="font-display text-2xl md:text-3xl font-light text-white/70 mb-4">
+              Websites and platforms we have shipped
             </h2>
+            <p className="font-body text-sm text-white/35 leading-relaxed">
+              The studio started here, and we still build this layer when a system needs it.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {clients.map((client) => {
               const CardBody = (
-                <div className="bg-black border border-white/10 w-full h-auto rounded-xl overflow-hidden transition-all duration-300 group-hover:border-[#00B98E] group-hover:shadow-[0_0_30px_rgba(0,185,142,0.15)]">
+                <div className="bg-black border border-white/5 w-full rounded-xl overflow-hidden transition-all duration-300 group-hover:border-white/20">
                   <div className="relative aspect-video w-full overflow-hidden">
                     <Image
                       src={client.image}
                       alt={client.name}
                       fill
-                      className="object-cover transition-all duration-300 group-hover:scale-105"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-cover opacity-45 transition-all duration-300 group-hover:opacity-90 group-hover:scale-105"
                     />
                   </div>
-
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-white group-hover:text-[#00B98E] transition-colors">
+                  <div className="p-4">
+                    <h3 className="text-sm font-medium text-white/70 group-hover:text-white transition-colors">
                       {client.name}
                     </h3>
-                    <p className="text-white/60 text-sm mt-2">
-                      {client.description}
-                    </p>
+                    <p className="text-white/30 text-xs mt-1">{client.description}</p>
                   </div>
                 </div>
               );
@@ -411,43 +524,21 @@ export default function WorkPageClient() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-6 border-t border-zinc-900">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <p className="font-display text-5xl text-white">50+</p>
-              <p className="text-white/50 text-sm mt-2">Projects Completed</p>
-            </div>
-            <div className="text-center">
-              <p className="font-display text-5xl text-white">10x</p>
-              <p className="text-white/50 text-sm mt-2">Avg ROI</p>
-            </div>
-            <div className="text-center">
-              <p className="font-display text-5xl text-white">300%</p>
-              <p className="text-white/50 text-sm mt-2">Avg Growth</p>
-            </div>
-            <div className="text-center">
-              <p className="font-display text-5xl text-white">98%</p>
-              <p className="text-white/50 text-sm mt-2">Client Satisfaction</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 px-6 bg-zinc-900/30">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-display text-4xl mb-6">Want an AI System Built for Your Business?</h2>
-          <p className="text-white/50 mb-8 font-body">
-            Let's talk about what we can automate, qualify, or run for you — the way we've
-            done for the businesses above.
+      {/* CTA */}
+      <section className="py-24 px-6 border-t border-white/5">
+        <div className="max-w-3xl mx-auto text-center">
+          <h2 className="font-display text-3xl md:text-4xl font-light text-white mb-5">
+            Which of these is your business losing?
+          </h2>
+          <p className="text-white/50 mb-8 font-body leading-relaxed">
+            We start by filling in your own enquiry form and timing the reply. You see the gap in
+            your own data before anyone talks about building anything.
           </p>
           <Link
             href="/contact"
-            className="inline-block bg-[#00B98E] text-black font-medium px-8 py-4 rounded-full text-sm tracking-widest hover:bg-[#00B98E]/80 transition-all duration-300"
+            className="inline-block bg-[#00B98E] text-black font-medium px-8 py-4 rounded-full text-sm tracking-widest hover:bg-[#00B98E]/85 transition-all duration-300"
           >
-            Start Your Project →
+            Book the audit call &rarr;
           </Link>
         </div>
       </section>

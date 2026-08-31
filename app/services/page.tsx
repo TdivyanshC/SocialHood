@@ -7,16 +7,16 @@ export const metadata: Metadata = {
   // that includes it too rendered as a redundant double suffix well past
   // Google's ~70-char display guideline (caught by a live SEO audit,
   // 2026-07-29 — see agents/seo_agent/audit.py).
-  title: "Services: AI Voice Agents & Automation",
-  description: "AI Voice Agents, WhatsApp AI Agents, custom automation, and CRM integrations for real estate, finance, e-commerce, and more across India.",
+  title: "What We Build: Voice, Messaging, Automation & Software",
+  description: "The four practices of an AI Systems Studio — voice agents, WhatsApp agents, automation, and the software underneath — and the systems they assemble into across furniture retail, real estate, clinics and interiors.",
   alternates: {
     canonical: "https://thesocialhood.in/services",
   },
   openGraph: {
-    title: "Services | AI Voice Agents, WhatsApp AI & Automation - The SocialHood",
-    description: "AI Voice Agents, WhatsApp AI Agents, custom AI automation systems, custom software, and CRM integrations.",
+    title: "What We Build | The SocialHood — AI Systems Studio",
+    description: "Voice, Messaging, Automation and Software — four practices, assembled into systems that run.",
     url: "https://thesocialhood.in/services",
-    images: ["/og-image.jpg"],
+    images: ["/opengraph-image"],
   },
 };
 

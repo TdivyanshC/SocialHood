@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Cormorant_Garamond, DM_Sans, Playfair_Display } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -29,26 +29,34 @@ const playfair = Playfair_Display({
   display: "swap",
 });
 
+// Next 15 reads viewport from its own export; leaving it inside `metadata`
+// is deprecated and warns at build time.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://thesocialhood.in"),
   title: {
-    default: "The SocialHood | AI Systems & Automation Company India",
+    default: "The SocialHood | AI Systems Studio",
     template: "%s | The SocialHood",
   },
-  description: "We help businesses scale using AI, automation, and custom software — not just websites or marketing campaigns. AI voice agents, WhatsApp AI agents, and custom automation systems for real estate, financial services, e-commerce, education, and manufacturing across India.",
+  description: "An AI Systems Studio. We build and run voice agents that answer and call, WhatsApp agents that follow up, and the automation and software underneath — for businesses where a slow callback costs the sale.",
   keywords: [
-    "AI automation company India",
+    "AI systems studio India",
     "AI voice agent for business",
+    "AI voice agent India",
     "WhatsApp AI agent India",
-    "business process automation India",
-    "custom AI automation systems",
-    "AI systems company India",
-    "custom software development company India",
-    "SaaS product development agency",
+    "speed to lead system",
+    "lead response automation",
+    "inbound call answering AI",
+    "outbound calling AI agent",
+    "AI automation for furniture retail",
     "AI automation for real estate",
-    "AI automation for financial services",
+    "AI automation for clinics",
     "CRM integration company India",
-    "startup automation consulting",
   ],
   authors: [{ name: "The SocialHood Company" }],
   creator: "The SocialHood",
@@ -81,28 +89,14 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: "https://thesocialhood.in",
     siteName: "The SocialHood",
-    title: "The SocialHood | AI Systems & Automation Company India",
-    description: "We help businesses scale using AI, automation, and custom software — not just websites or marketing campaigns.",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "The SocialHood - AI Systems & Automation Company India",
-      },
-    ],
+    title: "The SocialHood | AI Systems Studio",
+    description: "Voice agents that answer and call. WhatsApp agents that follow up. The automation and software underneath.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "The SocialHood | AI Systems & Automation Company India",
-    description: "We help businesses scale using AI, automation, and custom software — not just websites or marketing campaigns.",
-    images: ["/og-image.jpg"],
+    title: "The SocialHood | AI Systems Studio",
+    description: "Voice agents that answer and call. WhatsApp agents that follow up. The automation and software underneath.",
     creator: "@thesocialhood",
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
   },
   icons: {
     icon: [
@@ -143,15 +137,8 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "The SocialHood",
               "url": "https://thesocialhood.in",
-              "logo": "https://thesocialhood.in/logo.png",
-              "description": "AI Systems Studio — we build and run AI voice agents, WhatsApp AI agents, custom automation, and software development.",
-              "foundingDate": "2020",
-              "address": {
-                "@type": "PostalAddress",
-                "addressLocality": "Delhi",
-                "addressRegion": "Delhi",
-                "addressCountry": "IN"
-              },
+              "logo": "https://thesocialhood.in/android-chrome-512x512.png",
+              "description": "AI Systems Studio — we build and run AI voice agents, WhatsApp AI agents, custom automation, and the software underneath them.",
               "contactPoint": {
                 "@type": "ContactPoint",
                 "telephone": "+91-8799712556",
@@ -164,19 +151,11 @@ export default function RootLayout({
                 "https://linkedin.com/company/thesocialhood",
                 "https://twitter.com/thesocialhood"
               ],
-              "areaServed": {
-                "@type": "Country",
-                "name": "India"
-              },
               "serviceType": [
                 "AI Voice Agents",
                 "WhatsApp AI Agents",
                 "Custom AI Automation Systems",
-                "Custom Software Development",
-                "Website & Product Development",
-                "SEO & Organic Growth",
-                "CRM Integrations",
-                "Startup Consulting"
+                "Custom Software & Dashboards"
               ]
             }),
           }}
@@ -189,47 +168,6 @@ export default function RootLayout({
               "@type": "WebSite",
               "name": "The SocialHood",
               "url": "https://thesocialhood.in"
-            }),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              "name": "The SocialHood",
-              "image": "https://thesocialhood.in/logo.png",
-              "url": "https://thesocialhood.in",
-              "telephone": "+91-8799712556",
-              "email": "team@thesocialhood.in",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "Delhi, India",
-                "addressLocality": "Delhi",
-                "addressRegion": "Delhi",
-                "postalCode": "110001",
-                "addressCountry": "IN"
-              },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": "28.6139",
-                "longitude": "77.2090"
-              },
-              "openingHoursSpecification": {
-                "@type": "OpeningHoursSpecification",
-                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                "opens": "09:00",
-                "closes": "18:00"
-              },
-              "areaServed": [
-                { "@type": "Place", "name": "Delhi NCR" },
-                { "@type": "Place", "name": "Delhi" },
-                { "@type": "Place", "name": "Noida" },
-                { "@type": "Place", "name": "Gurugram" },
-                { "@type": "Country", "name": "India" }
-              ],
-              "priceRange": "$$"
             }),
           }}
         />

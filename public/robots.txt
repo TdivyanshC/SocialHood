@@ -7,14 +7,10 @@ Allow: /
 # Sitemap
 Sitemap: https://thesocialhood.in/sitemap.xml
 
-# Crawl-delay (optional, for polite crawling)
-Crawl-delay: 1
-
-# Block common non-content paths
+# Block non-content paths.
+# Note: /login and the /[client_name] client dashboards are deliberately NOT
+# listed here. They serve <meta name="robots" content="noindex"> instead — a
+# Disallow would stop Google fetching the page and therefore stop it ever
+# seeing the noindex, which is what leaves such URLs stuck in the index.
 Disallow: /api/
 Disallow: /_next/
-Disallow: /*.json$
-Disallow: /404
-
-# Host directive
-Host: https://thesocialhood.in

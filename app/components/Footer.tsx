@@ -88,8 +88,8 @@ export default function Footer() {
               The SocialHood Company
             </Link>
             <p className="text-white/50 text-base leading-relaxed mb-6">
-              An AI Systems Studio. We build voice agents, WhatsApp automation,
-              and custom software that replace manual work — not just websites or campaigns.
+              An AI Systems Studio. We build and run voice agents, WhatsApp agents,
+              automation, and the software underneath them.
             </p>
             <div className="flex gap-4">
               {socialLinks.map((link) => (
@@ -138,14 +138,6 @@ export default function Footer() {
                   className="hover:text-[#00B98E] transition-colors"
                 >
                   team@thesocialhood.in
-                </a>
-              </li>
-              <li>
-                <a
-                  href="tel:+919198310770"
-                  className="hover:text-[#00B98E] transition-colors"
-                >
-                  +91 9198310770
                 </a>
               </li>
               <li>

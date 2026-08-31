@@ -6,16 +6,18 @@ import Footer from "../components/Footer";
 import { getAllPosts } from "../../lib/blog";
 
 export const metadata: Metadata = {
-  title: "Blog | AI Automation Insights - The SocialHood",
+  // No brand suffix here — the root layout title template appends one.
+  title: "Blog: AI Systems & Automation",
   description: "How AI voice agents, WhatsApp automation, and custom systems help businesses scale — insights from The SocialHood.",
   alternates: {
-    canonical: "https://thesocialhood.in/blog",
+    canonical: "https://thesocialhood.in/blog/",
   },
   openGraph: {
-    title: "Blog | AI Automation Insights - The SocialHood",
+    // OG cards get no title template, so the brand is spelled out here.
+    title: "Blog: AI Systems & Automation | The SocialHood",
     description: "How AI voice agents, WhatsApp automation, and custom systems help businesses scale.",
-    url: "https://thesocialhood.in/blog",
-    images: ["/og-image.jpg"],
+    url: "https://thesocialhood.in/blog/",
+    images: ["/opengraph-image"],
   },
 };
 
@@ -56,7 +58,13 @@ export default function BlogIndexPage() {
                 >
                   {post.image && (
                     <div className="hidden sm:block relative w-28 h-28 shrink-0 rounded-xl overflow-hidden">
-                      <Image src={post.image} alt="" fill className="object-cover" />
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        sizes="112px"
+                        className="object-cover"
+                      />
                     </div>
                   )}
                   <div className="min-w-0">

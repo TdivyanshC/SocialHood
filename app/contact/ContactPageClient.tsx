@@ -57,14 +57,15 @@ export default function ContactPageClient() {
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <p className="text-xs tracking-[0.2em] text-[#00B98E] uppercase mb-6 font-body">
-            Contact Us
+            Contact
           </p>
-          <h1 className="font-display text-5xl md:text-6xl font-light leading-tight mb-6">
-            Let's <span style={{ color: '#FFFFFF' }}>Transform</span> Your Business
+          <h1 className="font-display text-5xl md:text-6xl font-light leading-tight mb-6 text-white">
+            Start With The Audit
           </h1>
-          <p className="text-white/50 text-lg max-w-2xl mx-auto font-body">
-            Ready to scale your business with cutting-edge technology and proven strategies? 
-            Get in touch and let's discuss your growth roadmap.
+          <p className="text-white/50 text-lg max-w-2xl mx-auto font-body leading-relaxed">
+            Before anyone talks about building anything, we fill in your own enquiry form and
+            time the reply. You see your response gap in your own data. If a system will not pay
+            for itself at your lead volume, we will say so on that call.
           </p>
         </div>
       </section>
@@ -95,7 +96,11 @@ export default function ContactPageClient() {
                 </div>
               ) : (
               <>
-              <h2 className="font-display text-2xl mb-6">Send us a Message</h2>
+              <h2 className="font-display text-2xl mb-2">Tell us what you are running</h2>
+              <p className="text-white/40 text-sm font-body mb-6">
+                Roughly how many leads a month, where they come from, and who calls them today.
+                That is enough for a useful first call.
+              </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -182,9 +187,9 @@ export default function ContactPageClient() {
 
             <div className="space-y-8">
               <div className="bg-surface border border-white/5 rounded-xl p-8">
-                <h3 className="font-display text-xl mb-4">Get in Touch</h3>
+                <h3 className="font-display text-xl mb-4">Reach us directly</h3>
                 <p className="text-white/50 font-body mb-6">
-                  Have questions? We'd love to hear from you. Fill out the form or reach out directly.
+                  A person reads every message and replies within one business day.
                 </p>
                 
                 <div className="space-y-4">
@@ -247,19 +252,24 @@ export default function ContactPageClient() {
               </div>
 
               <div className="bg-surface border border-white/5 rounded-xl p-8">
-                <h3 className="font-display text-xl mb-4">Book a Meeting</h3>
+                <h3 className="font-display text-xl mb-4">Or pick a time</h3>
                 <p className="text-white/50 font-body mb-4">
-                  Schedule a free consultation call with us.
+                  Fifteen minutes. We come with your response times already measured.
                 </p>
-                <div 
-                  className="calendly-inline-widget" 
-                  data-url="https://calendly.com/thesocialhood08/new-meeting"
-                  style={{ minWidth: '320px', height: '400px' }}
-                ></div>
-                <script 
-                  type="text/javascript" 
-                  src="https://assets.calendly.com/assets/external/widget.js" 
-                  async 
+                {/*
+                  Calendly's inline embed exists only to inject this iframe. Loading
+                  widget.js instead meant the script populated the container — iframe,
+                  spinner, data-processed, rewritten inline style — before React
+                  hydrated, so the server's empty div never matched the client and
+                  every visit to /contact threw a hydration error. Rendering the
+                  iframe ourselves is the same result with one less third-party
+                  script and nothing mutating React's DOM behind its back.
+                */}
+                <iframe
+                  src="https://calendly.com/thesocialhood08/new-meeting?embed_type=Inline&hide_gdpr_banner=1&background_color=0f0f12&text_color=ffffff&primary_color=00b98e"
+                  title="Book a 15-minute call with The SocialHood"
+                  loading="lazy"
+                  className="w-full min-w-[280px] h-[640px] md:h-[700px] rounded-lg border-0"
                 />
               </div>
             </div>

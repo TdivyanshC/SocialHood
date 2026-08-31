@@ -10,38 +10,43 @@ gsap.registerPlugin(ScrollTrigger);
 
 const values = [
   {
-    title: "Client Success First",
-    description: "We measure our success by your growth. When you succeed, we succeed.",
+    title: "Show, Don't Claim",
+    description:
+      "Every number on this site belongs to a named engagement. If we cannot say where a figure came from, it does not go up.",
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     ),
   },
   {
-    title: "Trust Over Transactions",
-    description: "We believe in building lasting relationships. Trust is earned, not bought.",
+    title: "Scope Before Build",
+    description:
+      "What the system will do and what it will not is written down and agreed before anyone opens an editor. Surprises belong in the scoping call, not the invoice.",
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
       </svg>
     ),
   },
   {
-    title: "AI-First Engineering",
-    description: "Voice agents, WhatsApp agents, and automation systems built to actually replace manual work, not just assist it.",
+    title: "We Run What We Build",
+    description:
+      "A system handed over and forgotten drifts within a month. We read the transcripts, tune the scripts, and stay on the hook for what happens after launch.",
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
       </svg>
     ),
   },
   {
-    title: "Proven Strategies",
-    description: "Our methods are tested and refined through years of successful implementations.",
+    title: "The Honest No",
+    description:
+      "If a system will not pay for itself at your lead volume, we say so on the first call. Selling one anyway costs us the case study we actually need.",
     icon: (
       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
       </svg>
     ),
   },
@@ -118,57 +123,50 @@ export default function AboutPageClient() {
           <p className="about-header text-xs tracking-[0.3em] text-white uppercase mb-6 font-body">
             About Us
           </p>
-          <h1 className="about-header font-display text-5xl md:text-6xl font-light leading-tight mb-6">
-            An AI Systems{' '}
-            <span className="text-white">Studio</span>
+          <h1 className="about-header font-display text-5xl md:text-6xl font-light leading-tight mb-6 text-white">
+            An AI Systems Studio
           </h1>
-          <p className="about-header text-white/50 text-lg max-w-2xl mx-auto font-body">
-            We help businesses scale using AI, automation, and custom software — instead of just
-            delivering websites or marketing campaigns.
+          <p className="about-header text-white/50 text-lg max-w-2xl mx-auto font-body leading-relaxed">
+            A small team that designs, builds, and then operates the systems doing a
+            business&apos;s repeated work. We keep the number of clients low on purpose —
+            running a system properly is not the same as shipping one.
           </p>
         </div>
       </section>
 
-      {/* Story Section */}
+      {/* Story Section — deliberately no stat tiles. Every number that belonged
+          here was either invented or trivia, and trivia is not credibility. */}
       <section className="py-20 px-6">
-        <div className="about-content-section max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="about-content">
-              <h2 className="font-display text-4xl mb-6">
-                Our <span className="text-white">Story</span>
+        <div className="about-content-section max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+            <div className="about-content lg:col-span-4">
+              <h2 className="font-display text-3xl md:text-4xl font-light text-white leading-tight">
+                How we
+                <br />
+                got here
               </h2>
-              <p className="text-white/60 font-body leading-relaxed mb-6">
-                The SocialHood Company started by building websites and running ad campaigns.
-                Along the way, we kept building the same thing for every client: systems that
-                did the repetitive work so their teams didn't have to.
-              </p>
-              <p className="text-white/60 font-body leading-relaxed">
-                Today, that's the whole business. We build AI voice agents, WhatsApp AI agents,
-                custom automation, and the software to run it all — helping businesses replace
-                manual work with intelligent systems and scalable digital infrastructure.
-              </p>
             </div>
 
-            {/* Stats */}
-            <div className="about-content">
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
-                  <p className="font-display text-5xl text-white mb-2">10x</p>
-                  <p className="text-xs text-white/40 uppercase tracking-wider">Average ROI</p>
-                </div>
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
-                  <p className="font-display text-5xl text-white mb-2">300%</p>
-                  <p className="text-xs text-white/40 uppercase tracking-wider">Lead Growth</p>
-                </div>
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
-                  <p className="font-display text-5xl text-white mb-2">80%</p>
-                  <p className="text-xs text-white/40 uppercase tracking-wider">Cost Reduction</p>
-                </div>
-                <div className="bg-white/[0.02] border border-white/10 rounded-2xl p-8 text-center hover:border-[#00B98E]/30 transition-colors">
-                  <p className="font-display text-5xl text-white mb-2">24/7</p>
-                  <p className="text-xs text-white/40 uppercase tracking-wider">Support</p>
-                </div>
-              </div>
+            <div className="about-content lg:col-span-8 space-y-7">
+              <p className="text-white/70 font-body text-lg md:text-xl leading-relaxed">
+                We started out building websites and running ad campaigns. The same thing kept
+                happening on every account: the marketing worked, the leads arrived, and then
+                they sat. Nobody reached them fast enough, and nothing followed up.
+              </p>
+              <p className="text-white/50 font-body leading-relaxed">
+                Fixing the campaign never fixed that. The gap was not in the demand — it was in
+                everything that had to happen after it, and all of that was running on people
+                remembering to do it between other work.
+              </p>
+              <p className="text-white/50 font-body leading-relaxed">
+                So we started building the missing half: agents that answer and call, agents
+                that follow up, automation for the work behind them, and a portal so an owner
+                could finally see what happened to every lead they had paid for.
+              </p>
+              <p className="text-white/50 font-body leading-relaxed">
+                That is the whole studio now. The websites and platforms are still something we
+                build — they are just no longer the point.
+              </p>
             </div>
           </div>
         </div>
@@ -181,10 +179,10 @@ export default function AboutPageClient() {
 
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-16">
-            <h2 className="font-display text-4xl mb-4">
-              Our <span className="text-white">Values</span>
+            <h2 className="font-display text-4xl mb-4 text-white">
+              How we work
             </h2>
-            <p className="text-white/50 font-body">The principles that guide everything we do</p>
+            <p className="text-white/50 font-body">Four rules we hold to, including the expensive one</p>
           </div>
           
           <div className="values-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -207,15 +205,15 @@ export default function AboutPageClient() {
       {/* Philosophy Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="font-display text-4xl mb-8">
-            Our <span className="text-white">Philosophy</span>
+          <h2 className="font-display text-4xl mb-8 text-white">
+            What we believe
           </h2>
           <blockquote className="text-2xl md:text-3xl font-display text-white/80 leading-relaxed mb-8">
-            "We believe in building trust and relationships with clients first. 
-            Money is a byproduct of delivering exceptional value."
+            &ldquo;A system you have to remember to use is not a system. The work should
+            happen whether anyone is watching or not.&rdquo;
           </blockquote>
           <p className="text-white text-sm tracking-widest uppercase">
-            — The SocialHood Company Team
+            — The SocialHood
           </p>
         </div>
       </section>
@@ -227,18 +225,27 @@ export default function AboutPageClient() {
           <div className="absolute inset-0 bg-gradient-to-r from-[#00B98E]/5 via-[#00B98E]/10 to-[#00B98E]/5 rounded-3xl" />
           
           <div className="relative z-10 bg-black/50 backdrop-blur-sm border border-white/10 rounded-3xl p-12 md:p-16">
-            <h2 className="font-display text-3xl md:text-4xl mb-4">
-              Let's Build Something <span className="text-white">Great</span>
+            <h2 className="font-display text-3xl md:text-4xl mb-4 text-white">
+              See what we actually run
             </h2>
-            <p className="text-white/50 mb-8 font-body">
-              Ready to transform your business? We'd love to hear from you.
+            <p className="text-white/50 mb-8 font-body leading-relaxed">
+              Three systems in production, opened up — what each one does, how it runs, and
+              what it changed.
             </p>
-            <Link
-              href="/contact"
-              className="inline-block bg-[#00B98E] text-black font-medium px-10 py-4 rounded-full text-sm tracking-wide hover:bg-[#00B98E]/80 hover:shadow-lg hover:shadow-[#00B98E]/30 transition-all duration-300"
-            >
-              Get in Touch →
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/work"
+                className="inline-block bg-[#00B98E] text-black font-medium px-10 py-4 rounded-full text-sm tracking-wide hover:bg-[#00B98E]/80 hover:shadow-lg hover:shadow-[#00B98E]/30 transition-all duration-300"
+              >
+                See the work &rarr;
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-block px-8 py-4 rounded-full text-sm tracking-wide text-white/60 border border-white/10 hover:border-white/25 hover:text-white transition-colors duration-300"
+              >
+                Talk to us
+              </Link>
+            </div>
           </div>
         </div>
       </section>
